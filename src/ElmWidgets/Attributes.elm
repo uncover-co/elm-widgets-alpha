@@ -2,6 +2,9 @@ module ElmWidgets.Attributes exposing
     ( background
     , color
     , disabled
+    , fill
+    , placeholder
+    , shadow
     )
 
 
@@ -15,6 +18,21 @@ background v a =
     { a | background = v }
 
 
+shadow : String -> { a | shadow : String } -> { a | shadow : String }
+shadow v a =
+    { a | shadow = v }
+
+
 disabled : Bool -> { a | disabled : Bool } -> { a | disabled : Bool }
 disabled v a =
     { a | disabled = v }
+
+
+fill : Bool -> { a | fill : Bool } -> { a | fill : Bool }
+fill v a =
+    { a | fill = v }
+
+
+placeholder : String -> { a | placeholder : Maybe String } -> { a | placeholder : Maybe String }
+placeholder v a =
+    { a | placeholder = Just v }

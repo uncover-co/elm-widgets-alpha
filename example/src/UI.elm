@@ -5,13 +5,9 @@ import Html.Attributes exposing (..)
 
 
 hSpacer : List (Html msg) -> Html msg
-hSpacer children =
-    div []
-        (children
-            |> List.map
-                (\c ->
-                    span
-                        [ style "padding-right" "8px" ]
-                        [ c ]
-                )
-        )
+hSpacer =
+    div [ class "ew ew-h-space"]
+
+vSpacer : List (Html msg) -> Html msg
+vSpacer =
+    div [ class "ew ew-v-space"]

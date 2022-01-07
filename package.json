@@ -4,11 +4,16 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "watch 'node ./styles/build-styles.js' ./styles"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "elm-tooling": "^1.7.0"
+    "autoprefixer": "^10.4.1",
+    "cssnano": "^5.0.14",
+    "elm-tooling": "^1.7.0",
+    "postcss": "^8.4.5",
+    "postcss-nested": "^5.0.6",
+    "watch": "^1.0.2"
   }
 }

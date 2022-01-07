@@ -5228,6 +5228,20 @@ var $elm$virtual_dom$VirtualDom$toHandlerInt = function (handler) {
 	}
 };
 var $elm$html$Html$button = _VirtualDom_node('button');
+var $author$project$ElmWidgets$applyAttrs = F2(
+	function (defaults, fns) {
+		return A3(
+			$elm$core$List$foldl,
+			F2(
+				function (fn, a) {
+					return fn(a);
+				}),
+			defaults,
+			fns);
+	});
+var $author$project$ElmWidgets$buttonWidth = function (fill) {
+	return fill ? '100%' : 'auto';
+};
 var $elm$json$Json$Encode$string = _Json_wrap;
 var $elm$html$Html$Attributes$stringProperty = F2(
 	function (key, string) {
@@ -5246,6 +5260,21 @@ var $elm$html$Html$Attributes$boolProperty = F2(
 			$elm$json$Json$Encode$bool(bool));
 	});
 var $elm$html$Html$Attributes$disabled = $elm$html$Html$Attributes$boolProperty('disabled');
+var $author$project$ElmWidgets$statusButtonDefaults = {disabled: false, fill: false};
+var $elm$virtual_dom$VirtualDom$style = _VirtualDom_style;
+var $elm$html$Html$Attributes$style = $elm$virtual_dom$VirtualDom$style;
+var $author$project$ElmWidgets$confirmButtonAttrs = function (attrs_) {
+	var attrs = A2($author$project$ElmWidgets$applyAttrs, $author$project$ElmWidgets$statusButtonDefaults, attrs_);
+	return _List_fromArray(
+		[
+			$elm$html$Html$Attributes$disabled(attrs.disabled),
+			$elm$html$Html$Attributes$class('ew ew-focusable ew-btn ew-m-primary ew-is-confirm'),
+			A2(
+			$elm$html$Html$Attributes$style,
+			'width',
+			$author$project$ElmWidgets$buttonWidth(attrs.fill))
+		]);
+};
 var $elm$virtual_dom$VirtualDom$Normal = function (a) {
 	return {$: 'Normal', a: a};
 };
@@ -5263,46 +5292,66 @@ var $elm$html$Html$Events$onClick = function (msg) {
 		'click',
 		$elm$json$Json$Decode$succeed(msg));
 };
-var $author$project$ElmWidgets$statusButtonDefaults = {disabled: false};
 var $author$project$ElmWidgets$confirmButton = F2(
-	function (attrs_, props) {
-		var attrs = A3(
-			$elm$core$List$foldl,
-			F2(
-				function (fn, a) {
-					return fn(a);
-				}),
-			$author$project$ElmWidgets$statusButtonDefaults,
-			attrs_);
+	function (attrs, props) {
 		return A2(
 			$elm$html$Html$button,
-			_List_fromArray(
-				[
-					$elm$html$Html$Attributes$disabled(attrs.disabled),
-					$elm$html$Html$Attributes$class('ew ew-btn ew-m-primary ew-is-success'),
-					$elm$html$Html$Events$onClick(props.onClick)
-				]),
+			A2(
+				$elm$core$List$cons,
+				$elm$html$Html$Events$onClick(props.onClick),
+				$author$project$ElmWidgets$confirmButtonAttrs(attrs)),
 			_List_fromArray(
 				[props.label]));
 	});
+var $elm$html$Html$a = _VirtualDom_node('a');
+var $elm$html$Html$Attributes$href = function (url) {
+	return A2(
+		$elm$html$Html$Attributes$stringProperty,
+		'href',
+		_VirtualDom_noJavaScriptUri(url));
+};
+var $author$project$ElmWidgets$confirmButtonLink = F2(
+	function (attrs, props) {
+		return A2(
+			$elm$html$Html$a,
+			A2(
+				$elm$core$List$cons,
+				$elm$html$Html$Attributes$href(props.href),
+				$author$project$ElmWidgets$confirmButtonAttrs(attrs)),
+			_List_fromArray(
+				[props.label]));
+	});
+var $author$project$ElmWidgets$dangerButtonAttrs = function (attrs_) {
+	var attrs = A2($author$project$ElmWidgets$applyAttrs, $author$project$ElmWidgets$statusButtonDefaults, attrs_);
+	return _List_fromArray(
+		[
+			$elm$html$Html$Attributes$disabled(attrs.disabled),
+			$elm$html$Html$Attributes$class('ew ew-focusable ew-btn ew-m-primary ew-is-danger'),
+			A2(
+			$elm$html$Html$Attributes$style,
+			'width',
+			$author$project$ElmWidgets$buttonWidth(attrs.fill))
+		]);
+};
 var $author$project$ElmWidgets$dangerButton = F2(
-	function (attrs_, props) {
-		var attrs = A3(
-			$elm$core$List$foldl,
-			F2(
-				function (fn, a) {
-					return fn(a);
-				}),
-			$author$project$ElmWidgets$statusButtonDefaults,
-			attrs_);
+	function (attrs, props) {
 		return A2(
 			$elm$html$Html$button,
+			A2(
+				$elm$core$List$cons,
+				$elm$html$Html$Events$onClick(props.onClick),
+				$author$project$ElmWidgets$dangerButtonAttrs(attrs)),
 			_List_fromArray(
-				[
-					$elm$html$Html$Attributes$disabled(attrs.disabled),
-					$elm$html$Html$Attributes$class('ew ew-btn ew-m-primary ew-is-danger'),
-					$elm$html$Html$Events$onClick(props.onClick)
-				]),
+				[props.label]));
+	});
+var $author$project$ElmWidgets$dangerButtonLink = F2(
+	function (attrs, props) {
+		return A2(
+			$elm$html$Html$a,
+			A2(
+				$elm$core$List$cons,
+				$elm$html$Html$Attributes$href(props.href),
+				$author$project$ElmWidgets$dangerButtonAttrs(attrs)),
 			_List_fromArray(
 				[props.label]));
 	});
@@ -5312,7 +5361,28 @@ var $author$project$ElmWidgets$Attributes$disabled = F2(
 			a,
 			{disabled: v});
 	});
+var $author$project$ElmWidgets$Attributes$fill = F2(
+	function (v, a) {
+		return _Utils_update(
+			a,
+			{fill: v});
+	});
 var $elm$html$Html$div = _VirtualDom_node('div');
+var $author$project$UI$hSpacer = $elm$html$Html$div(
+	_List_fromArray(
+		[
+			$elm$html$Html$Attributes$class('ew ew-h-space')
+		]));
+var $author$project$ElmWidgets$invisibleButtonDefaults = {background: 'var(--uc-ts-background-faded)', color: 'var(--uc-ts-color)', disabled: false, fill: false};
+var $elm$html$Html$span = _VirtualDom_node('span');
+var $elm$virtual_dom$VirtualDom$attribute = F2(
+	function (key, value) {
+		return A2(
+			_VirtualDom_attribute,
+			_VirtualDom_noOnOrFormAction(key),
+			_VirtualDom_noJavaScriptOrHtmlUri(value));
+	});
+var $elm$html$Html$Attributes$attribute = $elm$virtual_dom$VirtualDom$attribute;
 var $elm$core$List$foldrHelper = F4(
 	function (fn, acc, ctr, ls) {
 		if (!ls.b) {
@@ -5382,46 +5452,40 @@ var $elm$core$List$map = F2(
 			_List_Nil,
 			xs);
 	});
-var $elm$html$Html$span = _VirtualDom_node('span');
-var $elm$virtual_dom$VirtualDom$style = _VirtualDom_style;
-var $elm$html$Html$Attributes$style = $elm$virtual_dom$VirtualDom$style;
-var $author$project$UI$hSpacer = function (children) {
+var $author$project$ElmWidgets$styles = function (xs) {
 	return A2(
-		$elm$html$Html$div,
-		_List_Nil,
+		$elm$html$Html$Attributes$attribute,
+		'style',
 		A2(
-			$elm$core$List$map,
-			function (c) {
-				return A2(
-					$elm$html$Html$span,
-					_List_fromArray(
-						[
-							A2($elm$html$Html$Attributes$style, 'padding-right', '8px')
-						]),
-					_List_fromArray(
-						[c]));
-			},
-			children));
+			$elm$core$String$join,
+			';',
+			A2(
+				$elm$core$List$map,
+				function (_v0) {
+					var k = _v0.a;
+					var v = _v0.b;
+					return k + (':' + v);
+				},
+				xs)));
 };
-var $author$project$ElmWidgets$invisibleButtonDefaults = {color: '', disabled: false};
-var $author$project$ElmWidgets$invisibleButton = F2(
-	function (attrs_, props) {
-		var attrs = A3(
-			$elm$core$List$foldl,
-			F2(
-				function (fn, a) {
-					return fn(a);
-				}),
-			$author$project$ElmWidgets$invisibleButtonDefaults,
-			attrs_);
-		return A2(
-			$elm$html$Html$button,
+var $author$project$ElmWidgets$invisibleButtonAttrs = F2(
+	function (attrs_, label) {
+		var attrs = A2($author$project$ElmWidgets$applyAttrs, $author$project$ElmWidgets$invisibleButtonDefaults, attrs_);
+		return _Utils_Tuple2(
 			_List_fromArray(
 				[
 					A2($elm$html$Html$Attributes$style, 'color', attrs.color),
 					$elm$html$Html$Attributes$disabled(attrs.disabled),
-					$elm$html$Html$Attributes$class('ew ew-btn ew-m-invisible'),
-					$elm$html$Html$Events$onClick(props.onClick)
+					$elm$html$Html$Attributes$class('ew ew-focusable ew-btn ew-m-invisible'),
+					$author$project$ElmWidgets$styles(
+					_List_fromArray(
+						[
+							_Utils_Tuple2('--color', attrs.color),
+							_Utils_Tuple2('--background', attrs.background),
+							_Utils_Tuple2(
+							'width',
+							$author$project$ElmWidgets$buttonWidth(attrs.fill))
+						]))
 				]),
 			_List_fromArray(
 				[
@@ -5430,7 +5494,7 @@ var $author$project$ElmWidgets$invisibleButton = F2(
 					_List_fromArray(
 						[
 							$elm$html$Html$Attributes$class('ew ew-bg'),
-							A2($elm$html$Html$Attributes$style, 'background-color', attrs.color)
+							A2($elm$html$Html$Attributes$style, 'background-color', attrs.background)
 						]),
 					_List_Nil),
 					A2(
@@ -5440,8 +5504,34 @@ var $author$project$ElmWidgets$invisibleButton = F2(
 							$elm$html$Html$Attributes$class('ew ew-relative')
 						]),
 					_List_fromArray(
-						[props.label]))
+						[label]))
 				]));
+	});
+var $author$project$ElmWidgets$invisibleButton = F2(
+	function (attrs_, props) {
+		var _v0 = A2($author$project$ElmWidgets$invisibleButtonAttrs, attrs_, props.label);
+		var attrs = _v0.a;
+		var children = _v0.b;
+		return A2(
+			$elm$html$Html$button,
+			A2(
+				$elm$core$List$cons,
+				$elm$html$Html$Events$onClick(props.onClick),
+				attrs),
+			children);
+	});
+var $author$project$ElmWidgets$invisibleButtonLink = F2(
+	function (attrs_, props) {
+		var _v0 = A2($author$project$ElmWidgets$invisibleButtonAttrs, attrs_, props.label);
+		var attrs = _v0.a;
+		var children = _v0.b;
+		return A2(
+			$elm$html$Html$a,
+			A2(
+				$elm$core$List$cons,
+				$elm$html$Html$Attributes$href(props.href),
+				attrs),
+			children);
 	});
 var $dtwrks$elm_book$ElmBook$Internal$Msg$LogAction = F2(
 	function (a, b) {
@@ -5450,51 +5540,84 @@ var $dtwrks$elm_book$ElmBook$Internal$Msg$LogAction = F2(
 var $dtwrks$elm_book$ElmBook$Actions$logAction = function (action) {
 	return A2($dtwrks$elm_book$ElmBook$Internal$Msg$LogAction, '', action);
 };
-var $author$project$ElmWidgets$outlineButtonDefaults = {color: '', disabled: false};
-var $author$project$ElmWidgets$outlinedButton = F2(
-	function (attrs_, props) {
-		var attrs = A3(
-			$elm$core$List$foldl,
-			F2(
-				function (fn, a) {
-					return fn(a);
-				}),
-			$author$project$ElmWidgets$outlineButtonDefaults,
-			attrs_);
-		return A2(
-			$elm$html$Html$button,
+var $author$project$ElmWidgets$outlinedButtonDefaults = {color: 'var(--uc-ts-color)', disabled: false, fill: false, shadow: 'var(--uc-ts-color-faded)'};
+var $author$project$ElmWidgets$outlinedButtonAttrs = function (attrs_) {
+	var attrs = A2($author$project$ElmWidgets$applyAttrs, $author$project$ElmWidgets$outlinedButtonDefaults, attrs_);
+	return _List_fromArray(
+		[
+			$elm$html$Html$Attributes$disabled(attrs.disabled),
+			$elm$html$Html$Attributes$class('ew ew-focusable ew-btn ew-m-outlined'),
+			$author$project$ElmWidgets$styles(
 			_List_fromArray(
 				[
-					A2($elm$html$Html$Attributes$style, 'color', attrs.color),
-					A2($elm$html$Html$Attributes$style, 'border-color', attrs.color),
-					$elm$html$Html$Attributes$disabled(attrs.disabled),
-					$elm$html$Html$Attributes$class('ew ew-btn ew-m-outlined'),
-					$elm$html$Html$Events$onClick(props.onClick)
-				]),
+					_Utils_Tuple2('--color', attrs.color),
+					_Utils_Tuple2('--shadow', attrs.shadow),
+					_Utils_Tuple2(
+					'width',
+					$author$project$ElmWidgets$buttonWidth(attrs.fill))
+				]))
+		]);
+};
+var $author$project$ElmWidgets$outlinedButton = F2(
+	function (attrs, props) {
+		return A2(
+			$elm$html$Html$button,
+			A2(
+				$elm$core$List$cons,
+				$elm$html$Html$Events$onClick(props.onClick),
+				$author$project$ElmWidgets$outlinedButtonAttrs(attrs)),
 			_List_fromArray(
 				[props.label]));
 	});
-var $author$project$ElmWidgets$primaryButtonDefaults = {background: '', color: '', disabled: false};
-var $author$project$ElmWidgets$primaryButton = F2(
-	function (attrs_, props) {
-		var attrs = A3(
-			$elm$core$List$foldl,
-			F2(
-				function (fn, a) {
-					return fn(a);
-				}),
-			$author$project$ElmWidgets$primaryButtonDefaults,
-			attrs_);
+var $author$project$ElmWidgets$outlinedButtonLink = F2(
+	function (attrs, props) {
 		return A2(
-			$elm$html$Html$button,
+			$elm$html$Html$a,
+			A2(
+				$elm$core$List$cons,
+				$elm$html$Html$Attributes$href(props.href),
+				$author$project$ElmWidgets$outlinedButtonAttrs(attrs)),
+			_List_fromArray(
+				[props.label]));
+	});
+var $author$project$ElmWidgets$primaryButtonDefaults = {background: 'var(--uc-ts-btn-background)', color: 'var(--uc-ts-btn-color)', disabled: false, fill: false, shadow: 'var(--uc-ts-btn-shadow)'};
+var $author$project$ElmWidgets$primaryButtonAttrs = function (attrs_) {
+	var attrs = A2($author$project$ElmWidgets$applyAttrs, $author$project$ElmWidgets$primaryButtonDefaults, attrs_);
+	return _List_fromArray(
+		[
+			$elm$html$Html$Attributes$disabled(attrs.disabled),
+			$elm$html$Html$Attributes$class('ew ew-focusable ew-btn ew-m-primary'),
+			$author$project$ElmWidgets$styles(
 			_List_fromArray(
 				[
-					A2($elm$html$Html$Attributes$style, 'color', attrs.color),
-					A2($elm$html$Html$Attributes$style, 'background', attrs.background),
-					$elm$html$Html$Attributes$disabled(attrs.disabled),
-					$elm$html$Html$Attributes$class('ew ew-btn ew-m-primary'),
-					$elm$html$Html$Events$onClick(props.onClick)
-				]),
+					_Utils_Tuple2('--color', attrs.color),
+					_Utils_Tuple2('--background', attrs.background),
+					_Utils_Tuple2('--shadow', attrs.shadow),
+					_Utils_Tuple2(
+					'width',
+					$author$project$ElmWidgets$buttonWidth(attrs.fill))
+				]))
+		]);
+};
+var $author$project$ElmWidgets$primaryButton = F2(
+	function (attrs, props) {
+		return A2(
+			$elm$html$Html$button,
+			A2(
+				$elm$core$List$cons,
+				$elm$html$Html$Events$onClick(props.onClick),
+				$author$project$ElmWidgets$primaryButtonAttrs(attrs)),
+			_List_fromArray(
+				[props.label]));
+	});
+var $author$project$ElmWidgets$primaryButtonLink = F2(
+	function (attrs, props) {
+		return A2(
+			$elm$html$Html$a,
+			A2(
+				$elm$core$List$cons,
+				$elm$html$Html$Attributes$href(props.href),
+				$author$project$ElmWidgets$primaryButtonAttrs(attrs)),
 			_List_fromArray(
 				[props.label]));
 	});
@@ -5525,8 +5648,19 @@ var $dtwrks$elm_book$ElmBook$Chapter$renderComponentList = F2(
 						builder.componentList)
 				}));
 	});
+var $author$project$ElmWidgets$Attributes$shadow = F2(
+	function (v, a) {
+		return _Utils_update(
+			a,
+			{shadow: v});
+	});
 var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
 var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
+var $author$project$UI$vSpacer = $elm$html$Html$div(
+	_List_fromArray(
+		[
+			$elm$html$Html$Attributes$class('ew ew-v-space')
+		]));
 var $author$project$Main$buttonsChapter = A2(
 	$dtwrks$elm_book$ElmBook$Chapter$renderComponentList,
 	_List_fromArray(
@@ -5656,7 +5790,8 @@ var $author$project$Main$buttonsChapter = A2(
 						_List_fromArray(
 							[
 								$author$project$ElmWidgets$Attributes$color('#fff'),
-								$author$project$ElmWidgets$Attributes$background('#09f')
+								$author$project$ElmWidgets$Attributes$background('#fa0'),
+								$author$project$ElmWidgets$Attributes$shadow('#f4bd4f')
 							]),
 						{
 							label: $elm$html$Html$text('Click me'),
@@ -5666,7 +5801,8 @@ var $author$project$Main$buttonsChapter = A2(
 						$author$project$ElmWidgets$outlinedButton,
 						_List_fromArray(
 							[
-								$author$project$ElmWidgets$Attributes$color('#09f')
+								$author$project$ElmWidgets$Attributes$color('#fa0'),
+								$author$project$ElmWidgets$Attributes$shadow('#f4bd4f')
 							]),
 						{
 							label: $elm$html$Html$text('Click me'),
@@ -5676,11 +5812,109 @@ var $author$project$Main$buttonsChapter = A2(
 						$author$project$ElmWidgets$invisibleButton,
 						_List_fromArray(
 							[
-								$author$project$ElmWidgets$Attributes$color('#09f')
+								$author$project$ElmWidgets$Attributes$color('#fa0'),
+								$author$project$ElmWidgets$Attributes$background('#fff0d1')
 							]),
 						{
 							label: $elm$html$Html$text('Click me'),
 							onClick: $dtwrks$elm_book$ElmBook$Actions$logAction('')
+						})
+					]))),
+			_Utils_Tuple2(
+			'fill containers',
+			$author$project$UI$vSpacer(
+				_List_fromArray(
+					[
+						A2(
+						$author$project$ElmWidgets$primaryButton,
+						_List_fromArray(
+							[
+								$author$project$ElmWidgets$Attributes$fill(true)
+							]),
+						{
+							label: $elm$html$Html$text('Click me'),
+							onClick: $dtwrks$elm_book$ElmBook$Actions$logAction('')
+						}),
+						A2(
+						$author$project$ElmWidgets$dangerButton,
+						_List_fromArray(
+							[
+								$author$project$ElmWidgets$Attributes$fill(true)
+							]),
+						{
+							label: $elm$html$Html$text('Click me'),
+							onClick: $dtwrks$elm_book$ElmBook$Actions$logAction('')
+						}),
+						A2(
+						$author$project$ElmWidgets$confirmButton,
+						_List_fromArray(
+							[
+								$author$project$ElmWidgets$Attributes$fill(true)
+							]),
+						{
+							label: $elm$html$Html$text('Click me'),
+							onClick: $dtwrks$elm_book$ElmBook$Actions$logAction('')
+						}),
+						A2(
+						$author$project$ElmWidgets$outlinedButton,
+						_List_fromArray(
+							[
+								$author$project$ElmWidgets$Attributes$fill(true)
+							]),
+						{
+							label: $elm$html$Html$text('Click me'),
+							onClick: $dtwrks$elm_book$ElmBook$Actions$logAction('')
+						}),
+						A2(
+						$author$project$ElmWidgets$invisibleButton,
+						_List_fromArray(
+							[
+								$author$project$ElmWidgets$Attributes$fill(true)
+							]),
+						{
+							label: $elm$html$Html$text('Click me'),
+							onClick: $dtwrks$elm_book$ElmBook$Actions$logAction('')
+						})
+					]))),
+			_Utils_Tuple2(
+			'buttons as links',
+			$author$project$UI$hSpacer(
+				_List_fromArray(
+					[
+						A2(
+						$author$project$ElmWidgets$primaryButtonLink,
+						_List_Nil,
+						{
+							href: 'logAction/#',
+							label: $elm$html$Html$text('Click me')
+						}),
+						A2(
+						$author$project$ElmWidgets$dangerButtonLink,
+						_List_Nil,
+						{
+							href: 'logAction/#',
+							label: $elm$html$Html$text('Click me')
+						}),
+						A2(
+						$author$project$ElmWidgets$confirmButtonLink,
+						_List_Nil,
+						{
+							href: 'logAction/#',
+							label: $elm$html$Html$text('Click me')
+						}),
+						A2(
+						$author$project$ElmWidgets$outlinedButtonLink,
+						_List_Nil,
+						{
+							href: 'logAction/#',
+							label: $elm$html$Html$text('Click me')
+						}),
+						A2(
+						$author$project$ElmWidgets$invisibleButtonLink,
+						_List_Nil,
+						{
+							href: 'logAction/#',
+							label: $elm$html$Html$text('Click me')
 						})
 					])))
 		]),
@@ -5696,7 +5930,7 @@ var $author$project$ElmWidgets$Styles$globalStyles = A3(
 	_List_Nil,
 	_List_fromArray(
 		[
-			$elm$html$Html$text('\n.ew {\n    box-sizing: border-box;\n}\n.ew.ew-relative {\n    position: relative;\n}\n\n.ew.ew-btn {\n    box-sizing: border-box;\n    display: inline-flex;\n    align-items: center;\n    justify-content: center;\n    height: 36px;\n    padding: 0 16px;\n    border: none;\n    border-radius: var(--uc-ts-border-radius);\n    \n    font-family: var(--uc-ts-font-text);\n    color: var(--uc-ts-btn-color);\n    text-transform: uppercase;\n    font-size: 12px;\n    font-weight: bold;\n    line-height: 1em;\n    letter-spacing: 0.05em;\n    \n    cursor: pointer;\n    transition: box-shadow 0.15s, background 0.15s;\n}\n.ew.ew-btn:focus {\n    outline: 3px solid var(--uc-ts-focus);\n}\n.ew.ew-btn:active {\n    opacity: 0.8;\n}\n.ew.ew-btn:disabled {\n    opacity: 0.4;\n    pointer-events: none;\n}\n\n.ew.ew-btn.ew-m-primary {\n    background: var(--uc-ts-btn-background);\n}\n.ew.ew-btn.ew-m-primary:hover {\n    box-shadow: 0 0 8px var(--uc-ts-color-faded);\n}\n\n.ew.ew-btn.ew-m-primary.ew-is-danger {\n    background: var(--uc-ts-danger);\n    color: var(--uc-ts-danger-contrast);\n}\n.ew.ew-btn.ew-m-primary.ew-is-danger:hover {\n    box-shadow: 0 0 8px var(--uc-ts-danger-faded);\n}\n\n.ew.ew-btn.ew-m-primary.ew-is-success {\n    background: var(--uc-ts-success);\n    color: var(--uc-ts-success-contrast);\n}\n.ew.ew-btn.ew-m-primary.ew-is-success:hover {\n    box-shadow: 0 0 8px var(--uc-ts-success-faded);\n}\n\n\n.ew.ew-btn.ew-m-outlined {\n    background: transparent;\n    border: 3px solid var(--uc-ts-color);\n    color: var(--uc-ts-color);\n    box-shadow: none;\n}\n.ew.ew-btn.ew-m-outlined:hover {\n    box-shadow: 0 0 4px var(--uc-ts-color-faded);\n}\n\n.ew.ew-btn.ew-m-invisible {\n    position: relative;\n    overflow: hidden;\n    color: var(--uc-ts-color);\n    background: transparent;\n    border-color: transparent;\n    box-shadow: none;\n}\n\n.ew.ew-btn.ew-m-invisible > .ew.ew-bg {\n    position: absolute;\n    top: 0;\n    left: 0;\n    right: 0;\n    bottom: 0;\n    opacity: 0;\n    background: var(--uc-ts-background-faded);\n    transition: 0.15s;\n}\n.ew.ew-btn.ew-m-invisible:hover > .ew.ew-bg {\n    opacity: 1;\n}\n')
+			$elm$html$Html$text('.ew{box-sizing:border-box;margin:0;padding:0}.ew.ew-relative{position:relative}.ew.ew-focusable:focus{outline:3px solid var(--uc-ts-focus)}.ew.ew-h-space>*+*{margin-left:8px}.ew.ew-v-space>*+*{margin-top:8px}.ew.ew-btn{align-items:center;border:none;border-radius:var(--uc-ts-border-radius);color:var(--color);cursor:pointer;display:inline-flex;font-family:var(--uc-ts-font-text);font-size:12px;font-weight:700;height:36px;justify-content:center;letter-spacing:.05em;line-height:1em;padding:0 18px;text-decoration:none;text-transform:uppercase;transition:box-shadow .15s,background .15s}.ew.ew-btn:active{opacity:.8}.ew.ew-btn:disabled{opacity:.4;pointer-events:none}.ew.ew-btn.ew-m-primary{background:var(--background)}.ew.ew-btn.ew-m-primary:hover{box-shadow:0 0 8px var(--shadow)}.ew.ew-btn.ew-m-primary.ew-is-danger{background:var(--uc-ts-danger);color:var(--uc-ts-danger-contrast)}.ew.ew-btn.ew-m-primary.ew-is-danger:hover{box-shadow:0 0 8px var(--uc-ts-danger-faded)}.ew.ew-btn.ew-m-primary.ew-is-confirm{background:var(--uc-ts-success);color:var(--uc-ts-success-contrast)}.ew.ew-btn.ew-m-primary.ew-is-confirm:hover{box-shadow:0 0 8px var(--uc-ts-success-faded)}.ew.ew-btn.ew-m-outlined{background:transparent;border:3px solid var(--color);box-shadow:none;color:var(--color);padding:0 16px}.ew.ew-btn.ew-m-outlined:hover{box-shadow:0 0 4px var(--shadow)}.ew.ew-btn.ew-m-invisible{background:transparent;border-color:transparent;box-shadow:none;color:var(--color);overflow:hidden;position:relative}.ew.ew-btn.ew-m-invisible>.ew.ew-bg{background:var(--background);bottom:0;left:0;opacity:0;position:absolute;right:0;top:0;transition:.15s}.ew.ew-btn.ew-m-invisible:hover>.ew.ew-bg{opacity:1}.ew.ew-select{-webkit-appearance:none;-moz-appearance:none;appearance:none;background-color:var(--uc-ts-background);background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 16 16\'%3E%3Cpath fill=\'none\' stroke=\'currentColor\' stroke-linecap=\'round\' stroke-linejoin=\'round\' stroke-width=\'2\' d=\'m2 5 6 6 6-6\'/%3E%3C/svg%3E");background-position:right .7em top 50%;background-repeat:no-repeat,repeat;background-size:.8em auto;border:3px solid var(--uc-ts-color);border-radius:var(--uc-ts-border-radius);box-shadow:none;display:block;font-family:var(--uc-ts-font-text);font-size:16px;line-height:1em;padding:12px;width:100%}.ew.ew-select::-ms-expand{display:none}.ew.ew-select:focus{outline: }.ew.ew-select[disabled]{background:var(--uc-ts-background-faded)}.ew.ew-select.ew-is-empty{color:var(--uc-ts-color-faded)}.select-css .select-css:hover{border-color:#888}.select-css:disabled,.select-css[aria-disabled=true]{background-image:url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22graytext%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E"),linear-gradient(180deg,#fff 0,#e5e5e5);color:graytext}')
 		]));
 var $dtwrks$elm_book$ElmBook$ThemeOptions$globals = F2(
 	function (globals_, options) {
@@ -5706,18 +5940,513 @@ var $dtwrks$elm_book$ElmBook$ThemeOptions$globals = F2(
 				globals: $elm$core$Maybe$Just(globals_)
 			});
 	});
-var $author$project$ElmWidgets$Styles$themeString = A2(
+var $dtwrks$elm_book$ElmBook$Actions$logActionWith = F3(
+	function (toString, action, value) {
+		return A2(
+			$dtwrks$elm_book$ElmBook$Internal$Msg$LogAction,
+			'',
+			action + (': ' + toString(value)));
+	});
+var $elm$core$Maybe$map = F2(
+	function (f, maybe) {
+		if (maybe.$ === 'Just') {
+			var value = maybe.a;
+			return $elm$core$Maybe$Just(
+				f(value));
+		} else {
+			return $elm$core$Maybe$Nothing;
+		}
+	});
+var $elm$core$Maybe$withDefault = F2(
+	function (_default, maybe) {
+		if (maybe.$ === 'Just') {
+			var value = maybe.a;
+			return value;
+		} else {
+			return _default;
+		}
+	});
+var $author$project$Main$logActionWithMaybeInt = F2(
+	function (label, i) {
+		return A2(
+			$elm$core$Maybe$withDefault,
+			$dtwrks$elm_book$ElmBook$Actions$logAction(label + ': Nothing'),
+			A2(
+				$elm$core$Maybe$map,
+				A2(
+					$dtwrks$elm_book$ElmBook$Actions$logActionWith,
+					function (i_) {
+						return 'Just ' + $elm$core$String$fromInt(i_);
+					},
+					label),
+				i));
+	});
+var $author$project$ElmWidgets$Attributes$placeholder = F2(
+	function (v, a) {
+		return _Utils_update(
+			a,
+			{
+				placeholder: $elm$core$Maybe$Just(v)
+			});
+	});
+var $elm$core$List$append = F2(
+	function (xs, ys) {
+		if (!ys.b) {
+			return xs;
+		} else {
+			return A3($elm$core$List$foldr, $elm$core$List$cons, ys, xs);
+		}
+	});
+var $elm$core$List$filter = F2(
+	function (isGood, list) {
+		return A3(
+			$elm$core$List$foldr,
+			F2(
+				function (x, xs) {
+					return isGood(x) ? A2($elm$core$List$cons, x, xs) : xs;
+				}),
+			_List_Nil,
+			list);
+	});
+var $elm$core$Tuple$second = function (_v0) {
+	var y = _v0.b;
+	return y;
+};
+var $elm$html$Html$Attributes$classList = function (classes) {
+	return $elm$html$Html$Attributes$class(
+		A2(
+			$elm$core$String$join,
+			' ',
+			A2(
+				$elm$core$List$map,
+				$elm$core$Tuple$first,
+				A2($elm$core$List$filter, $elm$core$Tuple$second, classes))));
+};
+var $elm$core$List$concat = function (lists) {
+	return A3($elm$core$List$foldr, $elm$core$List$append, _List_Nil, lists);
+};
+var $elm$core$List$concatMap = F2(
+	function (f, list) {
+		return $elm$core$List$concat(
+			A2($elm$core$List$map, f, list));
+	});
+var $elm$core$Dict$RBEmpty_elm_builtin = {$: 'RBEmpty_elm_builtin'};
+var $elm$core$Dict$empty = $elm$core$Dict$RBEmpty_elm_builtin;
+var $elm$core$Dict$Black = {$: 'Black'};
+var $elm$core$Dict$RBNode_elm_builtin = F5(
+	function (a, b, c, d, e) {
+		return {$: 'RBNode_elm_builtin', a: a, b: b, c: c, d: d, e: e};
+	});
+var $elm$core$Dict$Red = {$: 'Red'};
+var $elm$core$Dict$balance = F5(
+	function (color, key, value, left, right) {
+		if ((right.$ === 'RBNode_elm_builtin') && (right.a.$ === 'Red')) {
+			var _v1 = right.a;
+			var rK = right.b;
+			var rV = right.c;
+			var rLeft = right.d;
+			var rRight = right.e;
+			if ((left.$ === 'RBNode_elm_builtin') && (left.a.$ === 'Red')) {
+				var _v3 = left.a;
+				var lK = left.b;
+				var lV = left.c;
+				var lLeft = left.d;
+				var lRight = left.e;
+				return A5(
+					$elm$core$Dict$RBNode_elm_builtin,
+					$elm$core$Dict$Red,
+					key,
+					value,
+					A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Black, lK, lV, lLeft, lRight),
+					A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Black, rK, rV, rLeft, rRight));
+			} else {
+				return A5(
+					$elm$core$Dict$RBNode_elm_builtin,
+					color,
+					rK,
+					rV,
+					A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Red, key, value, left, rLeft),
+					rRight);
+			}
+		} else {
+			if ((((left.$ === 'RBNode_elm_builtin') && (left.a.$ === 'Red')) && (left.d.$ === 'RBNode_elm_builtin')) && (left.d.a.$ === 'Red')) {
+				var _v5 = left.a;
+				var lK = left.b;
+				var lV = left.c;
+				var _v6 = left.d;
+				var _v7 = _v6.a;
+				var llK = _v6.b;
+				var llV = _v6.c;
+				var llLeft = _v6.d;
+				var llRight = _v6.e;
+				var lRight = left.e;
+				return A5(
+					$elm$core$Dict$RBNode_elm_builtin,
+					$elm$core$Dict$Red,
+					lK,
+					lV,
+					A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Black, llK, llV, llLeft, llRight),
+					A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Black, key, value, lRight, right));
+			} else {
+				return A5($elm$core$Dict$RBNode_elm_builtin, color, key, value, left, right);
+			}
+		}
+	});
+var $elm$core$Basics$compare = _Utils_compare;
+var $elm$core$Dict$insertHelp = F3(
+	function (key, value, dict) {
+		if (dict.$ === 'RBEmpty_elm_builtin') {
+			return A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Red, key, value, $elm$core$Dict$RBEmpty_elm_builtin, $elm$core$Dict$RBEmpty_elm_builtin);
+		} else {
+			var nColor = dict.a;
+			var nKey = dict.b;
+			var nValue = dict.c;
+			var nLeft = dict.d;
+			var nRight = dict.e;
+			var _v1 = A2($elm$core$Basics$compare, key, nKey);
+			switch (_v1.$) {
+				case 'LT':
+					return A5(
+						$elm$core$Dict$balance,
+						nColor,
+						nKey,
+						nValue,
+						A3($elm$core$Dict$insertHelp, key, value, nLeft),
+						nRight);
+				case 'EQ':
+					return A5($elm$core$Dict$RBNode_elm_builtin, nColor, nKey, value, nLeft, nRight);
+				default:
+					return A5(
+						$elm$core$Dict$balance,
+						nColor,
+						nKey,
+						nValue,
+						nLeft,
+						A3($elm$core$Dict$insertHelp, key, value, nRight));
+			}
+		}
+	});
+var $elm$core$Dict$insert = F3(
+	function (key, value, dict) {
+		var _v0 = A3($elm$core$Dict$insertHelp, key, value, dict);
+		if ((_v0.$ === 'RBNode_elm_builtin') && (_v0.a.$ === 'Red')) {
+			var _v1 = _v0.a;
+			var k = _v0.b;
+			var v = _v0.c;
+			var l = _v0.d;
+			var r = _v0.e;
+			return A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Black, k, v, l, r);
+		} else {
+			var x = _v0;
+			return x;
+		}
+	});
+var $elm$core$Dict$fromList = function (assocs) {
+	return A3(
+		$elm$core$List$foldl,
+		F2(
+			function (_v0, dict) {
+				var key = _v0.a;
+				var value = _v0.b;
+				return A3($elm$core$Dict$insert, key, value, dict);
+			}),
+		$elm$core$Dict$empty,
+		assocs);
+};
+var $elm$core$Dict$get = F2(
+	function (targetKey, dict) {
+		get:
+		while (true) {
+			if (dict.$ === 'RBEmpty_elm_builtin') {
+				return $elm$core$Maybe$Nothing;
+			} else {
+				var key = dict.b;
+				var value = dict.c;
+				var left = dict.d;
+				var right = dict.e;
+				var _v1 = A2($elm$core$Basics$compare, targetKey, key);
+				switch (_v1.$) {
+					case 'LT':
+						var $temp$targetKey = targetKey,
+							$temp$dict = left;
+						targetKey = $temp$targetKey;
+						dict = $temp$dict;
+						continue get;
+					case 'EQ':
+						return $elm$core$Maybe$Just(value);
+					default:
+						var $temp$targetKey = targetKey,
+							$temp$dict = right;
+						targetKey = $temp$targetKey;
+						dict = $temp$dict;
+						continue get;
+				}
+			}
+		}
+	});
+var $elm$core$Tuple$mapSecond = F2(
+	function (func, _v0) {
+		var x = _v0.a;
+		var y = _v0.b;
+		return _Utils_Tuple2(
+			x,
+			func(y));
+	});
+var $elm$html$Html$Events$alwaysStop = function (x) {
+	return _Utils_Tuple2(x, true);
+};
+var $elm$virtual_dom$VirtualDom$MayStopPropagation = function (a) {
+	return {$: 'MayStopPropagation', a: a};
+};
+var $elm$html$Html$Events$stopPropagationOn = F2(
+	function (event, decoder) {
+		return A2(
+			$elm$virtual_dom$VirtualDom$on,
+			event,
+			$elm$virtual_dom$VirtualDom$MayStopPropagation(decoder));
+	});
+var $elm$json$Json$Decode$field = _Json_decodeField;
+var $elm$json$Json$Decode$at = F2(
+	function (fields, decoder) {
+		return A3($elm$core$List$foldr, $elm$json$Json$Decode$field, decoder, fields);
+	});
+var $elm$json$Json$Decode$string = _Json_decodeString;
+var $elm$html$Html$Events$targetValue = A2(
+	$elm$json$Json$Decode$at,
+	_List_fromArray(
+		['target', 'value']),
+	$elm$json$Json$Decode$string);
+var $elm$html$Html$Events$onInput = function (tagger) {
+	return A2(
+		$elm$html$Html$Events$stopPropagationOn,
+		'input',
+		A2(
+			$elm$json$Json$Decode$map,
+			$elm$html$Html$Events$alwaysStop,
+			A2($elm$json$Json$Decode$map, tagger, $elm$html$Html$Events$targetValue)));
+};
+var $elm$html$Html$optgroup = _VirtualDom_node('optgroup');
+var $elm$html$Html$option = _VirtualDom_node('option');
+var $elm$html$Html$Attributes$placeholder = $elm$html$Html$Attributes$stringProperty('placeholder');
+var $elm$html$Html$select = _VirtualDom_node('select');
+var $author$project$ElmWidgets$selectDefaults = {placeholder: $elm$core$Maybe$Nothing};
+var $elm$html$Html$Attributes$selected = $elm$html$Html$Attributes$boolProperty('selected');
+var $elm$html$Html$Attributes$value = $elm$html$Html$Attributes$stringProperty('value');
+var $author$project$ElmWidgets$selectWithGroups = F2(
+	function (attrs_, props) {
+		var values = $elm$core$Dict$fromList(
+			A2(
+				$elm$core$List$append,
+				props.options,
+				A2($elm$core$List$concatMap, $elm$core$Tuple$second, props.optionGroups)));
+		var attrs = A2($author$project$ElmWidgets$applyAttrs, $author$project$ElmWidgets$selectDefaults, attrs_);
+		var options = function () {
+			var _v4 = attrs.placeholder;
+			if (_v4.$ === 'Nothing') {
+				return A2(
+					$elm$core$List$map,
+					$elm$core$Tuple$mapSecond($elm$core$Maybe$Just),
+					props.options);
+			} else {
+				var placeholder_ = _v4.a;
+				return A2(
+					$elm$core$List$cons,
+					_Utils_Tuple2(placeholder_, $elm$core$Maybe$Nothing),
+					A2(
+						$elm$core$List$map,
+						$elm$core$Tuple$mapSecond($elm$core$Maybe$Just),
+						props.options));
+			}
+		}();
+		return A2(
+			$elm$html$Html$select,
+			_List_fromArray(
+				[
+					$elm$html$Html$Attributes$class('ew ew-focusable ew-select'),
+					$elm$html$Html$Attributes$classList(
+					_List_fromArray(
+						[
+							_Utils_Tuple2(
+							'ew-is-empty',
+							_Utils_eq(props.value, $elm$core$Maybe$Nothing))
+						])),
+					$elm$html$Html$Attributes$placeholder('Select'),
+					$elm$html$Html$Events$onInput(
+					function (s) {
+						return props.onInput(
+							A2($elm$core$Dict$get, s, values));
+					})
+				]),
+			$elm$core$List$concat(
+				_List_fromArray(
+					[
+						A2(
+						$elm$core$List$map,
+						function (_v0) {
+							var k = _v0.a;
+							var v = _v0.b;
+							if (v.$ === 'Just') {
+								var v_ = v.a;
+								return A2(
+									$elm$html$Html$option,
+									_List_fromArray(
+										[
+											$elm$html$Html$Attributes$selected(
+											_Utils_eq(v, props.value)),
+											$elm$html$Html$Attributes$value(k)
+										]),
+									_List_fromArray(
+										[
+											$elm$html$Html$text(
+											props.toString(v_))
+										]));
+							} else {
+								return A2(
+									$elm$html$Html$option,
+									_List_fromArray(
+										[
+											$elm$html$Html$Attributes$selected(
+											_Utils_eq(v, props.value)),
+											$elm$html$Html$Attributes$value(''),
+											$elm$html$Html$Attributes$disabled(true)
+										]),
+									_List_fromArray(
+										[
+											$elm$html$Html$text(k)
+										]));
+							}
+						},
+						options),
+						A2(
+						$elm$core$List$map,
+						function (_v2) {
+							var l = _v2.a;
+							var options_ = _v2.b;
+							return A2(
+								$elm$html$Html$optgroup,
+								_List_fromArray(
+									[
+										A2($elm$html$Html$Attributes$attribute, 'label', l)
+									]),
+								A2(
+									$elm$core$List$map,
+									function (_v3) {
+										var k = _v3.a;
+										var v = _v3.b;
+										return A2(
+											$elm$html$Html$option,
+											_List_fromArray(
+												[
+													$elm$html$Html$Attributes$selected(
+													_Utils_eq(
+														$elm$core$Maybe$Just(v),
+														props.value)),
+													$elm$html$Html$Attributes$value(k)
+												]),
+											_List_fromArray(
+												[
+													$elm$html$Html$text(
+													props.toString(v))
+												]));
+									},
+									options_));
+						},
+						props.optionGroups)
+					])));
+	});
+var $author$project$ElmWidgets$select = F2(
+	function (attrs_, props) {
+		return A2(
+			$author$project$ElmWidgets$selectWithGroups,
+			attrs_,
+			{onInput: props.onInput, optionGroups: _List_Nil, options: props.options, toString: props.toString, value: props.value});
+	});
+var $author$project$Main$inputsChapter = A2(
+	$dtwrks$elm_book$ElmBook$Chapter$renderComponentList,
+	_List_fromArray(
+		[
+			_Utils_Tuple2(
+			'select',
+			A2(
+				$author$project$ElmWidgets$select,
+				_List_Nil,
+				{
+					onInput: $author$project$Main$logActionWithMaybeInt('onInput'),
+					options: _List_fromArray(
+						[
+							_Utils_Tuple2('first', 1),
+							_Utils_Tuple2('second', 2)
+						]),
+					toString: $elm$core$String$fromInt,
+					value: $elm$core$Maybe$Just(1)
+				})),
+			_Utils_Tuple2(
+			'select - with placeholder',
+			A2(
+				$author$project$ElmWidgets$select,
+				_List_fromArray(
+					[
+						$author$project$ElmWidgets$Attributes$placeholder('Select a number')
+					]),
+				{
+					onInput: $author$project$Main$logActionWithMaybeInt('onInput'),
+					options: _List_fromArray(
+						[
+							_Utils_Tuple2('first', 1),
+							_Utils_Tuple2('second', 2)
+						]),
+					toString: $elm$core$String$fromInt,
+					value: $elm$core$Maybe$Nothing
+				})),
+			_Utils_Tuple2(
+			'select - with groups',
+			A2(
+				$author$project$ElmWidgets$selectWithGroups,
+				_List_fromArray(
+					[
+						$author$project$ElmWidgets$Attributes$placeholder('Select a year')
+					]),
+				{
+					onInput: $author$project$Main$logActionWithMaybeInt('onInput'),
+					optionGroups: _List_fromArray(
+						[
+							_Utils_Tuple2(
+							'70\'s',
+							_List_fromArray(
+								[
+									_Utils_Tuple2('1978', 1978),
+									_Utils_Tuple2('1979', 1979)
+								])),
+							_Utils_Tuple2(
+							'80\'s',
+							_List_fromArray(
+								[
+									_Utils_Tuple2('1988', 1988),
+									_Utils_Tuple2('1989', 1989)
+								]))
+						]),
+					options: _List_fromArray(
+						[
+							_Utils_Tuple2('1900', 1900),
+							_Utils_Tuple2('2000', 2000)
+						]),
+					toString: $elm$core$String$fromInt,
+					value: $elm$core$Maybe$Nothing
+				}))
+		]),
+	$dtwrks$elm_book$ElmBook$Chapter$chapter('Inputs'));
+var $author$project$ElmWidgets$Theme$themeString = A2(
 	$elm$core$String$join,
 	';',
 	_List_fromArray(
-		['--uc-ts-font-title: serif', '--uc-ts-font-text: sans-serif', '--uc-ts-font-code: monospaced', '--uc-ts-btn-background: #444', '--uc-ts-btn-color: #fff', '--uc-ts-color: #444', '--uc-ts-color-faded: #999', '--uc-ts-border-radius: 4px', '--uc-ts-border-large: 8px', '--uc-ts-background: #fff', '--uc-ts-background-faded: #eee', '--uc-ts-focus: #09d', '--uc-ts-danger: #ff4d4f', '--uc-ts-danger-contrast: #fff', '--uc-ts-danger-faded: #f87a7c', '--uc-ts-success: #56bd1a', '--uc-ts-success-contrast: #fff', '--uc-ts-success-faded: #8ed466']));
-var $author$project$ElmWidgets$Styles$themeGlobal = A3(
+		['--uc-ts-font-title: serif', '--uc-ts-font-text: sans-serif', '--uc-ts-font-code: monospaced', '--uc-ts-btn-color: #fff', '--uc-ts-btn-background: #09f', '--uc-ts-btn-shadow: #9cf', '--uc-ts-color: #444', '--uc-ts-color-faded: #999', '--uc-ts-border-radius: 4px', '--uc-ts-border-radius-large: 8px', '--uc-ts-background: #fff', '--uc-ts-background-faded: #eee', '--uc-ts-focus: #59e7d2', '--uc-ts-danger: #ff4d4f', '--uc-ts-danger-contrast: #fff', '--uc-ts-danger-faded: #f87a7c', '--uc-ts-success: #56bd1a', '--uc-ts-success-contrast: #fff', '--uc-ts-success-faded: #8ed466']));
+var $author$project$ElmWidgets$Theme$themeGlobalStyles = A3(
 	$elm$html$Html$node,
 	'style',
 	_List_Nil,
 	_List_fromArray(
 		[
-			$elm$html$Html$text('body { ' + ($author$project$ElmWidgets$Styles$themeString + ' }'))
+			$elm$html$Html$text('body { ' + ($author$project$ElmWidgets$Theme$themeString + ' }'))
 		]));
 var $dtwrks$elm_book$ElmBook$Internal$Msg$OnUrlChange = function (a) {
 	return {$: 'OnUrlChange', a: a};
@@ -5957,117 +6686,6 @@ var $dtwrks$elm_book$ElmBook$Internal$Chapter$chapterUrl = function (_v0) {
 	var url = _v0.a.url;
 	return url;
 };
-var $elm$core$Dict$RBEmpty_elm_builtin = {$: 'RBEmpty_elm_builtin'};
-var $elm$core$Dict$empty = $elm$core$Dict$RBEmpty_elm_builtin;
-var $elm$core$Dict$Black = {$: 'Black'};
-var $elm$core$Dict$RBNode_elm_builtin = F5(
-	function (a, b, c, d, e) {
-		return {$: 'RBNode_elm_builtin', a: a, b: b, c: c, d: d, e: e};
-	});
-var $elm$core$Dict$Red = {$: 'Red'};
-var $elm$core$Dict$balance = F5(
-	function (color, key, value, left, right) {
-		if ((right.$ === 'RBNode_elm_builtin') && (right.a.$ === 'Red')) {
-			var _v1 = right.a;
-			var rK = right.b;
-			var rV = right.c;
-			var rLeft = right.d;
-			var rRight = right.e;
-			if ((left.$ === 'RBNode_elm_builtin') && (left.a.$ === 'Red')) {
-				var _v3 = left.a;
-				var lK = left.b;
-				var lV = left.c;
-				var lLeft = left.d;
-				var lRight = left.e;
-				return A5(
-					$elm$core$Dict$RBNode_elm_builtin,
-					$elm$core$Dict$Red,
-					key,
-					value,
-					A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Black, lK, lV, lLeft, lRight),
-					A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Black, rK, rV, rLeft, rRight));
-			} else {
-				return A5(
-					$elm$core$Dict$RBNode_elm_builtin,
-					color,
-					rK,
-					rV,
-					A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Red, key, value, left, rLeft),
-					rRight);
-			}
-		} else {
-			if ((((left.$ === 'RBNode_elm_builtin') && (left.a.$ === 'Red')) && (left.d.$ === 'RBNode_elm_builtin')) && (left.d.a.$ === 'Red')) {
-				var _v5 = left.a;
-				var lK = left.b;
-				var lV = left.c;
-				var _v6 = left.d;
-				var _v7 = _v6.a;
-				var llK = _v6.b;
-				var llV = _v6.c;
-				var llLeft = _v6.d;
-				var llRight = _v6.e;
-				var lRight = left.e;
-				return A5(
-					$elm$core$Dict$RBNode_elm_builtin,
-					$elm$core$Dict$Red,
-					lK,
-					lV,
-					A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Black, llK, llV, llLeft, llRight),
-					A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Black, key, value, lRight, right));
-			} else {
-				return A5($elm$core$Dict$RBNode_elm_builtin, color, key, value, left, right);
-			}
-		}
-	});
-var $elm$core$Basics$compare = _Utils_compare;
-var $elm$core$Dict$insertHelp = F3(
-	function (key, value, dict) {
-		if (dict.$ === 'RBEmpty_elm_builtin') {
-			return A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Red, key, value, $elm$core$Dict$RBEmpty_elm_builtin, $elm$core$Dict$RBEmpty_elm_builtin);
-		} else {
-			var nColor = dict.a;
-			var nKey = dict.b;
-			var nValue = dict.c;
-			var nLeft = dict.d;
-			var nRight = dict.e;
-			var _v1 = A2($elm$core$Basics$compare, key, nKey);
-			switch (_v1.$) {
-				case 'LT':
-					return A5(
-						$elm$core$Dict$balance,
-						nColor,
-						nKey,
-						nValue,
-						A3($elm$core$Dict$insertHelp, key, value, nLeft),
-						nRight);
-				case 'EQ':
-					return A5($elm$core$Dict$RBNode_elm_builtin, nColor, nKey, value, nLeft, nRight);
-				default:
-					return A5(
-						$elm$core$Dict$balance,
-						nColor,
-						nKey,
-						nValue,
-						nLeft,
-						A3($elm$core$Dict$insertHelp, key, value, nRight));
-			}
-		}
-	});
-var $elm$core$Dict$insert = F3(
-	function (key, value, dict) {
-		var _v0 = A3($elm$core$Dict$insertHelp, key, value, dict);
-		if ((_v0.$ === 'RBNode_elm_builtin') && (_v0.a.$ === 'Red')) {
-			var _v1 = _v0.a;
-			var k = _v0.b;
-			var v = _v0.c;
-			var l = _v0.d;
-			var r = _v0.e;
-			return A5($elm$core$Dict$RBNode_elm_builtin, $elm$core$Dict$Black, k, v, l, r);
-		} else {
-			var x = _v0;
-			return x;
-		}
-	});
 var $elm$core$Elm$JsArray$push = _JsArray_push;
 var $elm$core$Bitwise$and = _Bitwise_and;
 var $elm$core$Bitwise$shiftRightZfBy = _Bitwise_shiftRightZfBy;
@@ -6267,37 +6885,6 @@ var $elm$core$Array$get = F2(
 			A2($elm$core$Elm$JsArray$unsafeGet, $elm$core$Array$bitMask & index, tail)) : $elm$core$Maybe$Just(
 			A3($elm$core$Array$getHelp, startShift, index, tree)));
 	});
-var $elm$core$Dict$get = F2(
-	function (targetKey, dict) {
-		get:
-		while (true) {
-			if (dict.$ === 'RBEmpty_elm_builtin') {
-				return $elm$core$Maybe$Nothing;
-			} else {
-				var key = dict.b;
-				var value = dict.c;
-				var left = dict.d;
-				var right = dict.e;
-				var _v1 = A2($elm$core$Basics$compare, targetKey, key);
-				switch (_v1.$) {
-					case 'LT':
-						var $temp$targetKey = targetKey,
-							$temp$dict = left;
-						targetKey = $temp$targetKey;
-						dict = $temp$dict;
-						continue get;
-					case 'EQ':
-						return $elm$core$Maybe$Just(value);
-					default:
-						var $temp$targetKey = targetKey,
-							$temp$dict = right;
-						targetKey = $temp$targetKey;
-						dict = $temp$dict;
-						continue get;
-				}
-			}
-		}
-	});
 var $dtwrks$elm_book$ElmBook$Internal$Book$chapterFromUrl = F2(
 	function (config, url) {
 		return A2(
@@ -6319,15 +6906,6 @@ var $elm$core$Basics$composeL = F3(
 			f(x));
 	});
 var $dtwrks$elm_book$ElmBook$Internal$ThemeOptions$defaultOverrides = {accent: $elm$core$Maybe$Nothing, background: $elm$core$Maybe$Nothing, navAccent: $elm$core$Maybe$Nothing, navAccentHighlight: $elm$core$Maybe$Nothing, navBackground: $elm$core$Maybe$Nothing};
-var $elm$core$Maybe$withDefault = F2(
-	function (_default, maybe) {
-		if (maybe.$ === 'Just') {
-			var value = maybe.a;
-			return value;
-		} else {
-			return _default;
-		}
-	});
 var $dtwrks$elm_book$ElmBook$Internal$Application$extractPath = F2(
 	function (hashBasedNavigation, url) {
 		return hashBasedNavigation ? A2($elm$core$Maybe$withDefault, '/', url.fragment) : url.path;
@@ -6339,16 +6917,6 @@ var $dtwrks$elm_book$ElmBook$Internal$Chapter$init = function (_v0) {
 	var chapter = _v0.a;
 	return chapter.init;
 };
-var $elm$core$Maybe$map = F2(
-	function (f, maybe) {
-		if (maybe.$ === 'Just') {
-			var value = maybe.a;
-			return $elm$core$Maybe$Just(
-				f(value));
-		} else {
-			return $elm$core$Maybe$Nothing;
-		}
-	});
 var $elm$core$Maybe$map2 = F3(
 	function (func, ma, mb) {
 		if (ma.$ === 'Nothing') {
@@ -6435,8 +7003,6 @@ var $dtwrks$elm_book$ElmBook$Internal$Msg$KeyEnter = {$: 'KeyEnter'};
 var $dtwrks$elm_book$ElmBook$Internal$Msg$KeyK = {$: 'KeyK'};
 var $dtwrks$elm_book$ElmBook$Internal$Msg$KeyMetaOn = {$: 'KeyMetaOn'};
 var $dtwrks$elm_book$ElmBook$Internal$Msg$KeyShiftOn = {$: 'KeyShiftOn'};
-var $elm$json$Json$Decode$field = _Json_decodeField;
-var $elm$json$Json$Decode$string = _Json_decodeString;
 var $elm$core$String$toLower = _String_toLower;
 var $dtwrks$elm_book$ElmBook$Internal$Application$keyDownDecoder = A2(
 	$elm$json$Json$Decode$map,
@@ -6502,18 +7068,6 @@ var $elm$browser$Browser$Events$addKey = function (sub) {
 			$elm$browser$Browser$Events$nodeToKey(node),
 			name),
 		sub);
-};
-var $elm$core$Dict$fromList = function (assocs) {
-	return A3(
-		$elm$core$List$foldl,
-		F2(
-			function (_v0, dict) {
-				var key = _v0.a;
-				var value = _v0.b;
-				return A3($elm$core$Dict$insert, key, value, dict);
-			}),
-		$elm$core$Dict$empty,
-		assocs);
 };
 var $elm$core$Process$kill = _Scheduler_kill;
 var $elm$core$Dict$foldl = F3(
@@ -7252,17 +7806,6 @@ var $dtwrks$elm_book$ElmBook$Internal$Application$componentView = F3(
 					state_));
 		}
 	});
-var $elm$core$List$filter = F2(
-	function (isGood, list) {
-		return A3(
-			$elm$core$List$foldr,
-			F2(
-				function (x, xs) {
-					return isGood(x) ? A2($elm$core$List$cons, x, xs) : xs;
-				}),
-			_List_Nil,
-			list);
-	});
 var $elm$core$List$head = function (list) {
 	if (list.b) {
 		var x = list.a;
@@ -7376,14 +7919,6 @@ var $dtwrks$elm_book$ElmBook$UI$ActionLog$list = function (props) {
 						A2($elm$core$List$indexedMap, $dtwrks$elm_book$ElmBook$UI$ActionLog$item, props))))
 			]));
 };
-var $elm$core$Tuple$mapSecond = F2(
-	function (func, _v0) {
-		var x = _v0.a;
-		var y = _v0.b;
-		return _Utils_Tuple2(
-			x,
-			func(y));
-	});
 var $elm$core$List$any = F2(
 	function (isOkay, list) {
 		any:
@@ -7540,21 +8075,6 @@ var $dtwrks$elm_book$ElmBook$Internal$ComponentOptions$toValidOptions = F2(
 	});
 var $elm$html$Html$article = _VirtualDom_node('article');
 var $dtwrks$elm_book$ElmBook$Internal$ComponentOptions$Inline = {$: 'Inline'};
-var $elm$core$Tuple$second = function (_v0) {
-	var y = _v0.b;
-	return y;
-};
-var $elm$html$Html$Attributes$classList = function (classes) {
-	return $elm$html$Html$Attributes$class(
-		A2(
-			$elm$core$String$join,
-			' ',
-			A2(
-				$elm$core$List$map,
-				$elm$core$Tuple$first,
-				A2($elm$core$List$filter, $elm$core$Tuple$second, classes))));
-};
-var $elm$html$Html$a = _VirtualDom_node('a');
 var $elm$html$Html$Attributes$align = $elm$html$Html$Attributes$stringProperty('align');
 var $elm$html$Html$Attributes$alt = $elm$html$Html$Attributes$stringProperty('alt');
 var $elm$html$Html$blockquote = _VirtualDom_node('blockquote');
@@ -10598,12 +11118,6 @@ var $elm$html$Html$h4 = _VirtualDom_node('h4');
 var $elm$html$Html$h5 = _VirtualDom_node('h5');
 var $elm$html$Html$h6 = _VirtualDom_node('h6');
 var $elm$html$Html$hr = _VirtualDom_node('hr');
-var $elm$html$Html$Attributes$href = function (url) {
-	return A2(
-		$elm$html$Html$Attributes$stringProperty,
-		'href',
-		_VirtualDom_noJavaScriptUri(url));
-};
 var $elm$html$Html$img = _VirtualDom_node('img');
 var $elm$html$Html$input = _VirtualDom_node('input');
 var $pablohirafuji$elm_syntax_highlight$SyntaxHighlight$Language$Javascript$syntaxToStyle = function (syntax) {
@@ -11905,14 +12419,6 @@ var $elm$html$Html$Attributes$title = $elm$html$Html$Attributes$stringProperty('
 var $pablohirafuji$elm_syntax_highlight$SyntaxHighlight$Line$Add = {$: 'Add'};
 var $pablohirafuji$elm_syntax_highlight$SyntaxHighlight$Line$Del = {$: 'Del'};
 var $pablohirafuji$elm_syntax_highlight$SyntaxHighlight$Line$Normal = {$: 'Normal'};
-var $elm$virtual_dom$VirtualDom$attribute = F2(
-	function (key, value) {
-		return A2(
-			_VirtualDom_attribute,
-			_VirtualDom_noOnOrFormAction(key),
-			_VirtualDom_noJavaScriptOrHtmlUri(value));
-	});
-var $elm$html$Html$Attributes$attribute = $elm$virtual_dom$VirtualDom$attribute;
 var $pablohirafuji$elm_syntax_highlight$SyntaxHighlight$View$requiredStyleToString = function (required) {
 	return 'elmsh' + function () {
 		switch (required.$) {
@@ -11994,17 +12500,6 @@ var $pablohirafuji$elm_syntax_highlight$SyntaxHighlight$View$lineView = F3(
 				]),
 			A2($elm$core$List$map, $pablohirafuji$elm_syntax_highlight$SyntaxHighlight$View$fragmentView, fragments));
 	});
-var $elm$core$List$append = F2(
-	function (xs, ys) {
-		if (!ys.b) {
-			return xs;
-		} else {
-			return A3($elm$core$List$foldr, $elm$core$List$cons, ys, xs);
-		}
-	});
-var $elm$core$List$concat = function (lists) {
-	return A3($elm$core$List$foldr, $elm$core$List$append, _List_Nil, lists);
-};
 var $pablohirafuji$elm_syntax_highlight$SyntaxHighlight$View$toInlineHtml = function (lines) {
 	return A2(
 		$elm$html$Html$code,
@@ -13089,11 +13584,6 @@ var $dillonkearns$elm_markdown$Markdown$Parser$blockQuote = A2(
 		$elm$parser$Parser$Advanced$ignorer,
 		$elm$parser$Parser$Advanced$getChompedString($dillonkearns$elm_markdown$Helpers$chompUntilLineEndOrEnd),
 		$dillonkearns$elm_markdown$Helpers$lineEndOrEnd));
-var $elm$core$List$concatMap = F2(
-	function (f, list) {
-		return $elm$core$List$concat(
-			A2($elm$core$List$map, f, list));
-	});
 var $dillonkearns$elm_markdown$Markdown$Parser$problemToString = function (problem) {
 	switch (problem.$) {
 		case 'Expecting':
@@ -21638,39 +22128,6 @@ var $elm$html$Html$Events$onFocus = function (msg) {
 		'focus',
 		$elm$json$Json$Decode$succeed(msg));
 };
-var $elm$html$Html$Events$alwaysStop = function (x) {
-	return _Utils_Tuple2(x, true);
-};
-var $elm$virtual_dom$VirtualDom$MayStopPropagation = function (a) {
-	return {$: 'MayStopPropagation', a: a};
-};
-var $elm$html$Html$Events$stopPropagationOn = F2(
-	function (event, decoder) {
-		return A2(
-			$elm$virtual_dom$VirtualDom$on,
-			event,
-			$elm$virtual_dom$VirtualDom$MayStopPropagation(decoder));
-	});
-var $elm$json$Json$Decode$at = F2(
-	function (fields, decoder) {
-		return A3($elm$core$List$foldr, $elm$json$Json$Decode$field, decoder, fields);
-	});
-var $elm$html$Html$Events$targetValue = A2(
-	$elm$json$Json$Decode$at,
-	_List_fromArray(
-		['target', 'value']),
-	$elm$json$Json$Decode$string);
-var $elm$html$Html$Events$onInput = function (tagger) {
-	return A2(
-		$elm$html$Html$Events$stopPropagationOn,
-		'input',
-		A2(
-			$elm$json$Json$Decode$map,
-			$elm$html$Html$Events$alwaysStop,
-			A2($elm$json$Json$Decode$map, tagger, $elm$html$Html$Events$targetValue)));
-};
-var $elm$html$Html$Attributes$placeholder = $elm$html$Html$Attributes$stringProperty('placeholder');
-var $elm$html$Html$Attributes$value = $elm$html$Html$Attributes$stringProperty('value');
 var $dtwrks$elm_book$ElmBook$UI$Search$view = function (props) {
 	return A2(
 		$elm$html$Html$div,
@@ -22220,14 +22677,14 @@ var $dtwrks$elm_book$ElmBook$withThemeOptions = F2(
 var $author$project$Main$main = A2(
 	$dtwrks$elm_book$ElmBook$withChapters,
 	_List_fromArray(
-		[$author$project$Main$buttonsChapter]),
+		[$author$project$Main$buttonsChapter, $author$project$Main$inputsChapter]),
 	A2(
 		$dtwrks$elm_book$ElmBook$withThemeOptions,
 		_List_fromArray(
 			[
 				$dtwrks$elm_book$ElmBook$ThemeOptions$globals(
 				_List_fromArray(
-					[$author$project$ElmWidgets$Styles$themeGlobal, $author$project$ElmWidgets$Styles$globalStyles]))
+					[$author$project$ElmWidgets$Theme$themeGlobalStyles, $author$project$ElmWidgets$Styles$globalStyles]))
 			]),
 		$dtwrks$elm_book$ElmBook$book('Elm-Widgets')));
 _Platform_export({'Main':{'init':$author$project$Main$main(
