@@ -1,18 +1,60 @@
 module ElmWidgets exposing
-    ( confirmButton
-    , confirmButtonLink
-    , dangerButton
-    , dangerButtonLink
-    , iconButton
-    , invisibleButton
-    , invisibleButtonLink
-    , outlinedButton
-    , outlinedButtonLink
-    , primaryButton
-    , primaryButtonLink
-    , select
-    , selectWithGroups
+    ( primaryButton, primaryButtonLink, PrimaryButtonAttributes
+    , dangerButton, dangerButtonLink, confirmButton, confirmButtonLink, StatusButtonAttributes
+    , outlinedButton, outlinedButtonLink, OutlinedButtonAttributes
+    , invisibleButton, invisibleButtonLink, InvisibleButtonAttributes
+    , dateInput, datetimeInput, emailInput, numberInput, passwordInput, searchInput, telephoneInput, textInput, timeInput, urlInput, InputAttributes
+    , checkbox, CheckboxAttributes
+    , radioButtons, RadioButtonsAttributes
+    , select, selectWithGroups, SelectAttributes
     )
+
+{-|
+
+
+# Buttons
+
+
+### Primary Button
+
+@docs primaryButton, primaryButtonLink, PrimaryButtonAttributes
+
+
+### Status Buttons
+
+@docs dangerButton, dangerButtonLink, confirmButton, confirmButtonLink, StatusButtonAttributes
+
+
+### Outlined Button
+
+@docs outlinedButton, outlinedButtonLink, OutlinedButtonAttributes
+
+
+### Invisible Button
+
+@docs invisibleButton, invisibleButtonLink, InvisibleButtonAttributes
+
+
+# Input
+
+@docs dateInput, datetimeInput, emailInput, numberInput, passwordInput, searchInput, telephoneInput, textInput, timeInput, urlInput, InputAttributes
+
+
+# Checkbox
+
+@docs checkbox, CheckboxAttributes
+
+
+# Radio
+
+@docs radioButtons, RadioButtonsAttributes
+
+
+# Select
+
+@docs select, selectWithGroups, SelectAttributes
+
+-}
 
 import Dict
 import Html as H exposing (Html, optgroup)
@@ -47,17 +89,20 @@ stylesList xs =
         |> HA.attribute "style"
 
 
+maybeAttr : (a -> H.Attribute msg) -> Maybe a -> H.Attribute msg
+maybeAttr fn a =
+    a
+        |> Maybe.map fn
+        |> Maybe.withDefault (HA.class "")
+
+
 applyAttrs : a -> List (a -> a) -> a
 applyAttrs defaults fns =
     List.foldl (\fn a -> fn a) defaults fns
 
 
-
--- Button Helpers
-
-
-buttonWidth : Bool -> String
-buttonWidth fill =
+fillWidth : Bool -> String
+fillWidth fill =
     if fill then
         "100%"
 
@@ -66,23 +111,10 @@ buttonWidth fill =
 
 
 
--- Button as Links
-
-
-textButtonLink : Html msg
-textButtonLink =
-    H.button [] []
-
-
-iconButtonLink : Html msg
-iconButtonLink =
-    H.button [] []
-
-
-
 -- Primary Button
 
 
+{-| -}
 type alias PrimaryButtonAttributes =
     { color : String
     , background : String
@@ -114,11 +146,12 @@ primaryButtonAttrs attrs_ =
         [ ( "--color", attrs.color )
         , ( "--background", attrs.background )
         , ( "--shadow", attrs.shadow )
-        , ( "width", buttonWidth attrs.fill )
+        , ( "width", fillWidth attrs.fill )
         ]
     ]
 
 
+{-| -}
 primaryButton :
     List (PrimaryButtonAttributes -> PrimaryButtonAttributes)
     ->
@@ -132,6 +165,7 @@ primaryButton attrs props =
         [ props.label ]
 
 
+{-| -}
 primaryButtonLink :
     List (PrimaryButtonAttributes -> PrimaryButtonAttributes)
     ->
@@ -149,6 +183,7 @@ primaryButtonLink attrs props =
 -- Status Buttons
 
 
+{-| -}
 type alias StatusButtonAttributes =
     { disabled : Bool
     , fill : Bool
@@ -170,10 +205,11 @@ dangerButtonAttrs attrs_ =
     in
     [ HA.disabled attrs.disabled
     , HA.class "ew ew-focusable ew-btn ew-m-primary ew-is-danger"
-    , HA.style "width" (buttonWidth attrs.fill)
+    , HA.style "width" (fillWidth attrs.fill)
     ]
 
 
+{-| -}
 dangerButton :
     List (StatusButtonAttributes -> StatusButtonAttributes)
     ->
@@ -187,6 +223,7 @@ dangerButton attrs props =
         [ props.label ]
 
 
+{-| -}
 dangerButtonLink :
     List (StatusButtonAttributes -> StatusButtonAttributes)
     ->
@@ -208,10 +245,11 @@ confirmButtonAttrs attrs_ =
     in
     [ HA.disabled attrs.disabled
     , HA.class "ew ew-focusable ew-btn ew-m-primary ew-is-confirm"
-    , HA.style "width" (buttonWidth attrs.fill)
+    , HA.style "width" (fillWidth attrs.fill)
     ]
 
 
+{-| -}
 confirmButton :
     List (StatusButtonAttributes -> StatusButtonAttributes)
     ->
@@ -225,6 +263,7 @@ confirmButton attrs props =
         [ props.label ]
 
 
+{-| -}
 confirmButtonLink :
     List (StatusButtonAttributes -> StatusButtonAttributes)
     ->
@@ -242,6 +281,7 @@ confirmButtonLink attrs props =
 -- Outline Button
 
 
+{-| -}
 type alias OutlinedButtonAttributes =
     { color : String
     , shadow : String
@@ -270,11 +310,12 @@ outlinedButtonAttrs attrs_ =
     , styles
         [ ( "--color", attrs.color )
         , ( "--shadow", attrs.shadow )
-        , ( "width", buttonWidth attrs.fill )
+        , ( "width", fillWidth attrs.fill )
         ]
     ]
 
 
+{-| -}
 outlinedButton :
     List (OutlinedButtonAttributes -> OutlinedButtonAttributes)
     ->
@@ -288,6 +329,7 @@ outlinedButton attrs props =
         [ props.label ]
 
 
+{-| -}
 outlinedButtonLink :
     List (OutlinedButtonAttributes -> OutlinedButtonAttributes)
     ->
@@ -305,6 +347,7 @@ outlinedButtonLink attrs props =
 -- Invisible Button
 
 
+{-| -}
 type alias InvisibleButtonAttributes =
     { color : String
     , background : String
@@ -337,7 +380,7 @@ invisibleButtonAttrs attrs_ label =
       , styles
             [ ( "--color", attrs.color )
             , ( "--background", attrs.background )
-            , ( "width", buttonWidth attrs.fill )
+            , ( "width", fillWidth attrs.fill )
             ]
       ]
     , [ H.div
@@ -353,6 +396,7 @@ invisibleButtonAttrs attrs_ label =
     )
 
 
+{-| -}
 invisibleButton :
     List (InvisibleButtonAttributes -> InvisibleButtonAttributes)
     ->
@@ -370,6 +414,7 @@ invisibleButton attrs_ props =
         children
 
 
+{-| -}
 invisibleButtonLink :
     List (InvisibleButtonAttributes -> InvisibleButtonAttributes)
     ->
@@ -387,25 +432,25 @@ invisibleButtonLink attrs_ props =
         children
 
 
-iconButton : Html msg
-iconButton =
-    H.button [] []
-
-
 
 -- Select
 
 
+{-| -}
 type alias SelectAttributes =
-    { placeholder : Maybe String }
+    { placeholder : Maybe String
+    , disabled : Bool
+    }
 
 
 selectDefaults : SelectAttributes
 selectDefaults =
     { placeholder = Nothing
+    , disabled = False
     }
 
 
+{-| -}
 selectWithGroups :
     List (SelectAttributes -> SelectAttributes)
     ->
@@ -440,8 +485,9 @@ selectWithGroups attrs_ props =
                 |> Dict.fromList
     in
     H.select
-        [ HA.class "ew ew-focusable ew-select"
+        [ HA.class "ew ew-input ew-select"
         , HA.classList [ ( "ew-is-empty", props.value == Nothing ) ]
+        , HA.disabled attrs.disabled
         , HA.placeholder "Select"
         , HE.onInput
             (\s ->
@@ -488,6 +534,7 @@ selectWithGroups attrs_ props =
         )
 
 
+{-| -}
 select :
     List (SelectAttributes -> SelectAttributes)
     ->
@@ -505,3 +552,223 @@ select attrs_ props =
         , toString = props.toString
         , onInput = props.onInput
         }
+
+
+
+-- Input
+
+
+{-| -}
+type alias InputAttributes msg =
+    { disabled : Bool
+    , required : Bool
+    , pattern : Maybe String
+    , placeholder : Maybe String
+    , htmlAttrs : List (H.Attribute msg)
+    }
+
+
+inputDefaults : InputAttributes msg
+inputDefaults =
+    { disabled = False
+    , required = False
+    , pattern = Nothing
+    , placeholder = Nothing
+    , htmlAttrs = []
+    }
+
+
+input_ :
+    String
+    -> List (InputAttributes msg -> InputAttributes msg)
+    ->
+        { onInput : String -> msg
+        , value : String
+        }
+    -> Html msg
+input_ type_ attrs_ props =
+    let
+        attrs =
+            applyAttrs inputDefaults attrs_
+    in
+    H.input
+        (attrs.htmlAttrs
+            ++ [ HA.class "ew ew-input ew-focusable"
+               , HA.type_ type_
+               , HA.disabled attrs.disabled
+               , HA.value props.value
+               , HE.onInput props.onInput
+               , maybeAttr HA.placeholder attrs.placeholder
+               , maybeAttr HA.pattern attrs.pattern
+               ]
+        )
+        []
+
+
+{-| -}
+textInput : List (InputAttributes msg -> InputAttributes msg) -> { onInput : String -> msg, value : String } -> Html msg
+textInput =
+    input_ "text"
+
+
+{-| -}
+passwordInput : List (InputAttributes msg -> InputAttributes msg) -> { onInput : String -> msg, value : String } -> Html msg
+passwordInput =
+    input_ "password"
+
+
+{-| -}
+numberInput : List (InputAttributes msg -> InputAttributes msg) -> { onInput : String -> msg, value : String } -> Html msg
+numberInput =
+    input_ "number"
+
+
+{-| -}
+dateInput : List (InputAttributes msg -> InputAttributes msg) -> { onInput : String -> msg, value : String } -> Html msg
+dateInput =
+    input_ "date"
+
+
+{-| -}
+timeInput : List (InputAttributes msg -> InputAttributes msg) -> { onInput : String -> msg, value : String } -> Html msg
+timeInput =
+    input_ "time"
+
+
+{-| -}
+datetimeInput : List (InputAttributes msg -> InputAttributes msg) -> { onInput : String -> msg, value : String } -> Html msg
+datetimeInput =
+    input_ "datetime-local"
+
+
+{-| -}
+emailInput : List (InputAttributes msg -> InputAttributes msg) -> { onInput : String -> msg, value : String } -> Html msg
+emailInput =
+    input_ "email"
+
+
+{-| -}
+searchInput : List (InputAttributes msg -> InputAttributes msg) -> { onInput : String -> msg, value : String } -> Html msg
+searchInput =
+    input_ "search"
+
+
+{-| -}
+telephoneInput : List (InputAttributes msg -> InputAttributes msg) -> { onInput : String -> msg, value : String } -> Html msg
+telephoneInput =
+    input_ "tel"
+
+
+{-| -}
+urlInput : List (InputAttributes msg -> InputAttributes msg) -> { onInput : String -> msg, value : String } -> Html msg
+urlInput =
+    input_ "url"
+
+
+
+-- Checkbox
+
+
+{-| -}
+type alias CheckboxAttributes =
+    { color : String
+    , disabled : Bool
+    }
+
+
+checkboxDefaults : CheckboxAttributes
+checkboxDefaults =
+    { color = "var(--uc-ts-btn-background)"
+    , disabled = False
+    }
+
+
+{-| -}
+checkbox :
+    List (CheckboxAttributes -> CheckboxAttributes)
+    -> { value : Bool, onInput : Bool -> msg }
+    -> Html msg
+checkbox attrs_ props =
+    let
+        attrs =
+            applyAttrs checkboxDefaults attrs_
+    in
+    H.div [ HA.class "ew ew-checkbox" ]
+        [ H.input
+            [ HA.class "ew ew-focusable ew-checkbox-input"
+            , styles [ ( "--color", attrs.color ) ]
+            , HA.type_ "checkbox"
+            , HA.checked props.value
+            , HA.disabled attrs.disabled
+            , HE.onCheck props.onInput
+            ]
+            []
+        ]
+
+
+
+-- Radio
+
+
+{-| -}
+type alias RadioButtonsAttributes =
+    { color : String
+    , disabled : Bool
+    , vertical : Bool
+    }
+
+
+radioButtonsDefaults : RadioButtonsAttributes
+radioButtonsDefaults =
+    { color = "var(--uc-ts-btn-background"
+    , disabled = False
+    , vertical = False
+    }
+
+
+{-| -}
+radioButtons :
+    List (RadioButtonsAttributes -> RadioButtonsAttributes)
+    ->
+        { name : String
+        , value : Maybe a
+        , options : List a
+        , toValue : a -> String
+        , toLabel : a -> String
+        , onInput : a -> msg
+        }
+    -> Html msg
+radioButtons attrs_ props =
+    let
+        attrs =
+            applyAttrs radioButtonsDefaults attrs_
+    in
+    H.div
+        [ HA.class "ew ew-radio-buttons"
+        , HA.classList [ ( "m-vertical", attrs.vertical ), ( "is-disabled", attrs.disabled ) ]
+        , styles [ ( "--color", attrs.color ) ]
+        ]
+        (props.options
+            |> List.map
+                (\a ->
+                    H.label
+                        [ HA.name props.name
+                        , HA.class "ew ew-radio-buttons--item"
+                        ]
+                        [ H.input
+                            [ HA.class "ew ew-focusable ew-radio-buttons--item-input"
+                            , HA.type_ "radio"
+                            , HA.name props.name
+                            , HA.value (props.toValue a)
+                            , HA.checked (Just a == props.value)
+                            , HA.disabled attrs.disabled
+                            , HE.onCheck (\_ -> props.onInput a)
+                            ]
+                            []
+                        , H.span
+                            [ HA.class "ew ew-radio-buttons--item-label"
+                            ]
+                            [ H.text (props.toLabel a) ]
+                        ]
+                )
+        )

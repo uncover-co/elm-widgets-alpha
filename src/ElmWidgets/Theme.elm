@@ -34,10 +34,18 @@ themeString =
     -- accessibility
     , "--uc-ts-focus: #59e7d2"
 
-    -- status
+    -- status - danger
     , "--uc-ts-danger: #ff4d4f"
     , "--uc-ts-danger-contrast: #fff"
-    , "--uc-ts-danger-faded: #f87a7c"
+    , "--uc-ts-danger-faded: #f4bd4f"
+
+    -- status - warning
+    , "--uc-ts-warning: #fa0"
+    , "--uc-ts-warning-high: #fff"
+    , "--uc-ts-warning-faded: #faf3e0"
+    , "--uc-ts-warning-shadow: #d2b672"
+
+    -- status - success
     , "--uc-ts-success: #56bd1a"
     , "--uc-ts-success-contrast: #fff"
     , "--uc-ts-success-faded: #8ed466"

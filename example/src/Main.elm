@@ -1,7 +1,7 @@
 module Main exposing (main)
 
-import ElmBook exposing (Book, book, withChapters, withThemeOptions)
-import ElmBook.Actions exposing (logAction, logActionWith, logActionWithString)
+import ElmBook exposing (Book, book, withChapterGroups, withChapters, withThemeOptions)
+import ElmBook.Actions exposing (logAction, logActionWith, logActionWithBool, logActionWithString)
 import ElmBook.Chapter exposing (Chapter, chapter, renderComponentList)
 import ElmBook.ThemeOptions
 import ElmWidgets as W exposing (..)
@@ -22,14 +22,198 @@ main =
                 , ElmWidgets.Styles.globalStyles
                 ]
             ]
-        |> withChapters
-            [ buttonsChapter
-            , inputsChapter
+        |> withChapterGroups
+            [ ( "Core", [ buttonsChapter ] )
+            , ( "Form"
+              , [ inputChapter
+                , checkboxChapter
+                , radioButtonsChapter
+                , selectChapter
+                ]
+              )
             ]
 
 
 
--- Inputs
+-- Checkbox
+
+
+checkboxChapter : Chapter x
+checkboxChapter =
+    chapter "Checkbox"
+        |> renderComponentList
+            [ ( "Default"
+              , W.checkbox
+                    []
+                    { value = False
+                    , onInput = logActionWithBool "onInput"
+                    }
+              )
+            , ( "Disabled"
+              , W.checkbox
+                    [ WA.disabled True ]
+                    { value = False
+                    , onInput = logActionWithBool "onInput"
+                    }
+              )
+            , ( "Custom Color"
+              , W.checkbox
+                    [ WA.color "red" ]
+                    { value = False
+                    , onInput = logActionWithBool "onInput"
+                    }
+              )
+            ]
+
+
+
+-- Radio Buttons
+
+
+radioButtonsChapter : Chapter x
+radioButtonsChapter =
+    chapter "Radio"
+        |> renderComponentList
+            [ ( "Default"
+              , W.radioButtons
+                    []
+                    { name = "radio"
+                    , value = Nothing
+                    , toLabel = String.fromInt
+                    , toValue = String.fromInt
+                    , options = [ 1, 2, 3 ]
+                    , onInput = logActionWith String.fromInt "onInput"
+                    }
+              )
+            , ( "Disabled"
+              , W.radioButtons
+                    [ WA.disabled True ]
+                    { name = "radio"
+                    , value = Nothing
+                    , toLabel = String.fromInt
+                    , toValue = String.fromInt
+                    , options = [ 1, 2, 3 ]
+                    , onInput = logActionWith String.fromInt "onInput"
+                    }
+              )
+            , ( "Custom Colors"
+              , W.radioButtons
+                    [ WA.color "red" ]
+                    { name = "radio"
+                    , value = Nothing
+                    , toLabel = String.fromInt
+                    , toValue = String.fromInt
+                    , options = [ 1, 2, 3 ]
+                    , onInput = logActionWith String.fromInt "onInput"
+                    }
+              )
+            , ( "Vertical"
+              , W.radioButtons
+                    [ WA.vertical True ]
+                    { name = "radio"
+                    , value = Nothing
+                    , toLabel = String.fromInt
+                    , toValue = String.fromInt
+                    , options = [ 1, 2, 3 ]
+                    , onInput = logActionWith String.fromInt "onInput"
+                    }
+              )
+            ]
+
+
+
+-- Input
+
+
+inputChapter : Chapter x
+inputChapter =
+    chapter "Input"
+        |> renderComponentList
+            [ ( "Simple"
+              , W.textInput
+                    [ WA.placeholder "…" ]
+                    { value = ""
+                    , onInput = logActionWithString "onInput"
+                    }
+              )
+            , ( "Disabled"
+              , W.textInput
+                    [ WA.placeholder "…", WA.disabled True ]
+                    { value = ""
+                    , onInput = logActionWithString "onInput"
+                    }
+              )
+            , ( "Password"
+              , W.passwordInput
+                    [ WA.placeholder "…"
+                    ]
+                    { value = ""
+                    , onInput = logActionWithString "onInput"
+                    }
+              )
+            , ( "Date"
+              , W.dateInput
+                    [ WA.placeholder "…" ]
+                    { value = ""
+                    , onInput = logActionWithString "onInput"
+                    }
+              )
+            , ( "Time"
+              , W.timeInput
+                    [ WA.placeholder "…" ]
+                    { value = ""
+                    , onInput = logActionWithString "onInput"
+                    }
+              )
+            , ( "Datetime"
+              , W.datetimeInput
+                    [ WA.placeholder "…" ]
+                    { value = ""
+                    , onInput = logActionWithString "onInput"
+                    }
+              )
+            , ( "email"
+              , W.emailInput
+                    [ WA.placeholder "…" ]
+                    { value = ""
+                    , onInput = logActionWithString "onInput"
+                    }
+              )
+            , ( "search"
+              , W.searchInput
+                    [ WA.placeholder "…" ]
+                    { value = ""
+                    , onInput = logActionWithString "onInput"
+                    }
+              )
+            , ( "telephone"
+              , W.telephoneInput
+                    [ WA.placeholder "…" ]
+                    { value = ""
+                    , onInput = logActionWithString "onInput"
+                    }
+              )
+            , ( "url"
+              , W.urlInput
+                    [ WA.placeholder "…" ]
+                    { value = ""
+                    , onInput = logActionWithString "onInput"
+                    }
+              )
+            , ( "with pattern"
+              , W.textInput
+                    [ WA.placeholder "(00) 00000 0000"
+                    , WA.pattern "\\(\\d{2}\\)\\s\\d{5} \\d{4}"
+                    ]
+                    { value = ""
+                    , onInput = logActionWithString "onInput"
+                    }
+              )
+            ]
+
+
+
+-- Select
 
 
 logActionWithMaybeInt : String -> Maybe Int -> ElmBook.Msg x
@@ -39,11 +223,11 @@ logActionWithMaybeInt label i =
         |> Maybe.withDefault (logAction (label ++ ": Nothing"))
 
 
-inputsChapter : Chapter x
-inputsChapter =
-    chapter "Inputs"
+selectChapter : Chapter x
+selectChapter =
+    chapter "Select"
         |> renderComponentList
-            [ ( "select"
+            [ ( "Simple"
               , W.select
                     []
                     { value = Just 1
@@ -55,7 +239,19 @@ inputsChapter =
                         ]
                     }
               )
-            , ( "select - with placeholder"
+            , ( "Disabled"
+              , W.select
+                    [ WA.disabled True ]
+                    { value = Nothing
+                    , toString = String.fromInt
+                    , onInput = logActionWithMaybeInt "onInput"
+                    , options =
+                        [ ( "first", 1 )
+                        , ( "second", 2 )
+                        ]
+                    }
+              )
+            , ( "With Placeholder"
               , W.select
                     [ WA.placeholder "Select a number" ]
                     { value = Nothing
@@ -67,7 +263,7 @@ inputsChapter =
                         ]
                     }
               )
-            , ( "select - with groups"
+            , ( "With Option Groups"
               , W.selectWithGroups
                     [ WA.placeholder "Select a year" ]
                     { value = Nothing
@@ -163,23 +359,23 @@ buttonsChapter =
             , ( "custom colors"
               , UI.hSpacer
                     [ W.primaryButton
-                        [ WA.color "#fff"
-                        , WA.background "#fa0"
-                        , WA.shadow "#f4bd4f"
+                        [ WA.color "var(--uc-ts-warning-high)"
+                        , WA.background "var(--uc-ts-warning)"
+                        , WA.shadow "var(--uc-ts-warning-faded)"
                         ]
                         { label = H.text "Click me"
                         , onClick = logAction ""
                         }
                     , outlinedButton
-                        [ WA.color "#fa0"
-                        , WA.shadow "#f4bd4f"
+                        [ WA.color "var(--uc-ts-warning)"
+                        , WA.shadow "var(--uc-ts-warning-faded)"
                         ]
                         { label = H.text "Click me"
                         , onClick = logAction ""
                         }
                     , invisibleButton
-                        [ WA.color "#fa0"
-                        , WA.background "#fff0d1"
+                        [ WA.color "var(--uc-ts-warning)"
+                        , WA.background "var(--uc-ts-warning-faded)"
                         ]
                         { label = H.text "Click me"
                         , onClick = logAction ""
@@ -235,9 +431,3 @@ buttonsChapter =
                     ]
               )
             ]
-
-
-
--- Input
--- Checkbox
--- Radio

@@ -4,13 +4,15 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "watch 'node ./styles/build-styles.js' ./styles"
+    "dev": "watch 'node ./styles/build-styles.js' ./styles",
+    "docs": "elm-doc-preview"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "autoprefixer": "^10.4.1",
     "cssnano": "^5.0.14",
+    "elm-doc-preview": "^5.0.5",
     "elm-tooling": "^1.7.0",
     "postcss": "^8.4.5",
     "postcss-nested": "^5.0.6",

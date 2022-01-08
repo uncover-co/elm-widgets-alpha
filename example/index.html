@@ -5239,9 +5239,6 @@ var $author$project$ElmWidgets$applyAttrs = F2(
 			defaults,
 			fns);
 	});
-var $author$project$ElmWidgets$buttonWidth = function (fill) {
-	return fill ? '100%' : 'auto';
-};
 var $elm$json$Json$Encode$string = _Json_wrap;
 var $elm$html$Html$Attributes$stringProperty = F2(
 	function (key, string) {
@@ -5260,6 +5257,9 @@ var $elm$html$Html$Attributes$boolProperty = F2(
 			$elm$json$Json$Encode$bool(bool));
 	});
 var $elm$html$Html$Attributes$disabled = $elm$html$Html$Attributes$boolProperty('disabled');
+var $author$project$ElmWidgets$fillWidth = function (fill) {
+	return fill ? '100%' : 'auto';
+};
 var $author$project$ElmWidgets$statusButtonDefaults = {disabled: false, fill: false};
 var $elm$virtual_dom$VirtualDom$style = _VirtualDom_style;
 var $elm$html$Html$Attributes$style = $elm$virtual_dom$VirtualDom$style;
@@ -5272,7 +5272,7 @@ var $author$project$ElmWidgets$confirmButtonAttrs = function (attrs_) {
 			A2(
 			$elm$html$Html$Attributes$style,
 			'width',
-			$author$project$ElmWidgets$buttonWidth(attrs.fill))
+			$author$project$ElmWidgets$fillWidth(attrs.fill))
 		]);
 };
 var $elm$virtual_dom$VirtualDom$Normal = function (a) {
@@ -5330,7 +5330,7 @@ var $author$project$ElmWidgets$dangerButtonAttrs = function (attrs_) {
 			A2(
 			$elm$html$Html$Attributes$style,
 			'width',
-			$author$project$ElmWidgets$buttonWidth(attrs.fill))
+			$author$project$ElmWidgets$fillWidth(attrs.fill))
 		]);
 };
 var $author$project$ElmWidgets$dangerButton = F2(
@@ -5484,7 +5484,7 @@ var $author$project$ElmWidgets$invisibleButtonAttrs = F2(
 							_Utils_Tuple2('--background', attrs.background),
 							_Utils_Tuple2(
 							'width',
-							$author$project$ElmWidgets$buttonWidth(attrs.fill))
+							$author$project$ElmWidgets$fillWidth(attrs.fill))
 						]))
 				]),
 			_List_fromArray(
@@ -5554,7 +5554,7 @@ var $author$project$ElmWidgets$outlinedButtonAttrs = function (attrs_) {
 					_Utils_Tuple2('--shadow', attrs.shadow),
 					_Utils_Tuple2(
 					'width',
-					$author$project$ElmWidgets$buttonWidth(attrs.fill))
+					$author$project$ElmWidgets$fillWidth(attrs.fill))
 				]))
 		]);
 };
@@ -5595,7 +5595,7 @@ var $author$project$ElmWidgets$primaryButtonAttrs = function (attrs_) {
 					_Utils_Tuple2('--shadow', attrs.shadow),
 					_Utils_Tuple2(
 					'width',
-					$author$project$ElmWidgets$buttonWidth(attrs.fill))
+					$author$project$ElmWidgets$fillWidth(attrs.fill))
 				]))
 		]);
 };
@@ -5789,9 +5789,9 @@ var $author$project$Main$buttonsChapter = A2(
 						$author$project$ElmWidgets$primaryButton,
 						_List_fromArray(
 							[
-								$author$project$ElmWidgets$Attributes$color('#fff'),
-								$author$project$ElmWidgets$Attributes$background('#fa0'),
-								$author$project$ElmWidgets$Attributes$shadow('#f4bd4f')
+								$author$project$ElmWidgets$Attributes$color('var(--uc-ts-warning-high)'),
+								$author$project$ElmWidgets$Attributes$background('var(--uc-ts-warning)'),
+								$author$project$ElmWidgets$Attributes$shadow('var(--uc-ts-warning-faded)')
 							]),
 						{
 							label: $elm$html$Html$text('Click me'),
@@ -5801,8 +5801,8 @@ var $author$project$Main$buttonsChapter = A2(
 						$author$project$ElmWidgets$outlinedButton,
 						_List_fromArray(
 							[
-								$author$project$ElmWidgets$Attributes$color('#fa0'),
-								$author$project$ElmWidgets$Attributes$shadow('#f4bd4f')
+								$author$project$ElmWidgets$Attributes$color('var(--uc-ts-warning)'),
+								$author$project$ElmWidgets$Attributes$shadow('var(--uc-ts-warning-faded)')
 							]),
 						{
 							label: $elm$html$Html$text('Click me'),
@@ -5812,8 +5812,8 @@ var $author$project$Main$buttonsChapter = A2(
 						$author$project$ElmWidgets$invisibleButton,
 						_List_fromArray(
 							[
-								$author$project$ElmWidgets$Attributes$color('#fa0'),
-								$author$project$ElmWidgets$Attributes$background('#fff0d1')
+								$author$project$ElmWidgets$Attributes$color('var(--uc-ts-warning)'),
+								$author$project$ElmWidgets$Attributes$background('var(--uc-ts-warning-faded)')
 							]),
 						{
 							label: $elm$html$Html$text('Click me'),
@@ -5919,6 +5919,106 @@ var $author$project$Main$buttonsChapter = A2(
 					])))
 		]),
 	$dtwrks$elm_book$ElmBook$Chapter$chapter('Buttons'));
+var $author$project$ElmWidgets$checkboxDefaults = {color: 'var(--uc-ts-btn-background)', disabled: false};
+var $elm$html$Html$Attributes$checked = $elm$html$Html$Attributes$boolProperty('checked');
+var $elm$html$Html$input = _VirtualDom_node('input');
+var $elm$json$Json$Decode$field = _Json_decodeField;
+var $elm$json$Json$Decode$at = F2(
+	function (fields, decoder) {
+		return A3($elm$core$List$foldr, $elm$json$Json$Decode$field, decoder, fields);
+	});
+var $elm$json$Json$Decode$bool = _Json_decodeBool;
+var $elm$html$Html$Events$targetChecked = A2(
+	$elm$json$Json$Decode$at,
+	_List_fromArray(
+		['target', 'checked']),
+	$elm$json$Json$Decode$bool);
+var $elm$html$Html$Events$onCheck = function (tagger) {
+	return A2(
+		$elm$html$Html$Events$on,
+		'change',
+		A2($elm$json$Json$Decode$map, tagger, $elm$html$Html$Events$targetChecked));
+};
+var $elm$html$Html$Attributes$type_ = $elm$html$Html$Attributes$stringProperty('type');
+var $author$project$ElmWidgets$checkbox = F2(
+	function (attrs_, props) {
+		var attrs = A2($author$project$ElmWidgets$applyAttrs, $author$project$ElmWidgets$checkboxDefaults, attrs_);
+		return A2(
+			$elm$html$Html$div,
+			_List_fromArray(
+				[
+					$elm$html$Html$Attributes$class('ew ew-checkbox')
+				]),
+			_List_fromArray(
+				[
+					A2(
+					$elm$html$Html$input,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$class('ew ew-focusable ew-checkbox-input'),
+							$author$project$ElmWidgets$styles(
+							_List_fromArray(
+								[
+									_Utils_Tuple2('--color', attrs.color)
+								])),
+							$elm$html$Html$Attributes$type_('checkbox'),
+							$elm$html$Html$Attributes$checked(props.value),
+							$elm$html$Html$Attributes$disabled(attrs.disabled),
+							$elm$html$Html$Events$onCheck(props.onInput)
+						]),
+					_List_Nil)
+				]));
+	});
+var $dtwrks$elm_book$ElmBook$Actions$logActionWith = F3(
+	function (toString, action, value) {
+		return A2(
+			$dtwrks$elm_book$ElmBook$Internal$Msg$LogAction,
+			'',
+			action + (': ' + toString(value)));
+	});
+var $dtwrks$elm_book$ElmBook$Actions$stringFromBool = function (value) {
+	return value ? 'True' : 'False';
+};
+var $dtwrks$elm_book$ElmBook$Actions$logActionWithBool = $dtwrks$elm_book$ElmBook$Actions$logActionWith($dtwrks$elm_book$ElmBook$Actions$stringFromBool);
+var $author$project$Main$checkboxChapter = A2(
+	$dtwrks$elm_book$ElmBook$Chapter$renderComponentList,
+	_List_fromArray(
+		[
+			_Utils_Tuple2(
+			'Default',
+			A2(
+				$author$project$ElmWidgets$checkbox,
+				_List_Nil,
+				{
+					onInput: $dtwrks$elm_book$ElmBook$Actions$logActionWithBool('onInput'),
+					value: false
+				})),
+			_Utils_Tuple2(
+			'Disabled',
+			A2(
+				$author$project$ElmWidgets$checkbox,
+				_List_fromArray(
+					[
+						$author$project$ElmWidgets$Attributes$disabled(true)
+					]),
+				{
+					onInput: $dtwrks$elm_book$ElmBook$Actions$logActionWithBool('onInput'),
+					value: false
+				})),
+			_Utils_Tuple2(
+			'Custom Color',
+			A2(
+				$author$project$ElmWidgets$checkbox,
+				_List_fromArray(
+					[
+						$author$project$ElmWidgets$Attributes$color('red')
+					]),
+				{
+					onInput: $dtwrks$elm_book$ElmBook$Actions$logActionWithBool('onInput'),
+					value: false
+				}))
+		]),
+	$dtwrks$elm_book$ElmBook$Chapter$chapter('Checkbox'));
 var $elm$virtual_dom$VirtualDom$node = function (tag) {
 	return _VirtualDom_node(
 		_VirtualDom_noScript(tag));
@@ -5930,7 +6030,7 @@ var $author$project$ElmWidgets$Styles$globalStyles = A3(
 	_List_Nil,
 	_List_fromArray(
 		[
-			$elm$html$Html$text('.ew{box-sizing:border-box;margin:0;padding:0}.ew.ew-relative{position:relative}.ew.ew-focusable:focus{outline:3px solid var(--uc-ts-focus)}.ew.ew-h-space>*+*{margin-left:8px}.ew.ew-v-space>*+*{margin-top:8px}.ew.ew-btn{align-items:center;border:none;border-radius:var(--uc-ts-border-radius);color:var(--color);cursor:pointer;display:inline-flex;font-family:var(--uc-ts-font-text);font-size:12px;font-weight:700;height:36px;justify-content:center;letter-spacing:.05em;line-height:1em;padding:0 18px;text-decoration:none;text-transform:uppercase;transition:box-shadow .15s,background .15s}.ew.ew-btn:active{opacity:.8}.ew.ew-btn:disabled{opacity:.4;pointer-events:none}.ew.ew-btn.ew-m-primary{background:var(--background)}.ew.ew-btn.ew-m-primary:hover{box-shadow:0 0 8px var(--shadow)}.ew.ew-btn.ew-m-primary.ew-is-danger{background:var(--uc-ts-danger);color:var(--uc-ts-danger-contrast)}.ew.ew-btn.ew-m-primary.ew-is-danger:hover{box-shadow:0 0 8px var(--uc-ts-danger-faded)}.ew.ew-btn.ew-m-primary.ew-is-confirm{background:var(--uc-ts-success);color:var(--uc-ts-success-contrast)}.ew.ew-btn.ew-m-primary.ew-is-confirm:hover{box-shadow:0 0 8px var(--uc-ts-success-faded)}.ew.ew-btn.ew-m-outlined{background:transparent;border:3px solid var(--color);box-shadow:none;color:var(--color);padding:0 16px}.ew.ew-btn.ew-m-outlined:hover{box-shadow:0 0 4px var(--shadow)}.ew.ew-btn.ew-m-invisible{background:transparent;border-color:transparent;box-shadow:none;color:var(--color);overflow:hidden;position:relative}.ew.ew-btn.ew-m-invisible>.ew.ew-bg{background:var(--background);bottom:0;left:0;opacity:0;position:absolute;right:0;top:0;transition:.15s}.ew.ew-btn.ew-m-invisible:hover>.ew.ew-bg{opacity:1}.ew.ew-select{-webkit-appearance:none;-moz-appearance:none;appearance:none;background-color:var(--uc-ts-background);background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 16 16\'%3E%3Cpath fill=\'none\' stroke=\'currentColor\' stroke-linecap=\'round\' stroke-linejoin=\'round\' stroke-width=\'2\' d=\'m2 5 6 6 6-6\'/%3E%3C/svg%3E");background-position:right .7em top 50%;background-repeat:no-repeat,repeat;background-size:.8em auto;border:3px solid var(--uc-ts-color);border-radius:var(--uc-ts-border-radius);box-shadow:none;display:block;font-family:var(--uc-ts-font-text);font-size:16px;line-height:1em;padding:12px;width:100%}.ew.ew-select::-ms-expand{display:none}.ew.ew-select:focus{outline: }.ew.ew-select[disabled]{background:var(--uc-ts-background-faded)}.ew.ew-select.ew-is-empty{color:var(--uc-ts-color-faded)}.select-css .select-css:hover{border-color:#888}.select-css:disabled,.select-css[aria-disabled=true]{background-image:url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22graytext%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E"),linear-gradient(180deg,#fff 0,#e5e5e5);color:graytext}')
+			$elm$html$Html$text('.ew{box-sizing:border-box;margin:0;padding:0}.ew.ew-relative{position:relative}.ew.ew-focusable{cursor:pointer}.ew.ew-focusable:active{opacity:.8}.ew.ew-focusable:focus{outline:3px solid var(--uc-ts-focus)}.ew.ew-h-space>*+*{margin-left:8px}.ew.ew-v-space>*+*{margin-top:8px}.ew.ew-btn,.ew.ew-text{font-family:var(--uc-ts-font-text)}.ew.ew-btn{align-items:center;border:none;border-radius:var(--uc-ts-border-radius);color:var(--color);cursor:pointer;display:inline-flex;font-size:12px;font-weight:700;height:36px;justify-content:center;letter-spacing:.05em;line-height:1em;padding:0 18px;text-decoration:none;text-transform:uppercase;transition:box-shadow .15s,background .15s}.ew.ew-btn:disabled{opacity:.4;pointer-events:none}.ew.ew-btn.ew-m-primary{background:var(--background)}.ew.ew-btn.ew-m-primary:hover{box-shadow:0 0 8px var(--shadow)}.ew.ew-btn.ew-m-primary.ew-is-danger{background:var(--uc-ts-danger);color:var(--uc-ts-danger-contrast)}.ew.ew-btn.ew-m-primary.ew-is-danger:hover{box-shadow:0 0 8px var(--uc-ts-danger-faded)}.ew.ew-btn.ew-m-primary.ew-is-confirm{background:var(--uc-ts-success);color:var(--uc-ts-success-contrast)}.ew.ew-btn.ew-m-primary.ew-is-confirm:hover{box-shadow:0 0 8px var(--uc-ts-success-faded)}.ew.ew-btn.ew-m-outlined{background:transparent;border:3px solid var(--color);box-shadow:none;color:var(--color);padding:0 16px}.ew.ew-btn.ew-m-outlined:hover{box-shadow:0 0 4px var(--shadow)}.ew.ew-btn.ew-m-invisible{background:transparent;border-color:transparent;box-shadow:none;color:var(--color);overflow:hidden;position:relative}.ew.ew-btn.ew-m-invisible>.ew.ew-bg{background:var(--background);bottom:0;left:0;opacity:0;position:absolute;right:0;top:0;transition:.15s}.ew.ew-btn.ew-m-invisible:hover>.ew.ew-bg{opacity:1}.ew.ew-input{align-items:center;-webkit-appearance:none;-moz-appearance:none;appearance:none;background-color:var(--uc-ts-background);border:2px solid var(--uc-ts-color);border-radius:var(--uc-ts-border-radius);box-shadow:none;display:flex;font-family:var(--uc-ts-font-text);font-size:16px;line-height:1em;min-height:48px;padding:8px 12px;position:relative;width:100%}.ew.ew-input:focus{border-width:3px;outline:none;padding:11px}.ew.ew-input[disabled]{background:var(--uc-ts-background-faded)}.ew.ew-input:invalid:not(:focus){border-color:var(--uc-ts-warning)}.ew.ew-select{background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 16 16\'%3E%3Cpath fill=\'none\' stroke=\'currentColor\' stroke-linecap=\'round\' stroke-linejoin=\'round\' stroke-width=\'2\' d=\'m2 5 6 6 6-6\'/%3E%3C/svg%3E");background-position:right .7em top 50%;background-repeat:no-repeat,repeat;background-size:.8em auto}.ew.ew-select::-ms-expand{display:none}.ew.ew-select.ew-is-empty{color:var(--uc-ts-color-faded)}.ew.ew-checkbox-input,.ew.ew-radio-buttons--item-input{-webkit-appearance:none;-moz-appearance:none;appearance:none;border:2px solid var(--uc-ts-color);display:grid;height:20px;place-content:center;width:20px}.ew.ew-checkbox-input:before,.ew.ew-radio-buttons--item-input:before{background-color:var(--color);content:"";display:block;height:12px;transform:scale(0);transition:transform .12s ease-in-out;width:12px}.ew.ew-checkbox-input:hover:before,.ew.ew-radio-buttons--item-input:hover:before{transform:scale(.5)}.ew.ew-checkbox-input:checked:before,.ew.ew-radio-buttons--item-input:checked:before{transform:scale(1)}.ew.ew-checkbox-input[disabled],.ew.ew-radio-buttons--item-input[disabled]{background-color:var(--uc-ts-background-faded);pointer-events:none}.ew.ew-checkbox-input[disabled]:hover:before,.ew.ew-radio-buttons--item-input[disabled]:hover:before{transform:scale(0)}.ew.ew-checkbox.is-disabled .ew-checkbox-input,.ew.ew-radio-buttons.is-disabled .ew-radio-buttons--item-input{border-color:var(--uc-ts-color-faded)}.ew.ew-checkbox{display:inline-block;padding:8px}.ew.ew-radio-buttons.m-vertical{display:flex;flex-direction:column}.ew.ew-radio-buttons.is-disabled .ew-radio-buttons--item{cursor:default}.ew.ew-radio-buttons.is-disabled .ew-radio-buttons--item-label{color:var(--uc-ts-color-faded)}.ew.ew-radio-buttons--item{align-items:center;cursor:pointer;display:inline-flex;padding:8px}.ew.ew-radio-buttons--item-input{border-radius:10px}.ew.ew-radio-buttons--item-input:before{border-radius:6px}.ew.ew-radio-buttons--item-label{color:var(--uc-ts-color);font-family:var(--uc-ts-font-text);padding-left:12px}')
 		]));
 var $dtwrks$elm_book$ElmBook$ThemeOptions$globals = F2(
 	function (globals_, options) {
@@ -5940,13 +6040,7 @@ var $dtwrks$elm_book$ElmBook$ThemeOptions$globals = F2(
 				globals: $elm$core$Maybe$Just(globals_)
 			});
 	});
-var $dtwrks$elm_book$ElmBook$Actions$logActionWith = F3(
-	function (toString, action, value) {
-		return A2(
-			$dtwrks$elm_book$ElmBook$Internal$Msg$LogAction,
-			'',
-			action + (': ' + toString(value)));
-	});
+var $author$project$ElmWidgets$inputDefaults = {disabled: false, htmlAttrs: _List_Nil, pattern: $elm$core$Maybe$Nothing, placeholder: $elm$core$Maybe$Nothing, required: false};
 var $elm$core$Maybe$map = F2(
 	function (f, maybe) {
 		if (maybe.$ === 'Just') {
@@ -5966,20 +6060,75 @@ var $elm$core$Maybe$withDefault = F2(
 			return _default;
 		}
 	});
-var $author$project$Main$logActionWithMaybeInt = F2(
-	function (label, i) {
+var $author$project$ElmWidgets$maybeAttr = F2(
+	function (fn, a) {
 		return A2(
 			$elm$core$Maybe$withDefault,
-			$dtwrks$elm_book$ElmBook$Actions$logAction(label + ': Nothing'),
-			A2(
-				$elm$core$Maybe$map,
-				A2(
-					$dtwrks$elm_book$ElmBook$Actions$logActionWith,
-					function (i_) {
-						return 'Just ' + $elm$core$String$fromInt(i_);
-					},
-					label),
-				i));
+			$elm$html$Html$Attributes$class(''),
+			A2($elm$core$Maybe$map, fn, a));
+	});
+var $elm$html$Html$Events$alwaysStop = function (x) {
+	return _Utils_Tuple2(x, true);
+};
+var $elm$virtual_dom$VirtualDom$MayStopPropagation = function (a) {
+	return {$: 'MayStopPropagation', a: a};
+};
+var $elm$html$Html$Events$stopPropagationOn = F2(
+	function (event, decoder) {
+		return A2(
+			$elm$virtual_dom$VirtualDom$on,
+			event,
+			$elm$virtual_dom$VirtualDom$MayStopPropagation(decoder));
+	});
+var $elm$json$Json$Decode$string = _Json_decodeString;
+var $elm$html$Html$Events$targetValue = A2(
+	$elm$json$Json$Decode$at,
+	_List_fromArray(
+		['target', 'value']),
+	$elm$json$Json$Decode$string);
+var $elm$html$Html$Events$onInput = function (tagger) {
+	return A2(
+		$elm$html$Html$Events$stopPropagationOn,
+		'input',
+		A2(
+			$elm$json$Json$Decode$map,
+			$elm$html$Html$Events$alwaysStop,
+			A2($elm$json$Json$Decode$map, tagger, $elm$html$Html$Events$targetValue)));
+};
+var $elm$html$Html$Attributes$pattern = $elm$html$Html$Attributes$stringProperty('pattern');
+var $elm$html$Html$Attributes$placeholder = $elm$html$Html$Attributes$stringProperty('placeholder');
+var $elm$html$Html$Attributes$value = $elm$html$Html$Attributes$stringProperty('value');
+var $author$project$ElmWidgets$input_ = F3(
+	function (type_, attrs_, props) {
+		var attrs = A2($author$project$ElmWidgets$applyAttrs, $author$project$ElmWidgets$inputDefaults, attrs_);
+		return A2(
+			$elm$html$Html$input,
+			_Utils_ap(
+				attrs.htmlAttrs,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$class('ew ew-input ew-focusable'),
+						$elm$html$Html$Attributes$type_(type_),
+						$elm$html$Html$Attributes$disabled(attrs.disabled),
+						$elm$html$Html$Attributes$value(props.value),
+						$elm$html$Html$Events$onInput(props.onInput),
+						A2($author$project$ElmWidgets$maybeAttr, $elm$html$Html$Attributes$placeholder, attrs.placeholder),
+						A2($author$project$ElmWidgets$maybeAttr, $elm$html$Html$Attributes$pattern, attrs.pattern)
+					])),
+			_List_Nil);
+	});
+var $author$project$ElmWidgets$dateInput = $author$project$ElmWidgets$input_('date');
+var $author$project$ElmWidgets$datetimeInput = $author$project$ElmWidgets$input_('datetime-local');
+var $author$project$ElmWidgets$emailInput = $author$project$ElmWidgets$input_('email');
+var $dtwrks$elm_book$ElmBook$Actions$logActionWithString = $dtwrks$elm_book$ElmBook$Actions$logActionWith($elm$core$Basics$identity);
+var $author$project$ElmWidgets$passwordInput = $author$project$ElmWidgets$input_('password');
+var $author$project$ElmWidgets$Attributes$pattern = F2(
+	function (v, a) {
+		return _Utils_update(
+			a,
+			{
+				pattern: $elm$core$Maybe$Just(v)
+			});
 	});
 var $author$project$ElmWidgets$Attributes$placeholder = F2(
 	function (v, a) {
@@ -5989,14 +6138,151 @@ var $author$project$ElmWidgets$Attributes$placeholder = F2(
 				placeholder: $elm$core$Maybe$Just(v)
 			});
 	});
-var $elm$core$List$append = F2(
-	function (xs, ys) {
-		if (!ys.b) {
-			return xs;
-		} else {
-			return A3($elm$core$List$foldr, $elm$core$List$cons, ys, xs);
-		}
-	});
+var $author$project$ElmWidgets$searchInput = $author$project$ElmWidgets$input_('search');
+var $author$project$ElmWidgets$telephoneInput = $author$project$ElmWidgets$input_('tel');
+var $author$project$ElmWidgets$textInput = $author$project$ElmWidgets$input_('text');
+var $author$project$ElmWidgets$timeInput = $author$project$ElmWidgets$input_('time');
+var $author$project$ElmWidgets$urlInput = $author$project$ElmWidgets$input_('url');
+var $author$project$Main$inputChapter = A2(
+	$dtwrks$elm_book$ElmBook$Chapter$renderComponentList,
+	_List_fromArray(
+		[
+			_Utils_Tuple2(
+			'Simple',
+			A2(
+				$author$project$ElmWidgets$textInput,
+				_List_fromArray(
+					[
+						$author$project$ElmWidgets$Attributes$placeholder('…')
+					]),
+				{
+					onInput: $dtwrks$elm_book$ElmBook$Actions$logActionWithString('onInput'),
+					value: ''
+				})),
+			_Utils_Tuple2(
+			'Disabled',
+			A2(
+				$author$project$ElmWidgets$textInput,
+				_List_fromArray(
+					[
+						$author$project$ElmWidgets$Attributes$placeholder('…'),
+						$author$project$ElmWidgets$Attributes$disabled(true)
+					]),
+				{
+					onInput: $dtwrks$elm_book$ElmBook$Actions$logActionWithString('onInput'),
+					value: ''
+				})),
+			_Utils_Tuple2(
+			'Password',
+			A2(
+				$author$project$ElmWidgets$passwordInput,
+				_List_fromArray(
+					[
+						$author$project$ElmWidgets$Attributes$placeholder('…')
+					]),
+				{
+					onInput: $dtwrks$elm_book$ElmBook$Actions$logActionWithString('onInput'),
+					value: ''
+				})),
+			_Utils_Tuple2(
+			'Date',
+			A2(
+				$author$project$ElmWidgets$dateInput,
+				_List_fromArray(
+					[
+						$author$project$ElmWidgets$Attributes$placeholder('…')
+					]),
+				{
+					onInput: $dtwrks$elm_book$ElmBook$Actions$logActionWithString('onInput'),
+					value: ''
+				})),
+			_Utils_Tuple2(
+			'Time',
+			A2(
+				$author$project$ElmWidgets$timeInput,
+				_List_fromArray(
+					[
+						$author$project$ElmWidgets$Attributes$placeholder('…')
+					]),
+				{
+					onInput: $dtwrks$elm_book$ElmBook$Actions$logActionWithString('onInput'),
+					value: ''
+				})),
+			_Utils_Tuple2(
+			'Datetime',
+			A2(
+				$author$project$ElmWidgets$datetimeInput,
+				_List_fromArray(
+					[
+						$author$project$ElmWidgets$Attributes$placeholder('…')
+					]),
+				{
+					onInput: $dtwrks$elm_book$ElmBook$Actions$logActionWithString('onInput'),
+					value: ''
+				})),
+			_Utils_Tuple2(
+			'email',
+			A2(
+				$author$project$ElmWidgets$emailInput,
+				_List_fromArray(
+					[
+						$author$project$ElmWidgets$Attributes$placeholder('…')
+					]),
+				{
+					onInput: $dtwrks$elm_book$ElmBook$Actions$logActionWithString('onInput'),
+					value: ''
+				})),
+			_Utils_Tuple2(
+			'search',
+			A2(
+				$author$project$ElmWidgets$searchInput,
+				_List_fromArray(
+					[
+						$author$project$ElmWidgets$Attributes$placeholder('…')
+					]),
+				{
+					onInput: $dtwrks$elm_book$ElmBook$Actions$logActionWithString('onInput'),
+					value: ''
+				})),
+			_Utils_Tuple2(
+			'telephone',
+			A2(
+				$author$project$ElmWidgets$telephoneInput,
+				_List_fromArray(
+					[
+						$author$project$ElmWidgets$Attributes$placeholder('…')
+					]),
+				{
+					onInput: $dtwrks$elm_book$ElmBook$Actions$logActionWithString('onInput'),
+					value: ''
+				})),
+			_Utils_Tuple2(
+			'url',
+			A2(
+				$author$project$ElmWidgets$urlInput,
+				_List_fromArray(
+					[
+						$author$project$ElmWidgets$Attributes$placeholder('…')
+					]),
+				{
+					onInput: $dtwrks$elm_book$ElmBook$Actions$logActionWithString('onInput'),
+					value: ''
+				})),
+			_Utils_Tuple2(
+			'with pattern',
+			A2(
+				$author$project$ElmWidgets$textInput,
+				_List_fromArray(
+					[
+						$author$project$ElmWidgets$Attributes$placeholder('(00) 00000 0000'),
+						$author$project$ElmWidgets$Attributes$pattern('\\(\\d{2}\\)\\s\\d{5} \\d{4}')
+					]),
+				{
+					onInput: $dtwrks$elm_book$ElmBook$Actions$logActionWithString('onInput'),
+					value: ''
+				}))
+		]),
+	$dtwrks$elm_book$ElmBook$Chapter$chapter('Input'));
 var $elm$core$List$filter = F2(
 	function (isGood, list) {
 		return A3(
@@ -6022,6 +6308,176 @@ var $elm$html$Html$Attributes$classList = function (classes) {
 				$elm$core$Tuple$first,
 				A2($elm$core$List$filter, $elm$core$Tuple$second, classes))));
 };
+var $elm$html$Html$label = _VirtualDom_node('label');
+var $elm$html$Html$Attributes$name = $elm$html$Html$Attributes$stringProperty('name');
+var $author$project$ElmWidgets$radioButtonsDefaults = {color: 'var(--uc-ts-btn-background', disabled: false, vertical: false};
+var $author$project$ElmWidgets$radioButtons = F2(
+	function (attrs_, props) {
+		var attrs = A2($author$project$ElmWidgets$applyAttrs, $author$project$ElmWidgets$radioButtonsDefaults, attrs_);
+		return A2(
+			$elm$html$Html$div,
+			_List_fromArray(
+				[
+					$elm$html$Html$Attributes$class('ew ew-radio-buttons'),
+					$elm$html$Html$Attributes$classList(
+					_List_fromArray(
+						[
+							_Utils_Tuple2('m-vertical', attrs.vertical),
+							_Utils_Tuple2('is-disabled', attrs.disabled)
+						])),
+					$author$project$ElmWidgets$styles(
+					_List_fromArray(
+						[
+							_Utils_Tuple2('--color', attrs.color)
+						]))
+				]),
+			A2(
+				$elm$core$List$map,
+				function (a) {
+					return A2(
+						$elm$html$Html$label,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$name(props.name),
+								$elm$html$Html$Attributes$class('ew ew-radio-buttons--item')
+							]),
+						_List_fromArray(
+							[
+								A2(
+								$elm$html$Html$input,
+								_List_fromArray(
+									[
+										$elm$html$Html$Attributes$class('ew ew-focusable ew-radio-buttons--item-input'),
+										$elm$html$Html$Attributes$type_('radio'),
+										$elm$html$Html$Attributes$name(props.name),
+										$elm$html$Html$Attributes$value(
+										props.toValue(a)),
+										$elm$html$Html$Attributes$checked(
+										_Utils_eq(
+											$elm$core$Maybe$Just(a),
+											props.value)),
+										$elm$html$Html$Attributes$disabled(attrs.disabled),
+										$elm$html$Html$Events$onCheck(
+										function (_v0) {
+											return props.onInput(a);
+										})
+									]),
+								_List_Nil),
+								A2(
+								$elm$html$Html$span,
+								_List_fromArray(
+									[
+										$elm$html$Html$Attributes$class('ew ew-radio-buttons--item-label')
+									]),
+								_List_fromArray(
+									[
+										$elm$html$Html$text(
+										props.toLabel(a))
+									]))
+							]));
+				},
+				props.options));
+	});
+var $author$project$ElmWidgets$Attributes$vertical = F2(
+	function (v, a) {
+		return _Utils_update(
+			a,
+			{vertical: v});
+	});
+var $author$project$Main$radioButtonsChapter = A2(
+	$dtwrks$elm_book$ElmBook$Chapter$renderComponentList,
+	_List_fromArray(
+		[
+			_Utils_Tuple2(
+			'Default',
+			A2(
+				$author$project$ElmWidgets$radioButtons,
+				_List_Nil,
+				{
+					name: 'radio',
+					onInput: A2($dtwrks$elm_book$ElmBook$Actions$logActionWith, $elm$core$String$fromInt, 'onInput'),
+					options: _List_fromArray(
+						[1, 2, 3]),
+					toLabel: $elm$core$String$fromInt,
+					toValue: $elm$core$String$fromInt,
+					value: $elm$core$Maybe$Nothing
+				})),
+			_Utils_Tuple2(
+			'Disabled',
+			A2(
+				$author$project$ElmWidgets$radioButtons,
+				_List_fromArray(
+					[
+						$author$project$ElmWidgets$Attributes$disabled(true)
+					]),
+				{
+					name: 'radio',
+					onInput: A2($dtwrks$elm_book$ElmBook$Actions$logActionWith, $elm$core$String$fromInt, 'onInput'),
+					options: _List_fromArray(
+						[1, 2, 3]),
+					toLabel: $elm$core$String$fromInt,
+					toValue: $elm$core$String$fromInt,
+					value: $elm$core$Maybe$Nothing
+				})),
+			_Utils_Tuple2(
+			'Custom Colors',
+			A2(
+				$author$project$ElmWidgets$radioButtons,
+				_List_fromArray(
+					[
+						$author$project$ElmWidgets$Attributes$color('red')
+					]),
+				{
+					name: 'radio',
+					onInput: A2($dtwrks$elm_book$ElmBook$Actions$logActionWith, $elm$core$String$fromInt, 'onInput'),
+					options: _List_fromArray(
+						[1, 2, 3]),
+					toLabel: $elm$core$String$fromInt,
+					toValue: $elm$core$String$fromInt,
+					value: $elm$core$Maybe$Nothing
+				})),
+			_Utils_Tuple2(
+			'Vertical',
+			A2(
+				$author$project$ElmWidgets$radioButtons,
+				_List_fromArray(
+					[
+						$author$project$ElmWidgets$Attributes$vertical(true)
+					]),
+				{
+					name: 'radio',
+					onInput: A2($dtwrks$elm_book$ElmBook$Actions$logActionWith, $elm$core$String$fromInt, 'onInput'),
+					options: _List_fromArray(
+						[1, 2, 3]),
+					toLabel: $elm$core$String$fromInt,
+					toValue: $elm$core$String$fromInt,
+					value: $elm$core$Maybe$Nothing
+				}))
+		]),
+	$dtwrks$elm_book$ElmBook$Chapter$chapter('Radio'));
+var $author$project$Main$logActionWithMaybeInt = F2(
+	function (label, i) {
+		return A2(
+			$elm$core$Maybe$withDefault,
+			$dtwrks$elm_book$ElmBook$Actions$logAction(label + ': Nothing'),
+			A2(
+				$elm$core$Maybe$map,
+				A2(
+					$dtwrks$elm_book$ElmBook$Actions$logActionWith,
+					function (i_) {
+						return 'Just ' + $elm$core$String$fromInt(i_);
+					},
+					label),
+				i));
+	});
+var $elm$core$List$append = F2(
+	function (xs, ys) {
+		if (!ys.b) {
+			return xs;
+		} else {
+			return A3($elm$core$List$foldr, $elm$core$List$cons, ys, xs);
+		}
+	});
 var $elm$core$List$concat = function (lists) {
 	return A3($elm$core$List$foldr, $elm$core$List$append, _List_Nil, lists);
 };
@@ -6192,46 +6648,11 @@ var $elm$core$Tuple$mapSecond = F2(
 			x,
 			func(y));
 	});
-var $elm$html$Html$Events$alwaysStop = function (x) {
-	return _Utils_Tuple2(x, true);
-};
-var $elm$virtual_dom$VirtualDom$MayStopPropagation = function (a) {
-	return {$: 'MayStopPropagation', a: a};
-};
-var $elm$html$Html$Events$stopPropagationOn = F2(
-	function (event, decoder) {
-		return A2(
-			$elm$virtual_dom$VirtualDom$on,
-			event,
-			$elm$virtual_dom$VirtualDom$MayStopPropagation(decoder));
-	});
-var $elm$json$Json$Decode$field = _Json_decodeField;
-var $elm$json$Json$Decode$at = F2(
-	function (fields, decoder) {
-		return A3($elm$core$List$foldr, $elm$json$Json$Decode$field, decoder, fields);
-	});
-var $elm$json$Json$Decode$string = _Json_decodeString;
-var $elm$html$Html$Events$targetValue = A2(
-	$elm$json$Json$Decode$at,
-	_List_fromArray(
-		['target', 'value']),
-	$elm$json$Json$Decode$string);
-var $elm$html$Html$Events$onInput = function (tagger) {
-	return A2(
-		$elm$html$Html$Events$stopPropagationOn,
-		'input',
-		A2(
-			$elm$json$Json$Decode$map,
-			$elm$html$Html$Events$alwaysStop,
-			A2($elm$json$Json$Decode$map, tagger, $elm$html$Html$Events$targetValue)));
-};
 var $elm$html$Html$optgroup = _VirtualDom_node('optgroup');
 var $elm$html$Html$option = _VirtualDom_node('option');
-var $elm$html$Html$Attributes$placeholder = $elm$html$Html$Attributes$stringProperty('placeholder');
 var $elm$html$Html$select = _VirtualDom_node('select');
-var $author$project$ElmWidgets$selectDefaults = {placeholder: $elm$core$Maybe$Nothing};
+var $author$project$ElmWidgets$selectDefaults = {disabled: false, placeholder: $elm$core$Maybe$Nothing};
 var $elm$html$Html$Attributes$selected = $elm$html$Html$Attributes$boolProperty('selected');
-var $elm$html$Html$Attributes$value = $elm$html$Html$Attributes$stringProperty('value');
 var $author$project$ElmWidgets$selectWithGroups = F2(
 	function (attrs_, props) {
 		var values = $elm$core$Dict$fromList(
@@ -6262,7 +6683,7 @@ var $author$project$ElmWidgets$selectWithGroups = F2(
 			$elm$html$Html$select,
 			_List_fromArray(
 				[
-					$elm$html$Html$Attributes$class('ew ew-focusable ew-select'),
+					$elm$html$Html$Attributes$class('ew ew-input ew-select'),
 					$elm$html$Html$Attributes$classList(
 					_List_fromArray(
 						[
@@ -6270,6 +6691,7 @@ var $author$project$ElmWidgets$selectWithGroups = F2(
 							'ew-is-empty',
 							_Utils_eq(props.value, $elm$core$Maybe$Nothing))
 						])),
+					$elm$html$Html$Attributes$disabled(attrs.disabled),
 					$elm$html$Html$Attributes$placeholder('Select'),
 					$elm$html$Html$Events$onInput(
 					function (s) {
@@ -6361,12 +6783,12 @@ var $author$project$ElmWidgets$select = F2(
 			attrs_,
 			{onInput: props.onInput, optionGroups: _List_Nil, options: props.options, toString: props.toString, value: props.value});
 	});
-var $author$project$Main$inputsChapter = A2(
+var $author$project$Main$selectChapter = A2(
 	$dtwrks$elm_book$ElmBook$Chapter$renderComponentList,
 	_List_fromArray(
 		[
 			_Utils_Tuple2(
-			'select',
+			'Simple',
 			A2(
 				$author$project$ElmWidgets$select,
 				_List_Nil,
@@ -6381,7 +6803,25 @@ var $author$project$Main$inputsChapter = A2(
 					value: $elm$core$Maybe$Just(1)
 				})),
 			_Utils_Tuple2(
-			'select - with placeholder',
+			'Disabled',
+			A2(
+				$author$project$ElmWidgets$select,
+				_List_fromArray(
+					[
+						$author$project$ElmWidgets$Attributes$disabled(true)
+					]),
+				{
+					onInput: $author$project$Main$logActionWithMaybeInt('onInput'),
+					options: _List_fromArray(
+						[
+							_Utils_Tuple2('first', 1),
+							_Utils_Tuple2('second', 2)
+						]),
+					toString: $elm$core$String$fromInt,
+					value: $elm$core$Maybe$Nothing
+				})),
+			_Utils_Tuple2(
+			'With Placeholder',
 			A2(
 				$author$project$ElmWidgets$select,
 				_List_fromArray(
@@ -6399,7 +6839,7 @@ var $author$project$Main$inputsChapter = A2(
 					value: $elm$core$Maybe$Nothing
 				})),
 			_Utils_Tuple2(
-			'select - with groups',
+			'With Option Groups',
 			A2(
 				$author$project$ElmWidgets$selectWithGroups,
 				_List_fromArray(
@@ -6434,12 +6874,12 @@ var $author$project$Main$inputsChapter = A2(
 					value: $elm$core$Maybe$Nothing
 				}))
 		]),
-	$dtwrks$elm_book$ElmBook$Chapter$chapter('Inputs'));
+	$dtwrks$elm_book$ElmBook$Chapter$chapter('Select'));
 var $author$project$ElmWidgets$Theme$themeString = A2(
 	$elm$core$String$join,
 	';',
 	_List_fromArray(
-		['--uc-ts-font-title: serif', '--uc-ts-font-text: sans-serif', '--uc-ts-font-code: monospaced', '--uc-ts-btn-color: #fff', '--uc-ts-btn-background: #09f', '--uc-ts-btn-shadow: #9cf', '--uc-ts-color: #444', '--uc-ts-color-faded: #999', '--uc-ts-border-radius: 4px', '--uc-ts-border-radius-large: 8px', '--uc-ts-background: #fff', '--uc-ts-background-faded: #eee', '--uc-ts-focus: #59e7d2', '--uc-ts-danger: #ff4d4f', '--uc-ts-danger-contrast: #fff', '--uc-ts-danger-faded: #f87a7c', '--uc-ts-success: #56bd1a', '--uc-ts-success-contrast: #fff', '--uc-ts-success-faded: #8ed466']));
+		['--uc-ts-font-title: serif', '--uc-ts-font-text: sans-serif', '--uc-ts-font-code: monospaced', '--uc-ts-btn-color: #fff', '--uc-ts-btn-background: #09f', '--uc-ts-btn-shadow: #9cf', '--uc-ts-color: #444', '--uc-ts-color-faded: #999', '--uc-ts-border-radius: 4px', '--uc-ts-border-radius-large: 8px', '--uc-ts-background: #fff', '--uc-ts-background-faded: #eee', '--uc-ts-focus: #59e7d2', '--uc-ts-danger: #ff4d4f', '--uc-ts-danger-contrast: #fff', '--uc-ts-danger-faded: #f4bd4f', '--uc-ts-warning: #fa0', '--uc-ts-warning-high: #fff', '--uc-ts-warning-faded: #faf3e0', '--uc-ts-warning-shadow: #d2b672', '--uc-ts-success: #56bd1a', '--uc-ts-success-contrast: #fff', '--uc-ts-success-faded: #8ed466']));
 var $author$project$ElmWidgets$Theme$themeGlobalStyles = A3(
 	$elm$html$Html$node,
 	'style',
@@ -8079,7 +8519,6 @@ var $elm$html$Html$Attributes$align = $elm$html$Html$Attributes$stringProperty('
 var $elm$html$Html$Attributes$alt = $elm$html$Html$Attributes$stringProperty('alt');
 var $elm$html$Html$blockquote = _VirtualDom_node('blockquote');
 var $elm$html$Html$br = _VirtualDom_node('br');
-var $elm$html$Html$Attributes$checked = $elm$html$Html$Attributes$boolProperty('checked');
 var $elm$html$Html$code = _VirtualDom_node('code');
 var $pablohirafuji$elm_syntax_highlight$SyntaxHighlight$HCode = function (a) {
 	return {$: 'HCode', a: a};
@@ -11119,7 +11558,6 @@ var $elm$html$Html$h5 = _VirtualDom_node('h5');
 var $elm$html$Html$h6 = _VirtualDom_node('h6');
 var $elm$html$Html$hr = _VirtualDom_node('hr');
 var $elm$html$Html$img = _VirtualDom_node('img');
-var $elm$html$Html$input = _VirtualDom_node('input');
 var $pablohirafuji$elm_syntax_highlight$SyntaxHighlight$Language$Javascript$syntaxToStyle = function (syntax) {
 	switch (syntax.$) {
 		case 'Number':
@@ -12581,7 +13019,6 @@ var $pablohirafuji$elm_syntax_highlight$SyntaxHighlight$toBlockHtml = F2(
 		return A2($pablohirafuji$elm_syntax_highlight$SyntaxHighlight$View$toBlockHtml, maybeStart, lines);
 	});
 var $elm$html$Html$tr = _VirtualDom_node('tr');
-var $elm$html$Html$Attributes$type_ = $elm$html$Html$Attributes$stringProperty('type');
 var $elm$core$Result$withDefault = F2(
 	function (def, result) {
 		if (result.$ === 'Ok') {
@@ -22653,13 +23090,6 @@ var $dtwrks$elm_book$ElmBook$withChapterGroups = function (chapterGroups_) {
 			},
 			chapterGroups_));
 };
-var $dtwrks$elm_book$ElmBook$withChapters = function (chapters) {
-	return $dtwrks$elm_book$ElmBook$withChapterGroups(
-		_List_fromArray(
-			[
-				_Utils_Tuple2('', chapters)
-			]));
-};
 var $dtwrks$elm_book$ElmBook$Internal$Helpers$applyAttributes = F2(
 	function (fns, a) {
 		return A3($elm$core$List$foldl, $elm$core$Basics$apL, a, fns);
@@ -22675,9 +23105,18 @@ var $dtwrks$elm_book$ElmBook$withThemeOptions = F2(
 				}));
 	});
 var $author$project$Main$main = A2(
-	$dtwrks$elm_book$ElmBook$withChapters,
+	$dtwrks$elm_book$ElmBook$withChapterGroups,
 	_List_fromArray(
-		[$author$project$Main$buttonsChapter, $author$project$Main$inputsChapter]),
+		[
+			_Utils_Tuple2(
+			'Core',
+			_List_fromArray(
+				[$author$project$Main$buttonsChapter])),
+			_Utils_Tuple2(
+			'Form',
+			_List_fromArray(
+				[$author$project$Main$inputChapter, $author$project$Main$checkboxChapter, $author$project$Main$radioButtonsChapter, $author$project$Main$selectChapter]))
+		]),
 	A2(
 		$dtwrks$elm_book$ElmBook$withThemeOptions,
 		_List_fromArray(

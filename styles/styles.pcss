@@ -11,14 +11,23 @@
 .ew.ew-relative {
   position: relative;
 }
-.ew.ew-focusable:focus {
-  outline: 3px solid var(--uc-ts-focus);
+.ew.ew-focusable {
+  cursor: pointer;
+  &:active {
+    opacity: 0.8;
+  }
+  &:focus {
+    outline: 3px solid var(--uc-ts-focus);
+  }
 }
 .ew.ew-h-space > * + * {
   margin-left: 8px;
 }
 .ew.ew-v-space > * + * {
   margin-top: 8px;
+}
+.ew.ew-text {
+  font-family: var(--uc-ts-font-text);
 }
 
 /* Buttons */
@@ -44,9 +53,6 @@
   cursor: pointer;
   transition: box-shadow 0.15s, background 0.15s;
 
-  &:active {
-    opacity: 0.8;
-  }
   &:disabled {
     opacity: 0.4;
     pointer-events: none;
@@ -117,15 +123,20 @@
   }
 }
 
-/* Inputs – Select */
+/* Inputs */
 
-.ew.ew-select {
+.ew.ew-input {
   appearance: none;
-  display: block;
-  width: 100%;
-  padding: 12px 12px;
 
-  border: 3px solid var(--uc-ts-color);
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-height: 48px;
+  padding: 8px 12px;
+
+  background-color: var(--uc-ts-background);
+  border: 2px solid var(--uc-ts-color);
   border-radius: var(--uc-ts-border-radius);
   box-shadow: none;
 
@@ -133,7 +144,22 @@
   font-family: var(--uc-ts-font-text);
   line-height: 1em;
 
-  background-color: var(--uc-ts-background);
+  &:focus {
+    outline: none;
+    padding: 11px 11px;
+    border-width: 3px;
+  }
+  &[disabled] {
+    background: var(--uc-ts-background-faded);
+  }
+  &:invalid:not(:focus) {
+    border-color: var(--uc-ts-warning);
+  }
+}
+
+/* Inputs – Select */
+
+.ew.ew-select {
   background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
   background-repeat: no-repeat, repeat;
   background-position: right 0.7em top 50%;
@@ -142,28 +168,86 @@
   &::-ms-expand {
     display: none;
   }
-  &:focus {
-    outline: ;
-  }
-  &[disabled] {
-    background: var(--uc-ts-background-faded);
-  }
   &.ew-is-empty {
     color: var(--uc-ts-color-faded);
   }
 }
 
-/* Hide arrow icon in IE browsers */
-.select-css
-/* Hover style */
-.select-css:hover {
-  border-color: #888;
+/* Inputs – Checkbox / Radio – Helpers */
+
+.ew.ew-checkbox-input,
+.ew.ew-radio-buttons--item-input {
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--uc-ts-color);
+
+  display: grid;
+  place-content: center;
+  &:before {
+    display: block;
+    content: "";
+    width: 12px;
+    height: 12px;
+    transform: scale(0);
+    transition: 120ms transform ease-in-out;
+    background-color: var(--color);
+  }
+  &:hover:before {
+    transform: scale(0.5);
+  }
+  &:checked:before {
+    transform: scale(1);
+  }
+  &[disabled] {
+    background-color: var(--uc-ts-background-faded);
+    pointer-events: none;
+    &:hover:before {
+      transform: scale(0);
+    }
+  }
 }
 
-/* Disabled styles */
-.select-css:disabled,
-.select-css[aria-disabled="true"] {
-  color: graytext;
-  background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22graytext%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E"),
-    linear-gradient(to bottom, #ffffff 0%, #e5e5e5 100%);
+.ew.ew-checkbox.is-disabled .ew-checkbox-input,
+.ew.ew-radio-buttons.is-disabled .ew-radio-buttons--item-input {
+  border-color: var(--uc-ts-color-faded);
+}
+
+/* Inputs – Checkbox */
+
+.ew.ew-checkbox {
+  display: inline-block;
+  padding: 8px;
+}
+
+/* Inputs - Radio Buttons */
+
+.ew.ew-radio-buttons.m-vertical {
+  display: flex;
+  flex-direction: column;
+}
+.ew.ew-radio-buttons.is-disabled {
+  .ew-radio-buttons--item {
+    cursor: default;
+  }
+  .ew-radio-buttons--item-label {
+    color: var(--uc-ts-color-faded);
+  }
+}
+.ew.ew-radio-buttons--item {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px;
+  cursor: pointer;
+}
+.ew.ew-radio-buttons--item-input {
+  border-radius: 10px;
+  &:before {
+    border-radius: 6px;
+  }
+}
+.ew.ew-radio-buttons--item-label {
+  font-family: var(--uc-ts-font-text);
+  color: var(--uc-ts-color);
+  padding-left: 12px;
 }
