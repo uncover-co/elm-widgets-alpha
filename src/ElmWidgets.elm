@@ -1,5 +1,6 @@
 module ElmWidgets exposing
-    ( primaryButton, primaryButtonLink, PrimaryButtonAttributes
+    ( globalStyles
+    , primaryButton, primaryButtonLink, PrimaryButtonAttributes
     , dangerButton, dangerButtonLink, confirmButton, confirmButtonLink, StatusButtonAttributes
     , outlinedButton, outlinedButtonLink, OutlinedButtonAttributes
     , invisibleButton, invisibleButtonLink, InvisibleButtonAttributes
@@ -10,6 +11,11 @@ module ElmWidgets exposing
     )
 
 {-|
+
+
+# Setup
+
+@docs globalStyles
 
 
 # Buttons
@@ -57,6 +63,7 @@ module ElmWidgets exposing
 -}
 
 import Dict
+import ElmWidgets.Styles
 import Html as H exposing (Html, optgroup)
 import Html.Attributes as HA
 import Html.Events as HE
@@ -64,6 +71,13 @@ import Html.Events as HE
 
 
 -- Helpers
+
+
+{-| Setup all styles needed for ElmWidgets.
+-}
+globalStyles : Html msg
+globalStyles =
+    ElmWidgets.Styles.globalStyles
 
 
 styles : List ( String, String ) -> H.Attribute msg
