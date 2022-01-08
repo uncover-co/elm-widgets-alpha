@@ -1,7 +1,7 @@
 {
     "type": "package",
     "name": "uncover-co/elm-widgets-alpha",
-    "summary": "A collection of themable widgets.",
+    "summary": "A collection of widgets compatible with ThemeSpec.",
     "license": "MPL-2.0",
     "version": "1.0.0",
     "exposed-modules": [
