@@ -1,6 +1,6 @@
 {
     "type": "package",
-    "name": "uncover-co/elm-widgets-nightly",
+    "name": "uncover-co/elm-widgets-alpha",
     "summary": "A collection of themable widgets.",
     "license": "MPL-2.0",
     "version": "1.0.0",
