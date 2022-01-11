@@ -316,51 +316,43 @@ selectChapter =
               , W.select
                     []
                     { value = Just 1
-                    , toString = String.fromInt
+                    , toLabel = String.fromInt
+                    , toValue = String.fromInt
                     , onInput = LogAction.logActionWithMaybeInt "onInput"
-                    , options =
-                        [ ( "first", 1 )
-                        , ( "second", 2 )
-                        ]
+                    , options = [ 1, 2 ]
                     }
               )
             , ( "Disabled"
               , W.select
                     [ WA.disabled True ]
                     { value = Nothing
-                    , toString = String.fromInt
+                    , toLabel = String.fromInt
+                    , toValue = String.fromInt
                     , onInput = LogAction.logActionWithMaybeInt "onInput"
-                    , options =
-                        [ ( "first", 1 )
-                        , ( "second", 2 )
-                        ]
+                    , options = [ 1, 2 ]
                     }
               )
             , ( "With Placeholder"
               , W.select
                     [ WA.placeholder "Select a number" ]
                     { value = Nothing
-                    , toString = String.fromInt
+                    , toLabel = String.fromInt
+                    , toValue = String.fromInt
                     , onInput = LogAction.logActionWithMaybeInt "onInput"
-                    , options =
-                        [ ( "first", 1 )
-                        , ( "second", 2 )
-                        ]
+                    , options = [ 1, 2 ]
                     }
               )
             , ( "With Option Groups"
               , W.selectWithGroups
                     [ WA.placeholder "Select a year" ]
                     { value = Nothing
-                    , toString = String.fromInt
+                    , toValue = String.fromInt
+                    , toLabel = String.fromInt
                     , onInput = LogAction.logActionWithMaybeInt "onInput"
-                    , options =
-                        [ ( "1900", 1900 )
-                        , ( "2000", 2000 )
-                        ]
+                    , options = [ 1900, 2000 ]
                     , optionGroups =
-                        [ ( "70's", [ ( "1978", 1978 ), ( "1979", 1979 ) ] )
-                        , ( "80's", [ ( "1988", 1988 ), ( "1989", 1989 ) ] )
+                        [ ( "70's", [ 1978, 1979 ] )
+                        , ( "80's", [ 1988, 1989 ] )
                         ]
                     }
               )

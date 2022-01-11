@@ -68,7 +68,7 @@ module ElmWidgets exposing
 
 -}
 
-import Dict
+import Dict exposing (Dict)
 import ElmWidgets.Styles
 import Html as H exposing (Html, optgroup)
 import Html.Attributes as HA
@@ -534,9 +534,10 @@ selectWithGroups :
     List (SelectAttributes -> SelectAttributes)
     ->
         { value : Maybe a
-        , options : List ( String, a )
-        , optionGroups : List ( String, List ( String, a ) )
-        , toString : a -> String
+        , options : List a
+        , optionGroups : List ( String, List a )
+        , toValue : a -> String
+        , toLabel : a -> String
         , onInput : Maybe a -> msg
         }
     -> H.Html msg
@@ -545,27 +546,17 @@ selectWithGroups attrs_ props =
         attrs =
             applyAttrs selectDefaults attrs_
 
-        options =
-            case attrs.placeholder of
-                Nothing ->
-                    props.options
-                        |> List.map (Tuple.mapSecond Just)
-
-                Just placeholder_ ->
-                    ( placeholder_, Nothing )
-                        :: (props.options
-                                |> List.map (Tuple.mapSecond Just)
-                           )
-
+        values : Dict String a
         values =
             props.optionGroups
                 |> List.concatMap Tuple.second
                 |> List.append props.options
+                |> List.map (\a -> ( props.toValue a, a ))
                 |> Dict.fromList
     in
     H.div [ HA.class "ew ew-select-wrapper" ]
         [ H.select
-            [ HA.class "ew ew-input ew-select"
+            [ HA.class "ew ew-focusable ew-input ew-select"
             , HA.classList [ ( "ew-is-empty", props.value == Nothing ) ]
             , HA.disabled attrs.disabled
             , HA.placeholder "Select"
@@ -576,24 +567,26 @@ selectWithGroups attrs_ props =
                 )
             ]
             (List.concat
-                [ options
+                [ attrs.placeholder
+                    |> Maybe.map
+                        (\s ->
+                            [ H.option
+                                [ HA.selected (Nothing == props.value)
+                                , HA.value ""
+                                , HA.disabled True
+                                ]
+                                [ H.text s ]
+                            ]
+                        )
+                    |> Maybe.withDefault []
+                , props.options
                     |> List.map
-                        (\( k, v ) ->
-                            case v of
-                                Just v_ ->
-                                    H.option
-                                        [ HA.selected (v == props.value)
-                                        , HA.value k
-                                        ]
-                                        [ H.text (props.toString v_) ]
-
-                                Nothing ->
-                                    H.option
-                                        [ HA.selected (v == props.value)
-                                        , HA.value ""
-                                        , HA.disabled True
-                                        ]
-                                        [ H.text k ]
+                        (\a ->
+                            H.option
+                                [ HA.selected (Just a == props.value)
+                                , HA.value (props.toValue a)
+                                ]
+                                [ H.text (props.toLabel a) ]
                         )
                 , props.optionGroups
                     |> List.map
@@ -601,12 +594,12 @@ selectWithGroups attrs_ props =
                             optgroup [ HA.attribute "label" l ]
                                 (options_
                                     |> List.map
-                                        (\( k, v ) ->
+                                        (\a ->
                                             H.option
-                                                [ HA.selected (Just v == props.value)
-                                                , HA.value k
+                                                [ HA.selected (Just a == props.value)
+                                                , HA.value (props.toValue a)
                                                 ]
-                                                [ H.text (props.toString v) ]
+                                                [ H.text (props.toLabel a) ]
                                         )
                                 )
                         )
@@ -621,8 +614,9 @@ select :
     List (SelectAttributes -> SelectAttributes)
     ->
         { value : Maybe a
-        , options : List ( String, a )
-        , toString : a -> String
+        , options : List a
+        , toValue : a -> String
+        , toLabel : a -> String
         , onInput : Maybe a -> msg
         }
     -> H.Html msg
@@ -631,7 +625,8 @@ select attrs_ props =
         { value = props.value
         , options = props.options
         , optionGroups = []
-        , toString = props.toString
+        , toValue = props.toValue
+        , toLabel = props.toLabel
         , onInput = props.onInput
         }
 
