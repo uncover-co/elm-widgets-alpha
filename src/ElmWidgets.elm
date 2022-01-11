@@ -4,11 +4,11 @@ module ElmWidgets exposing
     , dangerButton, dangerButtonLink, confirmButton, confirmButtonLink, StatusButtonAttributes
     , outlinedButton, outlinedButtonLink, OutlinedButtonAttributes
     , invisibleButton, invisibleButtonLink, InvisibleButtonAttributes
+    , field
     , dateInput, datetimeInput, emailInput, numberInput, passwordInput, searchInput, telephoneInput, textInput, timeInput, urlInput, InputAttributes
     , checkbox, CheckboxAttributes
     , radioButtons, RadioButtonsAttributes
     , select, selectWithGroups, SelectAttributes
-    , field
     )
 
 {-|
@@ -40,6 +40,11 @@ module ElmWidgets exposing
 ### Invisible Button
 
 @docs invisibleButton, invisibleButtonLink, InvisibleButtonAttributes
+
+
+# Forms
+
+@docs field
 
 
 # Input
@@ -468,6 +473,7 @@ fieldDefaults =
     }
 
 
+{-| -}
 field :
     List (FieldAttributes -> FieldAttributes)
     ->
