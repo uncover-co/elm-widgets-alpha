@@ -1,7 +1,7 @@
 module ElmWidgets.Attributes exposing
     ( color, background, shadow
     , fill, vertical, alignRight
-    , disabled, placeholder, pattern, required
+    , required, disabled, placeholder, pattern, hint, success, warning, danger
     , htmlAttrs
     )
 
@@ -20,7 +20,7 @@ module ElmWidgets.Attributes exposing
 
 ## Forms
 
-@docs disabled, placeholder, pattern, required
+@docs required, disabled, placeholder, pattern, hint, success, warning, danger
 
 
 ## General
@@ -81,6 +81,12 @@ alignRight v a =
 
 
 {-| -}
+required : Bool -> { a | required : Bool } -> { a | required : Bool }
+required v a =
+    { a | required = v }
+
+
+{-| -}
 disabled : Bool -> { a | disabled : Bool } -> { a | disabled : Bool }
 disabled v a =
     { a | disabled = v }
@@ -99,9 +105,27 @@ pattern v a =
 
 
 {-| -}
-required : Bool -> { a | required : Bool } -> { a | required : Bool }
-required v a =
-    { a | required = v }
+hint : String -> { a | hint : Maybe String } -> { a | hint : Maybe String }
+hint v a =
+    { a | hint = Just v }
+
+
+{-| -}
+success : String -> { a | success : Maybe String } -> { a | success : Maybe String }
+success v a =
+    { a | success = Just v }
+
+
+{-| -}
+warning : String -> { a | warning : Maybe String } -> { a | warning : Maybe String }
+warning v a =
+    { a | warning = Just v }
+
+
+{-| -}
+danger : String -> { a | danger : Maybe String } -> { a | danger : Maybe String }
+danger v a =
+    { a | danger = Just v }
 
 
 

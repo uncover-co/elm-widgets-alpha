@@ -8,6 +8,7 @@ module ElmWidgets exposing
     , checkbox, CheckboxAttributes
     , radioButtons, RadioButtonsAttributes
     , select, selectWithGroups, SelectAttributes
+    , field
     )
 
 {-|
@@ -140,9 +141,9 @@ type alias PrimaryButtonAttributes =
 
 primaryButtonDefaults : PrimaryButtonAttributes
 primaryButtonDefaults =
-    { color = "var(--uc-ts-btn-color)"
-    , background = "var(--uc-ts-btn-background)"
-    , shadow = "var(--uc-ts-btn-shadow)"
+    { color = "var(--tmspc-highlight-contrast)"
+    , background = "var(--tmspc-highlight-base)"
+    , shadow = "var(--tmspc-highlight-shadow)"
     , disabled = False
     , fill = False
     }
@@ -306,8 +307,8 @@ type alias OutlinedButtonAttributes =
 
 outlinedButtonDefaults : OutlinedButtonAttributes
 outlinedButtonDefaults =
-    { color = "var(--uc-ts-color)"
-    , shadow = "var(--uc-ts-color-faded)"
+    { color = "var(--tmspc-color-base)"
+    , shadow = "var(--tmspc-color-shadow)"
     , disabled = False
     , fill = False
     }
@@ -372,8 +373,8 @@ type alias InvisibleButtonAttributes =
 
 invisibleButtonDefaults : InvisibleButtonAttributes
 invisibleButtonDefaults =
-    { color = "var(--uc-ts-color)"
-    , background = "var(--uc-ts-background-faded)"
+    { color = "var(--tmspc-color-base)"
+    , background = "var(--tmspc-color-tint)"
     , disabled = False
     , fill = False
     }
@@ -447,6 +448,64 @@ invisibleButtonLink attrs_ props =
 
 
 
+-- Form
+
+
+type alias FieldAttributes =
+    { hint : Maybe String
+    , warning : Maybe String
+    , danger : Maybe String
+    , success : Maybe String
+    }
+
+
+fieldDefaults : FieldAttributes
+fieldDefaults =
+    { hint = Nothing
+    , warning = Nothing
+    , danger = Nothing
+    , success = Nothing
+    }
+
+
+field :
+    List (FieldAttributes -> FieldAttributes)
+    ->
+        { label : H.Html msg
+        , input : H.Html msg
+        }
+    -> H.Html msg
+field attrs_ props =
+    let
+        attrs =
+            applyAttrs fieldDefaults attrs_
+    in
+    H.section
+        [ HA.class "ew ew-field"
+        ]
+        [ H.h1 [ HA.class "ew ew-field-label" ] [ props.label ]
+        , H.div [ HA.class "ew ew-field-input" ] [ props.input ]
+        , case ( attrs.danger, attrs.warning, attrs.success ) of
+            ( Just danger, _, _ ) ->
+                H.p [ HA.class "ew ew-field-message ew-m-danger" ] [ H.text danger ]
+
+            ( Nothing, Just warning, _ ) ->
+                H.p [ HA.class "ew ew-field-message ew-m-warning" ] [ H.text warning ]
+
+            ( Nothing, Nothing, Just success ) ->
+                H.p [ HA.class "ew ew-field-message ew-m-success" ] [ H.text success ]
+
+            ( Nothing, Nothing, Nothing ) ->
+                case attrs.hint of
+                    Just hint ->
+                        H.p [ HA.class "ew ew-field-message" ] [ H.text hint ]
+
+                    Nothing ->
+                        H.text ""
+        ]
+
+
+
 -- Select
 
 
@@ -498,54 +557,57 @@ selectWithGroups attrs_ props =
                 |> List.append props.options
                 |> Dict.fromList
     in
-    H.select
-        [ HA.class "ew ew-input ew-select"
-        , HA.classList [ ( "ew-is-empty", props.value == Nothing ) ]
-        , HA.disabled attrs.disabled
-        , HA.placeholder "Select"
-        , HE.onInput
-            (\s ->
-                Dict.get s values
-                    |> props.onInput
-            )
-        ]
-        (List.concat
-            [ options
-                |> List.map
-                    (\( k, v ) ->
-                        case v of
-                            Just v_ ->
-                                H.option
-                                    [ HA.selected (v == props.value)
-                                    , HA.value k
-                                    ]
-                                    [ H.text (props.toString v_) ]
-
-                            Nothing ->
-                                H.option
-                                    [ HA.selected (v == props.value)
-                                    , HA.value ""
-                                    , HA.disabled True
-                                    ]
-                                    [ H.text k ]
-                    )
-            , props.optionGroups
-                |> List.map
-                    (\( l, options_ ) ->
-                        optgroup [ HA.attribute "label" l ]
-                            (options_
-                                |> List.map
-                                    (\( k, v ) ->
-                                        H.option
-                                            [ HA.selected (Just v == props.value)
-                                            , HA.value k
-                                            ]
-                                            [ H.text (props.toString v) ]
-                                    )
-                            )
-                    )
+    H.div [ HA.class "ew ew-select-wrapper" ]
+        [ H.select
+            [ HA.class "ew ew-input ew-select"
+            , HA.classList [ ( "ew-is-empty", props.value == Nothing ) ]
+            , HA.disabled attrs.disabled
+            , HA.placeholder "Select"
+            , HE.onInput
+                (\s ->
+                    Dict.get s values
+                        |> props.onInput
+                )
             ]
-        )
+            (List.concat
+                [ options
+                    |> List.map
+                        (\( k, v ) ->
+                            case v of
+                                Just v_ ->
+                                    H.option
+                                        [ HA.selected (v == props.value)
+                                        , HA.value k
+                                        ]
+                                        [ H.text (props.toString v_) ]
+
+                                Nothing ->
+                                    H.option
+                                        [ HA.selected (v == props.value)
+                                        , HA.value ""
+                                        , HA.disabled True
+                                        ]
+                                        [ H.text k ]
+                        )
+                , props.optionGroups
+                    |> List.map
+                        (\( l, options_ ) ->
+                            optgroup [ HA.attribute "label" l ]
+                                (options_
+                                    |> List.map
+                                        (\( k, v ) ->
+                                            H.option
+                                                [ HA.selected (Just v == props.value)
+                                                , HA.value k
+                                                ]
+                                                [ H.text (props.toString v) ]
+                                        )
+                                )
+                        )
+                ]
+            )
+        , H.div [ HA.class "ew ew-select-icon" ] []
+        ]
 
 
 {-| -}
@@ -692,7 +754,7 @@ type alias CheckboxAttributes =
 
 checkboxDefaults : CheckboxAttributes
 checkboxDefaults =
-    { color = "var(--uc-ts-btn-background)"
+    { color = "var(--tmspc-highlight-base)"
     , disabled = False
     }
 
@@ -734,7 +796,7 @@ type alias RadioButtonsAttributes =
 
 radioButtonsDefaults : RadioButtonsAttributes
 radioButtonsDefaults =
-    { color = "var(--uc-ts-btn-background"
+    { color = "var(--tmspc-highlight-base)"
     , disabled = False
     , vertical = False
     }

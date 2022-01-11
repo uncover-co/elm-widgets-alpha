@@ -1,16 +1,28 @@
-module Main exposing (main)
+module Main exposing (fieldChapter, main)
 
-import ElmBook exposing (Book, book, withChapterGroups, withChapters, withThemeOptions)
+import ElmBook exposing (Book, book, withChapterGroups, withThemeOptions)
 import ElmBook.Actions exposing (logAction, logActionWith, logActionWithBool, logActionWithString)
 import ElmBook.Chapter exposing (Chapter, chapter, renderComponentList)
 import ElmBook.ThemeOptions
 import ElmWidgets as W exposing (..)
 import ElmWidgets.Attributes as WA
 import ElmWidgets.Styles
-import ElmWidgets.Theme
 import Html as H
-import Html.Attributes as HA
+import LogAction
+import ThemeSpec
 import UI
+
+
+lightTheme : ThemeSpec.Theme
+lightTheme =
+    let
+        baseTheme =
+            ThemeSpec.lightTheme
+
+        baseColor =
+            baseTheme.color
+    in
+    { baseTheme | color = { baseColor | tint = "#efefef" } }
 
 
 main : Book ()
@@ -18,18 +30,98 @@ main =
     book "Elm-Widgets"
         |> withThemeOptions
             [ ElmBook.ThemeOptions.globals
-                [ ElmWidgets.Theme.themeGlobalStyles
+                [ ThemeSpec.globalProviderWithDarkMode
+                    { light = lightTheme
+                    , dark = ThemeSpec.darkTheme
+                    , strategy = ThemeSpec.ClassStrategy "elm-book-dark-mode"
+                    }
                 , ElmWidgets.Styles.globalStyles
                 ]
             ]
         |> withChapterGroups
-            [ ( "Core", [ buttonsChapter ] )
+            [ ( "Core"
+              , [ buttonsChapter
+                ]
+              )
             , ( "Form"
-              , [ inputChapter
+              , [ fieldChapter
+                , inputChapter
                 , checkboxChapter
                 , radioButtonsChapter
                 , selectChapter
                 ]
+              )
+            ]
+
+
+
+-- Field
+
+
+fieldChapter : Chapter x
+fieldChapter =
+    chapter "Field"
+        |> renderComponentList
+            [ ( "Default"
+              , H.div []
+                    [ W.field []
+                        { label = H.text "Label"
+                        , input =
+                            W.textInput
+                                []
+                                { value = ""
+                                , onInput = logActionWithString "onInput"
+                                }
+                        }
+                    , W.field [ WA.hint "Try writing some text here." ]
+                        { label = H.text "Label"
+                        , input =
+                            W.textInput
+                                []
+                                { value = ""
+                                , onInput = logActionWithString "onInput"
+                                }
+                        }
+                    , W.field
+                        [ WA.hint "Try writing some text here."
+                        , WA.success "Pretty good text you wrote there!"
+                        ]
+                        { label = H.text "Label"
+                        , input =
+                            W.textInput
+                                []
+                                { value = ""
+                                , onInput = logActionWithString "onInput"
+                                }
+                        }
+                    , W.field
+                        [ WA.hint "Try writing some text here."
+                        , WA.success "Pretty good text you wrote there!"
+                        , WA.warning "You know better than this."
+                        ]
+                        { label = H.text "Label"
+                        , input =
+                            W.textInput
+                                []
+                                { value = ""
+                                , onInput = logActionWithString "onInput"
+                                }
+                        }
+                    , W.field
+                        [ WA.hint "Try writing some text here."
+                        , WA.success "Pretty good text you wrote there!"
+                        , WA.warning "You know better than this."
+                        , WA.danger "You're in trouble now…"
+                        ]
+                        { label = H.text "Label"
+                        , input =
+                            W.textInput
+                                []
+                                { value = ""
+                                , onInput = logActionWithString "onInput"
+                                }
+                        }
+                    ]
               )
             ]
 
@@ -216,13 +308,6 @@ inputChapter =
 -- Select
 
 
-logActionWithMaybeInt : String -> Maybe Int -> ElmBook.Msg x
-logActionWithMaybeInt label i =
-    i
-        |> Maybe.map (logActionWith (\i_ -> "Just " ++ String.fromInt i_) label)
-        |> Maybe.withDefault (logAction (label ++ ": Nothing"))
-
-
 selectChapter : Chapter x
 selectChapter =
     chapter "Select"
@@ -232,7 +317,7 @@ selectChapter =
                     []
                     { value = Just 1
                     , toString = String.fromInt
-                    , onInput = logActionWithMaybeInt "onInput"
+                    , onInput = LogAction.logActionWithMaybeInt "onInput"
                     , options =
                         [ ( "first", 1 )
                         , ( "second", 2 )
@@ -244,7 +329,7 @@ selectChapter =
                     [ WA.disabled True ]
                     { value = Nothing
                     , toString = String.fromInt
-                    , onInput = logActionWithMaybeInt "onInput"
+                    , onInput = LogAction.logActionWithMaybeInt "onInput"
                     , options =
                         [ ( "first", 1 )
                         , ( "second", 2 )
@@ -256,7 +341,7 @@ selectChapter =
                     [ WA.placeholder "Select a number" ]
                     { value = Nothing
                     , toString = String.fromInt
-                    , onInput = logActionWithMaybeInt "onInput"
+                    , onInput = LogAction.logActionWithMaybeInt "onInput"
                     , options =
                         [ ( "first", 1 )
                         , ( "second", 2 )
@@ -268,7 +353,7 @@ selectChapter =
                     [ WA.placeholder "Select a year" ]
                     { value = Nothing
                     , toString = String.fromInt
-                    , onInput = logActionWithMaybeInt "onInput"
+                    , onInput = LogAction.logActionWithMaybeInt "onInput"
                     , options =
                         [ ( "1900", 1900 )
                         , ( "2000", 2000 )
@@ -359,23 +444,23 @@ buttonsChapter =
             , ( "custom colors"
               , UI.hSpacer
                     [ W.primaryButton
-                        [ WA.color "var(--uc-ts-warning-high)"
-                        , WA.background "var(--uc-ts-warning)"
-                        , WA.shadow "var(--uc-ts-warning-faded)"
+                        [ WA.color "var(--tmspc-warning-contrast)"
+                        , WA.background "var(--tmspc-warning-base)"
+                        , WA.shadow "var(--tmspc-warning-shadow)"
                         ]
                         { label = H.text "Click me"
                         , onClick = logAction ""
                         }
                     , outlinedButton
-                        [ WA.color "var(--uc-ts-warning)"
-                        , WA.shadow "var(--uc-ts-warning-faded)"
+                        [ WA.color "var(--tmspc-warning-dark)"
+                        , WA.shadow "var(--tmspc-warning-shadow)"
                         ]
                         { label = H.text "Click me"
                         , onClick = logAction ""
                         }
                     , invisibleButton
-                        [ WA.color "var(--uc-ts-warning)"
-                        , WA.background "var(--uc-ts-warning-faded)"
+                        [ WA.color "var(--tmspc-warning-base)"
+                        , WA.background "var(--tmspc-warning-tint)"
                         ]
                         { label = H.text "Click me"
                         , onClick = logAction ""

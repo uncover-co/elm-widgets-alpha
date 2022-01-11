@@ -1,6 +1,6 @@
 # ElmWidgets
 
-A collection of widgets compatible with ThemeSpec.
+A collection of widgets themed trough [ThemeSpec](https://package.elm-lang.org/packages/uncover-co/elm-theme-spec/latest/).
 
 **Alpha** - This is the alpha version of ElmWidgets. This means this package will be updated faster but breakage is expected. A stable version is yet to be released as `uncover-co/elm-widgets`.
 
@@ -9,10 +9,15 @@ A collection of widgets compatible with ThemeSpec.
 ElmWidgets is plug-and-play with whatever styling approach you prefer - elm-css, elm-ui, tailwind, you name it - just insert ElmWidgets globalStyles somewhere in your application html and use any widget directly.
 
 ```elm
+import ElmWidgets
+import ThemeSpec
+
+
 main : Html msg
 main =
     div []
         [ ElmWidgets.globalStyles
+        , ThemeSpec.globalProvider lightTheme
         , ...
             ElmWidgets.primaryButton []
                 { label = "Sir, would you please click me?"
