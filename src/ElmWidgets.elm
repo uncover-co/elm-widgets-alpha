@@ -9,6 +9,7 @@ module ElmWidgets exposing
     , checkbox, CheckboxAttributes
     , radioButtons, RadioButtonsAttributes
     , select, selectWithGroups, SelectAttributes
+    , rangeInput
     )
 
 {-|
@@ -66,6 +67,11 @@ module ElmWidgets exposing
 
 @docs select, selectWithGroups, SelectAttributes
 
+
+# Range
+
+@docs rangeInput
+
 -}
 
 import Dict exposing (Dict)
@@ -73,6 +79,7 @@ import ElmWidgets.Styles
 import Html as H exposing (Html, optgroup)
 import Html.Attributes as HA
 import Html.Events as HE
+import Json.Decode as D
 
 
 
@@ -849,3 +856,62 @@ radioButtons attrs_ props =
                         ]
                 )
         )
+
+
+{-| -}
+type alias RangeAttributes =
+    { disabled : Bool
+    , color : String
+    }
+
+
+rangeDefaults : RangeAttributes
+rangeDefaults =
+    { disabled = False
+    , color = "var(--tmspc-highlight-base)"
+    }
+
+
+{-| -}
+rangeInput :
+    List (RangeAttributes -> RangeAttributes)
+    ->
+        { min : Float
+        , max : Float
+        , step : Float
+        , value : Float
+        , onInput : Float -> msg
+        }
+    -> H.Html msg
+rangeInput attrs_ props =
+    let
+        attrs =
+            applyAttrs rangeDefaults attrs_
+    in
+    H.input
+        [ HA.class "ew ew-range"
+        , HA.type_ "range"
+        , HA.disabled attrs.disabled
+        , HA.value <| String.fromFloat props.value
+        , HA.min <| String.fromFloat props.min
+        , HA.max <| String.fromFloat props.max
+        , HA.step <| String.fromFloat props.step
+        , HE.on "input"
+            (D.at [ "target", "value" ] D.string
+                |> D.andThen
+                    (\v ->
+                        case String.toFloat v of
+                            Just v_ ->
+                                D.succeed v_
+
+                            Nothing ->
+                                D.fail "Invalid value."
+                    )
+                |> D.map props.onInput
+            )
+        , stylesList
+            [ ( "--color", attrs.color, not attrs.disabled )
+            , ( "--color", "var(--tmspc-background-dark)", attrs.disabled )
+            ]
+        ]
+        []

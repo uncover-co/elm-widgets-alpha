@@ -13,25 +13,13 @@ import ThemeSpec
 import UI
 
 
-lightTheme : ThemeSpec.Theme
-lightTheme =
-    let
-        baseTheme =
-            ThemeSpec.lightTheme
-
-        baseColor =
-            baseTheme.color
-    in
-    { baseTheme | color = { baseColor | tint = "#efefef" } }
-
-
 main : Book ()
 main =
     book "Elm-Widgets"
         |> withThemeOptions
             [ ElmBook.ThemeOptions.globals
                 [ ThemeSpec.globalProviderWithDarkMode
-                    { light = lightTheme
+                    { light = ThemeSpec.lightTheme
                     , dark = ThemeSpec.darkTheme
                     , strategy = ThemeSpec.ClassStrategy "elm-book-dark-mode"
                     }
@@ -49,6 +37,7 @@ main =
                 , checkboxChapter
                 , radioButtonsChapter
                 , selectChapter
+                , rangeChapter
                 ]
               )
             ]
@@ -68,7 +57,7 @@ fieldChapter =
                         { label = H.text "Label"
                         , input =
                             W.textInput
-                                []
+                                [ WA.placeholder "…" ]
                                 { value = ""
                                 , onInput = logActionWithString "onInput"
                                 }
@@ -77,7 +66,7 @@ fieldChapter =
                         { label = H.text "Label"
                         , input =
                             W.textInput
-                                []
+                                [ WA.disabled True ]
                                 { value = ""
                                 , onInput = logActionWithString "onInput"
                                 }
@@ -122,6 +111,44 @@ fieldChapter =
                                 }
                         }
                     ]
+              )
+            ]
+
+
+
+-- Range
+
+
+rangeChapter : Chapter x
+rangeChapter =
+    chapter "Range"
+        |> renderComponentList
+            [ ( "Default"
+              , W.rangeInput []
+                    { min = 0
+                    , max = 10
+                    , step = 1
+                    , value = 5
+                    , onInput = logActionWith String.fromFloat "onInput"
+                    }
+              )
+            , ( "Disabled"
+              , W.rangeInput [ WA.disabled True ]
+                    { min = 0
+                    , max = 10
+                    , step = 1
+                    , value = 5
+                    , onInput = logActionWith String.fromFloat "onInput"
+                    }
+              )
+            , ( "Custom Color"
+              , W.rangeInput [ WA.color "red" ]
+                    { min = 0
+                    , max = 10
+                    , step = 1
+                    , value = 5
+                    , onInput = logActionWith String.fromFloat "onInput"
+                    }
               )
             ]
 
@@ -444,7 +471,7 @@ buttonsChapter =
                         , onClick = logAction ""
                         }
                     , outlinedButton
-                        [ WA.color "var(--tmspc-warning-dark)"
+                        [ WA.color "var(--tmspc-warning-base)"
                         , WA.shadow "var(--tmspc-warning-shadow)"
                         ]
                         { label = H.text "Click me"
