@@ -1,9 +1,9 @@
 module ElmWidgets.Attributes exposing
     ( color, background, shadow
     , fill, vertical, alignRight
+    , footer
     , required, disabled, placeholder, pattern, hint, success, warning, danger
-    , htmlAttrs
-    , footer, id, none
+    , none, id, htmlAttrs
     )
 
 {-|
@@ -19,6 +19,11 @@ module ElmWidgets.Attributes exposing
 @docs fill, vertical, alignRight
 
 
+## Content
+
+@docs footer
+
+
 ## Forms
 
 @docs required, disabled, placeholder, pattern, hint, success, warning, danger
@@ -26,7 +31,7 @@ module ElmWidgets.Attributes exposing
 
 ## General
 
-@docs htmlAttrs
+@docs none, id, htmlAttrs
 
 -}
 
@@ -81,6 +86,7 @@ alignRight v a =
 -- Content
 
 
+{-| -}
 footer : H.Html msg -> { a | footer : Maybe (H.Html msg) } -> { a | footer : Maybe (H.Html msg) }
 footer v a =
     { a | footer = Just v }
