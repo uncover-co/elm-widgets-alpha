@@ -143,7 +143,8 @@ fillWidth fill =
 
 {-| -}
 type alias PrimaryButtonAttributes =
-    { color : String
+    { id : Maybe String
+    , color : String
     , background : String
     , shadow : String
     , disabled : Bool
@@ -153,7 +154,8 @@ type alias PrimaryButtonAttributes =
 
 primaryButtonDefaults : PrimaryButtonAttributes
 primaryButtonDefaults =
-    { color = "var(--tmspc-highlight-contrast)"
+    { id = Nothing
+    , color = "var(--tmspc-highlight-contrast)"
     , background = "var(--tmspc-highlight-base)"
     , shadow = "var(--tmspc-highlight-shadow)"
     , disabled = False
@@ -167,7 +169,8 @@ primaryButtonAttrs attrs_ =
         attrs =
             applyAttrs primaryButtonDefaults attrs_
     in
-    [ HA.disabled attrs.disabled
+    [ maybeAttr HA.id attrs.id
+    , HA.disabled attrs.disabled
     , HA.class "ew ew-focusable ew-btn ew-m-primary"
     , styles
         [ ( "--color", attrs.color )
@@ -212,14 +215,16 @@ primaryButtonLink attrs props =
 
 {-| -}
 type alias StatusButtonAttributes =
-    { disabled : Bool
+    { id : Maybe String
+    , disabled : Bool
     , fill : Bool
     }
 
 
 statusButtonDefaults : StatusButtonAttributes
 statusButtonDefaults =
-    { disabled = False
+    { id = Nothing
+    , disabled = False
     , fill = False
     }
 
@@ -230,7 +235,8 @@ dangerButtonAttrs attrs_ =
         attrs =
             applyAttrs statusButtonDefaults attrs_
     in
-    [ HA.disabled attrs.disabled
+    [ maybeAttr HA.id attrs.id
+    , HA.disabled attrs.disabled
     , HA.class "ew ew-focusable ew-btn ew-m-primary ew-is-danger"
     , HA.style "width" (fillWidth attrs.fill)
     ]
@@ -310,7 +316,8 @@ confirmButtonLink attrs props =
 
 {-| -}
 type alias OutlinedButtonAttributes =
-    { color : String
+    { id : Maybe String
+    , color : String
     , shadow : String
     , disabled : Bool
     , fill : Bool
@@ -319,7 +326,8 @@ type alias OutlinedButtonAttributes =
 
 outlinedButtonDefaults : OutlinedButtonAttributes
 outlinedButtonDefaults =
-    { color = "var(--tmspc-color-base)"
+    { id = Nothing
+    , color = "var(--tmspc-color-base)"
     , shadow = "var(--tmspc-color-shadow)"
     , disabled = False
     , fill = False
@@ -332,7 +340,8 @@ outlinedButtonAttrs attrs_ =
         attrs =
             applyAttrs outlinedButtonDefaults attrs_
     in
-    [ HA.disabled attrs.disabled
+    [ maybeAttr HA.id attrs.id
+    , HA.disabled attrs.disabled
     , HA.class "ew ew-focusable ew-btn ew-m-outlined"
     , styles
         [ ( "--color", attrs.color )
@@ -376,7 +385,8 @@ outlinedButtonLink attrs props =
 
 {-| -}
 type alias InvisibleButtonAttributes =
-    { color : String
+    { id : Maybe String
+    , color : String
     , background : String
     , disabled : Bool
     , fill : Bool
@@ -385,7 +395,8 @@ type alias InvisibleButtonAttributes =
 
 invisibleButtonDefaults : InvisibleButtonAttributes
 invisibleButtonDefaults =
-    { color = "var(--tmspc-color-base)"
+    { id = Nothing
+    , color = "var(--tmspc-color-base)"
     , background = "var(--tmspc-color-tint)"
     , disabled = False
     , fill = False
@@ -401,7 +412,8 @@ invisibleButtonAttrs attrs_ label =
         attrs =
             applyAttrs invisibleButtonDefaults attrs_
     in
-    ( [ HA.style "color" attrs.color
+    ( [ maybeAttr HA.id attrs.id
+      , HA.style "color" attrs.color
       , HA.disabled attrs.disabled
       , HA.class "ew ew-focusable ew-btn ew-m-invisible"
       , styles
@@ -463,17 +475,23 @@ invisibleButtonLink attrs_ props =
 -- Form
 
 
-type alias FieldAttributes =
-    { hint : Maybe String
+type alias FieldAttributes msg =
+    { id : Maybe String
+    , footer : Maybe (Html msg)
+    , alignRight : Bool
+    , hint : Maybe String
     , warning : Maybe String
     , danger : Maybe String
     , success : Maybe String
     }
 
 
-fieldDefaults : FieldAttributes
+fieldDefaults : FieldAttributes msg
 fieldDefaults =
-    { hint = Nothing
+    { id = Nothing
+    , footer = Nothing
+    , alignRight = False
+    , hint = Nothing
     , warning = Nothing
     , danger = Nothing
     , success = Nothing
@@ -482,7 +500,7 @@ fieldDefaults =
 
 {-| -}
 field :
-    List (FieldAttributes -> FieldAttributes)
+    List (FieldAttributes msg -> FieldAttributes msg)
     ->
         { label : H.Html msg
         , input : H.Html msg
@@ -494,10 +512,21 @@ field attrs_ props =
             applyAttrs fieldDefaults attrs_
     in
     H.section
-        [ HA.class "ew ew-field"
+        [ maybeAttr HA.id attrs.id
+        , HA.class "ew ew-field"
         ]
-        [ H.h1 [ HA.class "ew ew-field-label" ] [ props.label ]
-        , H.div [ HA.class "ew ew-field-input" ] [ props.input ]
+        [ H.div
+            [ HA.class "ew ew-field-main"
+            , HA.classList [ ( "ew-m-align-right", attrs.alignRight ) ]
+            ]
+            [ H.div [ HA.class "ew ew-field-label-wrapper" ]
+                [ H.h1 [ HA.class "ew ew-field-label" ] [ props.label ]
+                , attrs.footer
+                    |> Maybe.map (\f -> H.p [ HA.class "ew ew-field-label-footer" ] [ f ])
+                    |> Maybe.withDefault (H.text "")
+                ]
+            , H.div [ HA.class "ew ew-field-input" ] [ props.input ]
+            ]
         , case ( attrs.danger, attrs.warning, attrs.success ) of
             ( Just danger, _, _ ) ->
                 H.p [ HA.class "ew ew-field-message ew-m-danger" ] [ H.text danger ]
@@ -524,14 +553,14 @@ field attrs_ props =
 
 {-| -}
 type alias SelectAttributes =
-    { placeholder : Maybe String
+    { id : Maybe String
     , disabled : Bool
     }
 
 
 selectDefaults : SelectAttributes
 selectDefaults =
-    { placeholder = Nothing
+    { id = Nothing
     , disabled = False
     }
 
@@ -540,12 +569,12 @@ selectDefaults =
 selectWithGroups :
     List (SelectAttributes -> SelectAttributes)
     ->
-        { value : Maybe a
+        { value : a
         , options : List a
         , optionGroups : List ( String, List a )
         , toValue : a -> String
         , toLabel : a -> String
-        , onInput : Maybe a -> msg
+        , onInput : a -> msg
         }
     -> H.Html msg
 selectWithGroups attrs_ props =
@@ -563,34 +592,23 @@ selectWithGroups attrs_ props =
     in
     H.div [ HA.class "ew ew-select-wrapper" ]
         [ H.select
-            [ HA.class "ew ew-focusable ew-input ew-select"
-            , HA.classList [ ( "ew-is-empty", props.value == Nothing ) ]
+            [ maybeAttr HA.id attrs.id
+            , HA.class "ew ew-focusable ew-input ew-select"
             , HA.disabled attrs.disabled
             , HA.placeholder "Select"
             , HE.onInput
                 (\s ->
                     Dict.get s values
+                        |> Maybe.withDefault props.value
                         |> props.onInput
                 )
             ]
             (List.concat
-                [ attrs.placeholder
-                    |> Maybe.map
-                        (\s ->
-                            [ H.option
-                                [ HA.selected (Nothing == props.value)
-                                , HA.value ""
-                                , HA.disabled True
-                                ]
-                                [ H.text s ]
-                            ]
-                        )
-                    |> Maybe.withDefault []
-                , props.options
+                [ props.options
                     |> List.map
                         (\a ->
                             H.option
-                                [ HA.selected (Just a == props.value)
+                                [ HA.selected (a == props.value)
                                 , HA.value (props.toValue a)
                                 ]
                                 [ H.text (props.toLabel a) ]
@@ -603,7 +621,7 @@ selectWithGroups attrs_ props =
                                     |> List.map
                                         (\a ->
                                             H.option
-                                                [ HA.selected (Just a == props.value)
+                                                [ HA.selected (a == props.value)
                                                 , HA.value (props.toValue a)
                                                 ]
                                                 [ H.text (props.toLabel a) ]
@@ -620,11 +638,11 @@ selectWithGroups attrs_ props =
 select :
     List (SelectAttributes -> SelectAttributes)
     ->
-        { value : Maybe a
+        { value : a
         , options : List a
         , toValue : a -> String
         , toLabel : a -> String
-        , onInput : Maybe a -> msg
+        , onInput : a -> msg
         }
     -> H.Html msg
 select attrs_ props =
@@ -644,7 +662,8 @@ select attrs_ props =
 
 {-| -}
 type alias InputAttributes msg =
-    { disabled : Bool
+    { id : Maybe String
+    , disabled : Bool
     , required : Bool
     , pattern : Maybe String
     , placeholder : Maybe String
@@ -654,7 +673,8 @@ type alias InputAttributes msg =
 
 inputDefaults : InputAttributes msg
 inputDefaults =
-    { disabled = False
+    { id = Nothing
+    , disabled = False
     , required = False
     , pattern = Nothing
     , placeholder = Nothing
@@ -677,7 +697,8 @@ input_ type_ attrs_ props =
     in
     H.input
         (attrs.htmlAttrs
-            ++ [ HA.class "ew ew-input ew-focusable"
+            ++ [ maybeAttr HA.id attrs.id
+               , HA.class "ew ew-input ew-focusable"
                , HA.type_ type_
                , HA.disabled attrs.disabled
                , HA.value props.value
@@ -755,14 +776,16 @@ urlInput =
 
 {-| -}
 type alias CheckboxAttributes =
-    { color : String
+    { id : Maybe String
+    , color : String
     , disabled : Bool
     }
 
 
 checkboxDefaults : CheckboxAttributes
 checkboxDefaults =
-    { color = "var(--tmspc-highlight-base)"
+    { id = Nothing
+    , color = "var(--tmspc-highlight-base)"
     , disabled = False
     }
 
@@ -779,7 +802,8 @@ checkbox attrs_ props =
     in
     H.div [ HA.class "ew ew-checkbox" ]
         [ H.input
-            [ HA.class "ew ew-focusable ew-checkbox-input"
+            [ maybeAttr HA.id attrs.id
+            , HA.class "ew ew-focusable ew-checkbox-input"
             , styles [ ( "--color", attrs.color ) ]
             , HA.type_ "checkbox"
             , HA.checked props.value
@@ -796,7 +820,8 @@ checkbox attrs_ props =
 
 {-| -}
 type alias RadioButtonsAttributes =
-    { color : String
+    { id : Maybe String
+    , color : String
     , disabled : Bool
     , vertical : Bool
     }
@@ -804,7 +829,8 @@ type alias RadioButtonsAttributes =
 
 radioButtonsDefaults : RadioButtonsAttributes
 radioButtonsDefaults =
-    { color = "var(--tmspc-highlight-base)"
+    { id = Nothing
+    , color = "var(--tmspc-highlight-base)"
     , disabled = False
     , vertical = False
     }
@@ -814,8 +840,7 @@ radioButtonsDefaults =
 radioButtons :
     List (RadioButtonsAttributes -> RadioButtonsAttributes)
     ->
-        { name : String
-        , value : Maybe a
+        { value : a
         , options : List a
         , toValue : a -> String
         , toLabel : a -> String
@@ -826,9 +851,20 @@ radioButtons attrs_ props =
     let
         attrs =
             applyAttrs radioButtonsDefaults attrs_
+
+        name =
+            case attrs.id of
+                Just id ->
+                    id
+
+                Nothing ->
+                    props.options
+                        |> List.map props.toLabel
+                        |> String.join "-"
     in
     H.div
-        [ HA.class "ew ew-radio-buttons"
+        [ maybeAttr HA.id attrs.id
+        , HA.class "ew ew-radio-buttons"
         , HA.classList [ ( "m-vertical", attrs.vertical ), ( "is-disabled", attrs.disabled ) ]
         , styles [ ( "--color", attrs.color ) ]
         ]
@@ -836,15 +872,15 @@ radioButtons attrs_ props =
             |> List.map
                 (\a ->
                     H.label
-                        [ HA.name props.name
+                        [ HA.name name
                         , HA.class "ew ew-radio-buttons--item"
                         ]
                         [ H.input
                             [ HA.class "ew ew-focusable ew-radio-buttons--item-input"
                             , HA.type_ "radio"
-                            , HA.name props.name
+                            , HA.name name
                             , HA.value (props.toValue a)
-                            , HA.checked (Just a == props.value)
+                            , HA.checked (a == props.value)
                             , HA.disabled attrs.disabled
                             , HE.onCheck (\_ -> props.onInput a)
                             ]
@@ -860,14 +896,16 @@ radioButtons attrs_ props =
 
 {-| -}
 type alias RangeAttributes =
-    { disabled : Bool
+    { id : Maybe String
+    , disabled : Bool
     , color : String
     }
 
 
 rangeDefaults : RangeAttributes
 rangeDefaults =
-    { disabled = False
+    { id = Nothing
+    , disabled = False
     , color = "var(--tmspc-highlight-base)"
     }
 
@@ -889,7 +927,8 @@ rangeInput attrs_ props =
             applyAttrs rangeDefaults attrs_
     in
     H.input
-        [ HA.class "ew ew-range"
+        [ maybeAttr HA.id attrs.id
+        , HA.class "ew ew-range"
         , HA.type_ "range"
         , HA.disabled attrs.disabled
         , HA.value <| String.fromFloat props.value

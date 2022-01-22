@@ -3,6 +3,7 @@ module ElmWidgets.Attributes exposing
     , fill, vertical, alignRight
     , required, disabled, placeholder, pattern, hint, success, warning, danger
     , htmlAttrs
+    , footer, id, none
     )
 
 {-|
@@ -77,6 +78,15 @@ alignRight v a =
 
 
 
+-- Content
+
+
+footer : H.Html msg -> { a | footer : Maybe (H.Html msg) } -> { a | footer : Maybe (H.Html msg) }
+footer v a =
+    { a | footer = Just v }
+
+
+
 -- Forms
 
 
@@ -130,6 +140,18 @@ danger v a =
 
 
 -- General
+
+
+{-| -}
+none : a -> a
+none =
+    identity
+
+
+{-| -}
+id : String -> { a | id : Maybe String } -> { a | id : Maybe String }
+id v a =
+    { a | id = Just v }
 
 
 {-| -}

@@ -8,7 +8,6 @@ import ElmWidgets as W exposing (..)
 import ElmWidgets.Attributes as WA
 import ElmWidgets.Styles
 import Html as H
-import LogAction
 import ThemeSpec
 import UI
 
@@ -51,7 +50,18 @@ fieldChapter : Chapter x
 fieldChapter =
     chapter "Field"
         |> renderComponentList
-            [ ( "Default"
+            [ ( "Single"
+              , W.field []
+                    { label = H.text "Label"
+                    , input =
+                        W.textInput
+                            [ WA.placeholder "…" ]
+                            { value = ""
+                            , onInput = logActionWithString "onInput"
+                            }
+                    }
+              )
+            , ( "Group + Status"
               , H.div []
                     [ W.field []
                         { label = H.text "Label"
@@ -107,6 +117,50 @@ fieldChapter =
                             W.textInput
                                 []
                                 { value = ""
+                                , onInput = logActionWithString "onInput"
+                                }
+                        }
+                    ]
+              )
+            , ( "Right aligned"
+              , H.div []
+                    [ W.field
+                        [ WA.alignRight True
+                        ]
+                        { label = H.text "Label"
+                        , input =
+                            W.textInput
+                                []
+                                { value = ""
+                                , onInput = logActionWithString "onInput"
+                                }
+                        }
+                    , W.field
+                        [ WA.alignRight True
+                        , WA.footer (H.text "Some description")
+                        , WA.warning "You know better than this."
+                        ]
+                        { label = H.text "Label"
+                        , input =
+                            W.checkbox
+                                []
+                                { value = True
+                                , onInput = logActionWithBool "onInput"
+                                }
+                        }
+                    , W.field
+                        [ WA.alignRight True
+                        , WA.footer (H.text "Some description")
+                        , WA.success "You did it!"
+                        ]
+                        { label = H.text "Label"
+                        , input =
+                            W.radioButtons
+                                [ WA.vertical True ]
+                                { value = "Something"
+                                , options = [ "Something", "In the way", "She moves", "Attracts me" ]
+                                , toLabel = identity
+                                , toValue = identity
                                 , onInput = logActionWithString "onInput"
                                 }
                         }
@@ -196,8 +250,7 @@ radioButtonsChapter =
             [ ( "Default"
               , W.radioButtons
                     []
-                    { name = "radio"
-                    , value = Nothing
+                    { value = 1
                     , toLabel = String.fromInt
                     , toValue = String.fromInt
                     , options = [ 1, 2, 3 ]
@@ -207,8 +260,7 @@ radioButtonsChapter =
             , ( "Disabled"
               , W.radioButtons
                     [ WA.disabled True ]
-                    { name = "radio"
-                    , value = Nothing
+                    { value = 2
                     , toLabel = String.fromInt
                     , toValue = String.fromInt
                     , options = [ 1, 2, 3 ]
@@ -218,8 +270,7 @@ radioButtonsChapter =
             , ( "Custom Colors"
               , W.radioButtons
                     [ WA.color "red" ]
-                    { name = "radio"
-                    , value = Nothing
+                    { value = 3
                     , toLabel = String.fromInt
                     , toValue = String.fromInt
                     , options = [ 1, 2, 3 ]
@@ -229,8 +280,7 @@ radioButtonsChapter =
             , ( "Vertical"
               , W.radioButtons
                     [ WA.vertical True ]
-                    { name = "radio"
-                    , value = Nothing
+                    { value = 2
                     , toLabel = String.fromInt
                     , toValue = String.fromInt
                     , options = [ 1, 2, 3 ]
@@ -342,40 +392,40 @@ selectChapter =
             [ ( "Simple"
               , W.select
                     []
-                    { value = Just 1
+                    { value = 1
                     , toLabel = String.fromInt
                     , toValue = String.fromInt
-                    , onInput = LogAction.logActionWithMaybeInt "onInput"
+                    , onInput = logActionWith String.fromInt "onInput"
                     , options = [ 1, 2 ]
                     }
               )
             , ( "Disabled"
               , W.select
                     [ WA.disabled True ]
-                    { value = Nothing
+                    { value = 1
                     , toLabel = String.fromInt
                     , toValue = String.fromInt
-                    , onInput = LogAction.logActionWithMaybeInt "onInput"
+                    , onInput = logActionWith String.fromInt "onInput"
                     , options = [ 1, 2 ]
                     }
               )
             , ( "With Placeholder"
               , W.select
-                    [ WA.placeholder "Select a number" ]
-                    { value = Nothing
+                    []
+                    { value = 2
                     , toLabel = String.fromInt
                     , toValue = String.fromInt
-                    , onInput = LogAction.logActionWithMaybeInt "onInput"
+                    , onInput = logActionWith String.fromInt "onInput"
                     , options = [ 1, 2 ]
                     }
               )
             , ( "With Option Groups"
               , W.selectWithGroups
-                    [ WA.placeholder "Select a year" ]
-                    { value = Nothing
+                    []
+                    { value = 2000
                     , toValue = String.fromInt
                     , toLabel = String.fromInt
-                    , onInput = LogAction.logActionWithMaybeInt "onInput"
+                    , onInput = logActionWith String.fromInt "onInput"
                     , options = [ 1900, 2000 ]
                     , optionGroups =
                         [ ( "70's", [ 1978, 1979 ] )
