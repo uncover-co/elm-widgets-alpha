@@ -1,10 +1,10 @@
 module ElmWidgets.Attributes exposing
     ( color, background, shadow
-    , fill, vertical, alignRight
-    , footer
+    , href, onClick
+    , size, fill, vertical, alignRight, absolute
+    , footer, header, left
     , required, disabled, placeholder, pattern, hint, success, warning, danger
     , none, id, htmlAttrs
-    , absolute, header, href, left, onClick, size
     )
 
 {-|
@@ -15,14 +15,19 @@ module ElmWidgets.Attributes exposing
 @docs color, background, shadow
 
 
+## Actions
+
+@docs href, onClick
+
+
 ## Layout
 
-@docs fill, vertical, alignRight
+@docs size, fill, vertical, alignRight, absolute
 
 
 ## Content
 
-@docs footer
+@docs footer, header, left
 
 
 ## Forms
@@ -99,11 +104,13 @@ alignRight v a =
 -- Actions
 
 
+{-| -}
 href : String -> { a | href : Maybe String } -> { a | href : Maybe String }
 href v a =
     { a | href = Just v }
 
 
+{-| -}
 onClick : msg -> { a | onClick : Maybe msg } -> { a | onClick : Maybe msg }
 onClick v a =
     { a | onClick = Just v }

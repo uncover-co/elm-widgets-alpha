@@ -4,14 +4,15 @@ module ElmWidgets exposing
     , dangerButton, dangerButtonLink, confirmButton, confirmButtonLink, StatusButtonAttributes
     , outlinedButton, outlinedButtonLink, OutlinedButtonAttributes
     , invisibleButton, invisibleButtonLink, InvisibleButtonAttributes
-    , loadingCircle, loadingDots, loadingRipple
+    , loadingCircle, loadingDots, loadingRipple, LoadingAttributes
+    , modal, ModalAttributes, dataRow, DataRowAttributes
     , field
     , dateInput, datetimeInput, emailInput, numberInput, passwordInput, searchInput, telephoneInput, textInput, timeInput, urlInput, InputAttributes
+    , autocomplete, AutocompleteAttributes
     , checkbox, CheckboxAttributes
     , radioButtons, RadioButtonsAttributes
     , select, selectWithGroups, SelectAttributes
     , rangeInput
-    , autocomplete, dataRow, modal
     )
 
 {-|
@@ -47,7 +48,12 @@ module ElmWidgets exposing
 
 # Loading
 
-@docs loadingCircle, loadingDots, loadingRipple
+@docs loadingCircle, loadingDots, loadingRipple, LoadingAttributes
+
+
+# Layout
+
+@docs modal, ModalAttributes, dataRow, DataRowAttributes
 
 
 # Forms
@@ -58,6 +64,11 @@ module ElmWidgets exposing
 # Input
 
 @docs dateInput, datetimeInput, emailInput, numberInput, passwordInput, searchInput, telephoneInput, textInput, timeInput, urlInput, InputAttributes
+
+
+# Autocomplete
+
+@docs autocomplete, AutocompleteAttributes
 
 
 # Checkbox
@@ -189,6 +200,7 @@ onEscape msg =
 -- Loading
 
 
+{-| -}
 type alias LoadingAttributes =
     { size : Float
     , color : String
@@ -1126,6 +1138,7 @@ autocompleteDefaults =
     }
 
 
+{-| -}
 autocomplete :
     List (AutocompleteAttributes msg -> AutocompleteAttributes msg)
     ->
@@ -1196,6 +1209,7 @@ autocomplete attrs_ props =
 -- Modal
 
 
+{-| -}
 type alias ModalAttributes =
     { background : String
     , shadow : String
@@ -1265,6 +1279,7 @@ modal attrs_ props =
 -- DataRow
 
 
+{-| -}
 type alias DataRowAttributes msg =
     { footer : Maybe (Html msg)
     , header : Maybe (Html msg)
@@ -1284,6 +1299,7 @@ dataRowDefaults =
     }
 
 
+{-| -}
 dataRow :
     List (DataRowAttributes msg -> DataRowAttributes msg)
     ->
