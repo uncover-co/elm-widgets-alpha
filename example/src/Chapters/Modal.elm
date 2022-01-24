@@ -43,17 +43,4 @@ chapter_ =
                         }
                     ]
               )
-            , ( "Custom Colors"
-              , wrapper
-                    [ W.modal
-                        [ WA.absolute True
-                        , WA.background ThemeSpec.highlightDark
-                        , WA.shadow ThemeSpec.highlightDark
-                        , WA.color ThemeSpec.highlightTint
-                        ]
-                        { onClose = Just (logAction "onClose")
-                        , content = content
-                        }
-                    ]
-              )
             ]

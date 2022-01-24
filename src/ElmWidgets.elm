@@ -1211,19 +1211,13 @@ autocomplete attrs_ props =
 
 {-| -}
 type alias ModalAttributes =
-    { background : String
-    , shadow : String
-    , color : String
-    , absolute : Bool
+    { absolute : Bool
     }
 
 
 modalDefaults : ModalAttributes
 modalDefaults =
-    { background = "var(--tmspc-color-dark)"
-    , shadow = "var(--tmspc-color-base)"
-    , color = "var(--tmspc-background-base)"
-    , absolute = False
+    { absolute = False
     }
 
 
@@ -1246,11 +1240,6 @@ modal attrs_ props =
         , HA.classList
             [ ( "ew-m-absolute", attrs.absolute )
             , ( "ew-m-can-close", props.onClose /= Nothing )
-            ]
-        , styles
-            [ ( "--background", attrs.background )
-            , ( "--shadow", attrs.shadow )
-            , ( "--color", attrs.color )
             ]
         ]
         [ H.div
