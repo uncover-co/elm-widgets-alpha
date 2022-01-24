@@ -2,6 +2,7 @@ module Main exposing (main)
 
 import Chapters.Autocomplete
 import Chapters.Buttons
+import Chapters.DataRow
 import Chapters.Field
 import Chapters.Loading
 import Chapters.Modal
@@ -37,6 +38,7 @@ main =
               )
             , ( "Layout"
               , [ Chapters.Modal.chapter_
+                , Chapters.DataRow.chapter_
                 ]
               )
             , ( "Form"

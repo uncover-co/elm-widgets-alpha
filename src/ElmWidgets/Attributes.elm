@@ -4,7 +4,7 @@ module ElmWidgets.Attributes exposing
     , footer
     , required, disabled, placeholder, pattern, hint, success, warning, danger
     , none, id, htmlAttrs
-    , absolute, size
+    , absolute, header, href, left, onClick, size
     )
 
 {-|
@@ -96,6 +96,20 @@ alignRight v a =
 
 
 
+-- Actions
+
+
+href : String -> { a | href : Maybe String } -> { a | href : Maybe String }
+href v a =
+    { a | href = Just v }
+
+
+onClick : msg -> { a | onClick : Maybe msg } -> { a | onClick : Maybe msg }
+onClick v a =
+    { a | onClick = Just v }
+
+
+
 -- Content
 
 
@@ -103,6 +117,18 @@ alignRight v a =
 footer : H.Html msg -> { a | footer : Maybe (H.Html msg) } -> { a | footer : Maybe (H.Html msg) }
 footer v a =
     { a | footer = Just v }
+
+
+{-| -}
+header : H.Html msg -> { a | header : Maybe (H.Html msg) } -> { a | header : Maybe (H.Html msg) }
+header v a =
+    { a | header = Just v }
+
+
+{-| -}
+left : H.Html msg -> { a | left : Maybe (H.Html msg) } -> { a | left : Maybe (H.Html msg) }
+left v a =
+    { a | left = Just v }
 
 
 

@@ -11,7 +11,7 @@ module ElmWidgets exposing
     , radioButtons, RadioButtonsAttributes
     , select, selectWithGroups, SelectAttributes
     , rangeInput
-    , autocomplete, modal
+    , autocomplete, dataRow, modal
     )
 
 {-|
@@ -1218,9 +1218,9 @@ modal :
     List (ModalAttributes -> ModalAttributes)
     ->
         { onClose : Maybe msg
-        , content : H.Html msg
+        , content : Html msg
         }
-    -> H.Html msg
+    -> Html msg
 modal attrs_ props =
     let
         attrs =
@@ -1258,4 +1258,72 @@ modal attrs_ props =
             ]
             [ props.content
             ]
+        ]
+
+
+
+-- DataRow
+
+
+type alias DataRowAttributes msg =
+    { footer : Maybe (Html msg)
+    , header : Maybe (Html msg)
+    , left : Maybe (Html msg)
+    , onClick : Maybe msg
+    , href : Maybe String
+    }
+
+
+dataRowDefaults : DataRowAttributes msg
+dataRowDefaults =
+    { footer = Nothing
+    , header = Nothing
+    , left = Nothing
+    , onClick = Nothing
+    , href = Nothing
+    }
+
+
+dataRow :
+    List (DataRowAttributes msg -> DataRowAttributes msg)
+    ->
+        { label : Html msg
+        , actions : List (Html msg)
+        }
+    -> H.Html msg
+dataRow attrs_ props =
+    let
+        attrs =
+            applyAttrs dataRowDefaults attrs_
+
+        main_ =
+            case ( attrs.onClick, attrs.href ) of
+                ( Just onClick, _ ) ->
+                    H.button
+                        [ HA.class "ew ew-focusable ew-data-row-main ew-m-button", HE.onClick onClick ]
+
+                ( Nothing, Just href ) ->
+                    H.a
+                        [ HA.class "ew ew-focusable ew-data-row-main ew-m-link", HA.href href ]
+
+                _ ->
+                    H.div
+                        [ HA.class "ew ew-data-row-main" ]
+    in
+    H.div [ HA.class "ew ew-data-row" ]
+        [ main_
+            [ maybeHtml (\left -> H.div [ HA.class "ew ew-data-row-left" ] [ left ]) attrs.left
+            , H.div [ HA.class "ew ew-data-row-main-main" ]
+                [ maybeHtml (\header -> H.div [ HA.class "ew ew-data-row-header" ] [ header ]) attrs.header
+                , H.div [ HA.class "ew ew-data-row-label" ] [ props.label ]
+                , maybeHtml (\footer -> H.div [ HA.class "ew ew-data-row-footer" ] [ footer ]) attrs.footer
+                ]
+            ]
+        , if not (List.isEmpty props.actions) then
+            H.div
+                [ HA.class "ew ew-data-row-actions" ]
+                props.actions
+
+          else
+            H.text ""
         ]

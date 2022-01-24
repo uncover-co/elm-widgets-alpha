@@ -284,7 +284,7 @@
   padding: 12px;
   background-color: var(--tmspc-color-tint);
   border-radius: var(--tmspc-border-radius);
-  color: var(--tmspc-color-dark);
+  color: var(--tmspc-color-base);
   &.ew-m-success {
     color: var(--tmspc-success-dark);
     background-color: var(--tmspc-success-tint);
@@ -574,7 +574,7 @@
   shadow: none;
   cursor: pointer;
   margin-top: -32px;
-  color: var(--tmspc-background-base);
+  color: var(--color);
   pointer-events: none;
 }
 .ew.ew-modal.ew-m-can-close .ew-modal-background:hover {
@@ -586,4 +586,72 @@
   &:active + .ew-modal-close {
     transform: scale(0.7);
   }
+}
+
+/* DataRow */
+
+.ew.ew-data-row {
+  display: flex;
+  align-items: center;
+  padding: 8px;
+  background: var(--tmspc-background-base);
+}
+.ew.ew-data-row-main {
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  font-family: var(--tmspc-font-text);
+  color: var(--tmspc-color-base);
+}
+.ew.ew-data-row-main-main {
+  flex-grow: 1;
+}
+.ew.ew-data-row-main {
+  appearance: none;
+  display: flex;
+  align-items: center;
+
+  width: 100%;
+  padding: 8px;
+  text-align: left;
+
+  background: none;
+  border: none;
+  border-radius: var(--tmspc-border-radius);
+  box-shadow: none;
+
+  font-size: 16px;
+  color: inherit;
+  text-decoration: none;
+}
+.ew.ew-data-row-main.ew-m-button:hover,
+.ew.ew-data-row-main.ew-m-link:hover {
+  cursor: pointer;
+  background: var(--tmspc-background-tint);
+}
+.ew.ew-data-row-main.ew-m-button:active,
+.ew.ew-data-row-main.ew-m-link:active {
+  background: var(--tmspc-background-light);
+}
+
+.ew.ew-data-row-left {
+  padding: 8px 12px 8px 0;
+}
+
+.ew.ew-data-row-header,
+.ew.ew-data-row-footer {
+  font-size: 14px;
+  color: var(--tmspc-color-light);
+}
+
+.ew.ew-data-row-header {
+  padding-bottom: 2px;
+}
+.ew.ew-data-row-footer {
+  padding-top: 1px;
+}
+
+.ew.ew-data-row-actions {
+  flex-shrink: 0;
+  padding-left: 8px;
 }
