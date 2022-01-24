@@ -4,6 +4,7 @@ module ElmWidgets.Attributes exposing
     , footer
     , required, disabled, placeholder, pattern, hint, success, warning, danger
     , none, id, htmlAttrs
+    , absolute, size
     )
 
 {-|
@@ -62,6 +63,18 @@ shadow v a =
 
 
 -- Layout
+
+
+{-| -}
+absolute : Bool -> { a | absolute : Bool } -> { a | absolute : Bool }
+absolute v a =
+    { a | absolute = v }
+
+
+{-| -}
+size : Float -> { a | size : Float } -> { a | size : Float }
+size v a =
+    { a | size = v }
 
 
 {-| -}

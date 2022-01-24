@@ -31,6 +31,100 @@
   font-family: var(--tmspc-font-text);
 }
 
+/* Loading */
+
+.ew.ew-loading-dots {
+  display: inline-block;
+  position: relative;
+  width: var(--size);
+  height: var(--size);
+  & > div {
+    position: absolute;
+    top: calc(var(--size) * 0.4);
+    width: calc(var(--size) * 0.2);
+    height: calc(var(--size) * 0.2);
+    border-radius: calc(var(--size) * 0.2);
+    background: var(--color);
+    animation-timing-function: cubic-bezier(0, 1, 1, 0);
+  }
+  & > div:nth-child(1) {
+    left: 0;
+    animation: ew-loading-dots-1 0.6s infinite;
+  }
+  & > div:nth-child(2) {
+    left: 0;
+    animation: ew-loading-dots-2 0.6s infinite;
+  }
+  & > div:nth-child(3) {
+    left: calc(var(--size) * 0.4);
+    animation: ew-loading-dots-2 0.6s infinite;
+  }
+  & > div:nth-child(4) {
+    left: calc(var(--size) * 0.8);
+    animation: ew-loading-dots-3 0.6s infinite;
+  }
+}
+
+@keyframes ew-loading-dots-1 {
+  0% {
+    transform: scale(0);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+@keyframes ew-loading-dots-2 {
+  0% {
+    transform: translate(0, 0);
+  }
+  100% {
+    transform: translate(calc(var(--size) * 0.4), 0);
+  }
+}
+@keyframes ew-loading-dots-3 {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(0);
+  }
+}
+
+.ew.ew-loading-ripple {
+  display: inline-block;
+  position: relative;
+  width: var(--size);
+  height: var(--size);
+
+  & > div {
+    position: absolute;
+    border: calc(var(--size) * 0.06) solid var(--color);
+    opacity: 1;
+    border-radius: 50%;
+    animation: ew-loading-ripple 1.2s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+  }
+  & > div:nth-child(2) {
+    animation-delay: -0.6s;
+  }
+}
+
+@keyframes ew-loading-ripple {
+  0% {
+    top: calc(var(--size) * 0.5);
+    left: calc(var(--size) * 0.5);
+    width: 0;
+    height: 0;
+    opacity: 1;
+  }
+  100% {
+    top: 0;
+    left: 0;
+    width: var(--size);
+    height: var(--size);
+    opacity: 0;
+  }
+}
+
 /* Buttons */
 
 .ew.ew-btn {
@@ -415,5 +509,81 @@
 
   &:disabled {
     pointer-events: none;
+  }
+}
+
+/* Autocomplete */
+
+.ew.ew-autocomplete {
+  position: relative;
+}
+.ew.ew-autocomplete-loading {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  bottom: 4px;
+  width: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--tmspc-background-base);
+  --color: var(--tmspc-background-light);
+}
+
+.ew.ew-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  &.ew-m-absolute {
+    position: absolute;
+  }
+}
+.ew.ew-modal-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--background);
+  opacity: 0.4;
+  transition: opacity 0.2s;
+}
+.ew.ew-modal-content {
+  position: relative;
+  background: var(--color);
+  box-shadow: 0 2px 20px var(--shadow);
+  border-radius: var(--tmspc-border-radius-large);
+  width: 100%;
+  max-width: 960px;
+  max-height: 80%;
+  overflow: auto;
+}
+.ew.ew-modal-close {
+  position: relative;
+  align-self: flex-end;
+  padding: 8px;
+  background: transparent;
+  border: none;
+  shadow: none;
+  cursor: pointer;
+  margin-top: -32px;
+  color: var(--tmspc-background-base);
+  pointer-events: none;
+}
+.ew.ew-modal.ew-m-can-close .ew-modal-background:hover {
+  cursor: pointer;
+  opacity: 0.3;
+  & + .ew-modal-close {
+    transform: scale(0.9);
+  }
+  &:active + .ew-modal-close {
+    transform: scale(0.7);
   }
 }

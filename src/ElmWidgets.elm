@@ -4,12 +4,14 @@ module ElmWidgets exposing
     , dangerButton, dangerButtonLink, confirmButton, confirmButtonLink, StatusButtonAttributes
     , outlinedButton, outlinedButtonLink, OutlinedButtonAttributes
     , invisibleButton, invisibleButtonLink, InvisibleButtonAttributes
+    , loadingCircle, loadingDots, loadingRipple
     , field
     , dateInput, datetimeInput, emailInput, numberInput, passwordInput, searchInput, telephoneInput, textInput, timeInput, urlInput, InputAttributes
     , checkbox, CheckboxAttributes
     , radioButtons, RadioButtonsAttributes
     , select, selectWithGroups, SelectAttributes
     , rangeInput
+    , autocomplete, modal
     )
 
 {-|
@@ -41,6 +43,11 @@ module ElmWidgets exposing
 ### Invisible Button
 
 @docs invisibleButton, invisibleButtonLink, InvisibleButtonAttributes
+
+
+# Loading
+
+@docs loadingCircle, loadingDots, loadingRipple
 
 
 # Forms
@@ -75,11 +82,15 @@ module ElmWidgets exposing
 -}
 
 import Dict exposing (Dict)
+import ElmWidgets.Attributes as WA
+import ElmWidgets.Icons
 import ElmWidgets.Styles
 import Html as H exposing (Html, optgroup)
 import Html.Attributes as HA
 import Html.Events as HE
 import Json.Decode as D
+import Svg as S
+import Svg.Attributes as SA
 
 
 
@@ -123,6 +134,13 @@ maybeAttr fn a =
         |> Maybe.withDefault (HA.class "")
 
 
+maybeHtml : (a -> H.Html msg) -> Maybe a -> H.Html msg
+maybeHtml fn a =
+    a
+        |> Maybe.map fn
+        |> Maybe.withDefault (H.text "")
+
+
 applyAttrs : a -> List (a -> a) -> a
 applyAttrs defaults fns =
     List.foldl (\fn a -> fn a) defaults fns
@@ -135,6 +153,138 @@ fillWidth fill =
 
     else
         "auto"
+
+
+onEnter : msg -> H.Attribute msg
+onEnter msg =
+    HE.on "keyup"
+        (D.field "key" D.string
+            |> D.andThen
+                (\key ->
+                    if key == "Enter" then
+                        D.succeed msg
+
+                    else
+                        D.fail "Invalid key."
+                )
+        )
+
+
+onEscape : msg -> H.Attribute msg
+onEscape msg =
+    HE.on "keyup"
+        (D.field "key" D.string
+            |> D.andThen
+                (\key ->
+                    if key == "Escape" then
+                        D.succeed msg
+
+                    else
+                        D.fail "Invalid key."
+                )
+        )
+
+
+
+-- Loading
+
+
+type alias LoadingAttributes =
+    { size : Float
+    , color : String
+    }
+
+
+loadingDefaults : LoadingAttributes
+loadingDefaults =
+    { color = "var(--tmspc-color-light)"
+    , size = 25
+    }
+
+
+{-| -}
+loadingCircle :
+    List (LoadingAttributes -> LoadingAttributes)
+    -> S.Svg msg
+loadingCircle attrs_ =
+    let
+        attrs =
+            applyAttrs loadingDefaults attrs_
+    in
+    S.svg
+        [ SA.style ("--color: " ++ attrs.color)
+        , SA.class "ew ew-loading-circle"
+        , SA.viewBox "0 0 40 40"
+        , SA.height (String.fromFloat attrs.size ++ "px")
+        , SA.width (String.fromFloat attrs.size ++ "px")
+        , SA.xmlSpace "preserve"
+        ]
+        [ S.path
+            [ SA.fill "var(--color)"
+            , SA.opacity "0.2"
+            , SA.d "M20.201,5.169c-8.254,0-14.946,6.692-14.946,14.946c0,8.255,6.692,14.946,14.946,14.946 s14.946-6.691,14.946-14.946C35.146,11.861,28.455,5.169,20.201,5.169z M20.201,31.749c-6.425,0-11.634-5.208-11.634-11.634 c0-6.425,5.209-11.634,11.634-11.634c6.425,0,11.633,5.209,11.633,11.634C31.834,26.541,26.626,31.749,20.201,31.749z"
+            ]
+            []
+        , S.path
+            [ SA.fill "var(--color)"
+            , SA.d "M26.013,10.047l1.654-2.866c-2.198-1.272-4.743-2.012-7.466-2.012h0v3.312h0 C22.32,8.481,24.301,9.057,26.013,10.047z"
+            ]
+            [ S.animateTransform
+                [ SA.attributeType "xml"
+                , SA.attributeName "transform"
+                , SA.type_ "rotate"
+                , SA.from "0 20 20"
+                , SA.to "360 20 20"
+                , SA.dur "1.2s"
+                , SA.repeatCount "indefinite"
+                ]
+                []
+            ]
+        ]
+
+
+{-| -}
+loadingDots :
+    List (LoadingAttributes -> LoadingAttributes)
+    -> H.Html msg
+loadingDots attrs_ =
+    let
+        attrs =
+            applyAttrs loadingDefaults attrs_
+    in
+    H.div
+        [ HA.class "ew ew-loading-dots"
+        , styles
+            [ ( "--color", attrs.color )
+            , ( "--size", String.fromFloat attrs.size ++ "px" )
+            ]
+        ]
+        [ H.div [] []
+        , H.div [] []
+        , H.div [] []
+        , H.div [] []
+        ]
+
+
+{-| -}
+loadingRipple :
+    List (LoadingAttributes -> LoadingAttributes)
+    -> H.Html msg
+loadingRipple attrs_ =
+    let
+        attrs =
+            applyAttrs loadingDefaults attrs_
+    in
+    H.div
+        [ HA.class "ew ew-loading-ripple"
+        , styles
+            [ ( "--size", String.fromFloat attrs.size ++ "px" )
+            , ( "--color", attrs.color )
+            ]
+        ]
+        [ H.div [] []
+        , H.div [] []
+        ]
 
 
 
@@ -954,3 +1104,158 @@ rangeInput attrs_ props =
             ]
         ]
         []
+
+
+
+-- Autocomplete
+
+
+{-| -}
+type alias AutocompleteAttributes msg =
+    { disabled : Bool
+    , placeholder : Maybe String
+    , htmlAttrs : List (H.Attribute msg)
+    }
+
+
+autocompleteDefaults : AutocompleteAttributes msg
+autocompleteDefaults =
+    { disabled = False
+    , placeholder = Nothing
+    , htmlAttrs = []
+    }
+
+
+autocomplete :
+    List (AutocompleteAttributes msg -> AutocompleteAttributes msg)
+    ->
+        { id : String
+        , search : String
+        , value : Maybe a
+        , options : Maybe (List a)
+        , toLabel : a -> String
+        , onInput : String -> Maybe a -> msg
+        , onEnter : Maybe msg
+        }
+    -> H.Html msg
+autocomplete attrs_ props =
+    let
+        attrs =
+            applyAttrs autocompleteDefaults attrs_
+
+        options =
+            props.options
+                |> Maybe.withDefault []
+                |> List.map (\o -> ( props.toLabel o, o ))
+
+        optionsDict =
+            Dict.fromList options
+    in
+    H.div [ HA.class "ew ew-autocomplete" ]
+        [ H.input
+            (attrs.htmlAttrs
+                ++ [ maybeAttr HA.placeholder attrs.placeholder
+                   , HA.disabled attrs.disabled
+                   , HA.id props.id
+                   , HA.class "ew ew-input ew-focusable"
+                   , HA.list "list"
+                   , HA.value props.search
+                   , maybeAttr onEnter props.onEnter
+                   , HE.on "input"
+                        (D.at [ "target", "value" ] D.string
+                            |> D.andThen
+                                (\value ->
+                                    Dict.get value optionsDict
+                                        |> props.onInput value
+                                        |> D.succeed
+                                )
+                        )
+                   ]
+            )
+            []
+        , H.datalist
+            [ HA.id "list" ]
+            (options
+                |> List.map
+                    (\( label, _ ) ->
+                        H.option [ HA.value label ] []
+                    )
+            )
+        , if props.options == Nothing then
+            H.div
+                [ HA.class "ew ew-autocomplete-loading" ]
+                [ loadingCircle [ WA.size 28 ]
+                ]
+
+          else
+            H.text ""
+        ]
+
+
+
+-- Modal
+
+
+type alias ModalAttributes =
+    { background : String
+    , shadow : String
+    , color : String
+    , absolute : Bool
+    }
+
+
+modalDefaults : ModalAttributes
+modalDefaults =
+    { background = "var(--tmspc-color-dark)"
+    , shadow = "var(--tmspc-color-base)"
+    , color = "var(--tmspc-background-base)"
+    , absolute = False
+    }
+
+
+{-| -}
+modal :
+    List (ModalAttributes -> ModalAttributes)
+    ->
+        { onClose : Maybe msg
+        , content : H.Html msg
+        }
+    -> H.Html msg
+modal attrs_ props =
+    let
+        attrs =
+            applyAttrs modalDefaults attrs_
+    in
+    H.div
+        [ HA.attribute "role" "dialog"
+        , HA.class "ew ew-modal"
+        , HA.classList
+            [ ( "ew-m-absolute", attrs.absolute )
+            , ( "ew-m-can-close", props.onClose /= Nothing )
+            ]
+        , styles
+            [ ( "--background", attrs.background )
+            , ( "--shadow", attrs.shadow )
+            , ( "--color", attrs.color )
+            ]
+        ]
+        [ H.div
+            [ HA.class "ew ew-modal-background"
+            , maybeAttr HE.onClick props.onClose
+            ]
+            []
+        , maybeHtml
+            (\onClose ->
+                H.button
+                    [ HA.class "ew ew-modal-close"
+                    , HE.onClick onClose
+                    ]
+                    [ ElmWidgets.Icons.close { size = 24 } ]
+            )
+            props.onClose
+        , H.div
+            [ HA.class "ew ew-modal-content"
+            ]
+            [ props.content
+            ]
+        ]
