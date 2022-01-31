@@ -5,6 +5,7 @@ module ElmWidgets.Attributes exposing
     , footer, header, left
     , required, disabled, placeholder, pattern, hint, success, warning, danger
     , none, id, htmlAttrs
+    , onBlur, onFocus, readOnly
     )
 
 {-|
@@ -116,6 +117,18 @@ onClick v a =
     { a | onClick = Just v }
 
 
+{-| -}
+onFocus : msg -> { a | onFocus : Maybe msg } -> { a | onFocus : Maybe msg }
+onFocus v a =
+    { a | onFocus = Just v }
+
+
+{-| -}
+onBlur : msg -> { a | onBlur : Maybe msg } -> { a | onBlur : Maybe msg }
+onBlur v a =
+    { a | onBlur = Just v }
+
+
 
 -- Content
 
@@ -152,6 +165,12 @@ required v a =
 disabled : Bool -> { a | disabled : Bool } -> { a | disabled : Bool }
 disabled v a =
     { a | disabled = v }
+
+
+{-| -}
+readOnly : Bool -> { a | readOnly : Bool } -> { a | readOnly : Bool }
+readOnly v a =
+    { a | readOnly = v }
 
 
 {-| -}

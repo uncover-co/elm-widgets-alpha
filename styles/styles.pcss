@@ -452,6 +452,58 @@
 
 /* Inputs - Range */
 
+.ew.ew-range-wrapper {
+  padding-top: 8px;
+  background-color: var(--tmspc-background-base);
+}
+
+.ew.ew-range-value-wrapper {
+  display: flex;
+  justify-content: center;
+  position: relative;
+  text-align: center;
+  font-family: var(--tmspc-font-text);
+  padding-bottom: 4px;
+  &::after {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    margin-top: -2px;
+    display: block;
+    content: "";
+    border-top: 1px solid var(--tmspc-background-light);
+  }
+}
+.ew.ew-range-value {
+  position: relative;
+  z-index: 1;
+
+  font-size: 14px;
+  color: var(--tmspc-color-base);
+
+  padding: 0 8px;
+  background-color: var(--tmspc-background-base);
+}
+.ew.ew-range-bounds {
+  z-index: 1;
+
+  font-size: 12px;
+  color: var(--tmspc-color-light);
+
+  padding: 0 8px;
+  background-color: var(--tmspc-background-base);
+
+  position: absolute;
+  top: 1px;
+  &.ew-m-min {
+    left: 0;
+  }
+  &.ew-m-max {
+    right: 0;
+  }
+}
+
 .ew.ew-range {
   appearance: none;
   margin: 0;

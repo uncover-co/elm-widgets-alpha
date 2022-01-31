@@ -159,6 +159,13 @@ inputChapter =
                     , onInput = logActionWithString "onInput"
                     }
               )
+            , ( "Read Only"
+              , W.textInput
+                    [ WA.placeholder "…", WA.readOnly True ]
+                    { value = "Some value"
+                    , onInput = logActionWithString "onInput"
+                    }
+              )
             , ( "Password"
               , W.passwordInput
                     [ WA.placeholder "…"

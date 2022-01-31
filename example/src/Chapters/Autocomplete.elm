@@ -33,7 +33,6 @@ chapter_ =
                     , options = Just (List.range 0 10)
                     , toLabel = String.fromInt
                     , onInput = \a b -> logActionWithString "onInput" (result a b)
-                    , onEnter = Just (logAction "onEnter")
                     }
               )
             , ( "Loading"
@@ -44,7 +43,6 @@ chapter_ =
                     , options = Nothing
                     , toLabel = String.fromInt
                     , onInput = \a b -> logActionWithString "onInput" (result a b)
-                    , onEnter = Nothing
                     }
               )
             ]

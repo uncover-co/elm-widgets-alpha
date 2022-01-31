@@ -181,21 +181,6 @@ onEnter msg =
         )
 
 
-onEscape : msg -> H.Attribute msg
-onEscape msg =
-    HE.on "keyup"
-        (D.field "key" D.string
-            |> D.andThen
-                (\key ->
-                    if key == "Escape" then
-                        D.succeed msg
-
-                    else
-                        D.fail "Invalid key."
-                )
-        )
-
-
 
 -- Loading
 
@@ -826,9 +811,13 @@ select attrs_ props =
 type alias InputAttributes msg =
     { id : Maybe String
     , disabled : Bool
+    , readOnly : Bool
     , required : Bool
     , pattern : Maybe String
     , placeholder : Maybe String
+    , onFocus : Maybe msg
+    , onBlur : Maybe msg
+    , onEnter : Maybe msg
     , htmlAttrs : List (H.Attribute msg)
     }
 
@@ -837,9 +826,13 @@ inputDefaults : InputAttributes msg
 inputDefaults =
     { id = Nothing
     , disabled = False
+    , readOnly = False
     , required = False
     , pattern = Nothing
     , placeholder = Nothing
+    , onFocus = Nothing
+    , onBlur = Nothing
+    , onEnter = Nothing
     , htmlAttrs = []
     }
 
@@ -863,10 +856,14 @@ input_ type_ attrs_ props =
                , HA.class "ew ew-input ew-focusable"
                , HA.type_ type_
                , HA.disabled attrs.disabled
+               , HA.readonly attrs.readOnly
                , HA.value props.value
                , HE.onInput props.onInput
                , maybeAttr HA.placeholder attrs.placeholder
                , maybeAttr HA.pattern attrs.pattern
+               , maybeAttr HE.onFocus attrs.onFocus
+               , maybeAttr HE.onBlur attrs.onBlur
+               , maybeAttr onEnter attrs.onEnter
                ]
         )
         []
@@ -1088,34 +1085,47 @@ rangeInput attrs_ props =
         attrs =
             applyAttrs rangeDefaults attrs_
     in
-    H.input
-        [ maybeAttr HA.id attrs.id
-        , HA.class "ew ew-range"
-        , HA.type_ "range"
-        , HA.disabled attrs.disabled
-        , HA.value <| String.fromFloat props.value
-        , HA.min <| String.fromFloat props.min
-        , HA.max <| String.fromFloat props.max
-        , HA.step <| String.fromFloat props.step
-        , HE.on "input"
-            (D.at [ "target", "value" ] D.string
-                |> D.andThen
-                    (\v ->
-                        case String.toFloat v of
-                            Just v_ ->
-                                D.succeed v_
-
-                            Nothing ->
-                                D.fail "Invalid value."
-                    )
-                |> D.map props.onInput
-            )
-        , stylesList
-            [ ( "--color", attrs.color, not attrs.disabled )
-            , ( "--color", "var(--tmspc-background-dark)", attrs.disabled )
+    H.div [ HA.class "ew ew-range-wrapper" ]
+        [ H.div [ HA.class "ew ew-range-value-wrapper" ]
+            [ H.p
+                [ HA.class "ew ew-range-bounds ew-m-min" ]
+                [ H.text <| String.fromFloat props.min ]
+            , H.p
+                [ HA.class "ew ew-range-value" ]
+                [ H.text <| String.fromFloat props.value ]
+            , H.p
+                [ HA.class "ew ew-range-bounds ew-m-max" ]
+                [ H.text <| String.fromFloat props.max ]
             ]
+        , H.input
+            [ maybeAttr HA.id attrs.id
+            , HA.class "ew ew-range"
+            , HA.type_ "range"
+            , HA.disabled attrs.disabled
+            , HA.value <| String.fromFloat props.value
+            , HA.min <| String.fromFloat props.min
+            , HA.max <| String.fromFloat props.max
+            , HA.step <| String.fromFloat props.step
+            , HE.on "input"
+                (D.at [ "target", "value" ] D.string
+                    |> D.andThen
+                        (\v ->
+                            case String.toFloat v of
+                                Just v_ ->
+                                    D.succeed v_
+
+                                Nothing ->
+                                    D.fail "Invalid value."
+                        )
+                    |> D.map props.onInput
+                )
+            , stylesList
+                [ ( "--color", attrs.color, not attrs.disabled )
+                , ( "--color", "var(--tmspc-background-dark)", attrs.disabled )
+                ]
+            ]
+            []
         ]
-        []
 
 
 
@@ -1125,7 +1135,11 @@ rangeInput attrs_ props =
 {-| -}
 type alias AutocompleteAttributes msg =
     { disabled : Bool
+    , readOnly : Bool
     , placeholder : Maybe String
+    , onFocus : Maybe msg
+    , onBlur : Maybe msg
+    , onEnter : Maybe msg
     , htmlAttrs : List (H.Attribute msg)
     }
 
@@ -1133,7 +1147,11 @@ type alias AutocompleteAttributes msg =
 autocompleteDefaults : AutocompleteAttributes msg
 autocompleteDefaults =
     { disabled = False
+    , readOnly = False
     , placeholder = Nothing
+    , onFocus = Nothing
+    , onBlur = Nothing
+    , onEnter = Nothing
     , htmlAttrs = []
     }
 
@@ -1148,7 +1166,6 @@ autocomplete :
         , options : Maybe (List a)
         , toLabel : a -> String
         , onInput : String -> Maybe a -> msg
-        , onEnter : Maybe msg
         }
     -> H.Html msg
 autocomplete attrs_ props =
@@ -1169,11 +1186,15 @@ autocomplete attrs_ props =
             (attrs.htmlAttrs
                 ++ [ maybeAttr HA.placeholder attrs.placeholder
                    , HA.disabled attrs.disabled
+                   , HA.readonly attrs.readOnly
+                   , HA.autocomplete False
                    , HA.id props.id
                    , HA.class "ew ew-input ew-focusable"
                    , HA.list "list"
                    , HA.value props.search
-                   , maybeAttr onEnter props.onEnter
+                   , maybeAttr HE.onFocus attrs.onFocus
+                   , maybeAttr HE.onBlur attrs.onBlur
+                   , maybeAttr onEnter attrs.onEnter
                    , HE.on "input"
                         (D.at [ "target", "value" ] D.string
                             |> D.andThen
