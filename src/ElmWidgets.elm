@@ -93,7 +93,7 @@ module ElmWidgets exposing
 -}
 
 import Dict exposing (Dict)
-import ElmWidgets.Attributes as WA
+import ElmWidgets.Attributes as WA exposing (readOnly)
 import ElmWidgets.Icons
 import ElmWidgets.Styles
 import Html as H exposing (Html, optgroup)
@@ -702,6 +702,7 @@ field attrs_ props =
 type alias SelectAttributes =
     { id : Maybe String
     , disabled : Bool
+    , readOnly : Bool
     }
 
 
@@ -709,6 +710,7 @@ selectDefaults : SelectAttributes
 selectDefaults =
     { id = Nothing
     , disabled = False
+    , readOnly = False
     }
 
 
@@ -742,6 +744,7 @@ selectWithGroups attrs_ props =
             [ maybeAttr HA.id attrs.id
             , HA.class "ew ew-focusable ew-input ew-select"
             , HA.disabled attrs.disabled
+            , HA.readonly attrs.readOnly
             , HA.placeholder "Select"
             , HE.onInput
                 (\s ->
@@ -938,6 +941,7 @@ type alias CheckboxAttributes =
     { id : Maybe String
     , color : String
     , disabled : Bool
+    , readOnly : Bool
     }
 
 
@@ -946,6 +950,7 @@ checkboxDefaults =
     { id = Nothing
     , color = "var(--tmspc-highlight-base)"
     , disabled = False
+    , readOnly = False
     }
 
 
@@ -967,6 +972,7 @@ checkbox attrs_ props =
             , HA.type_ "checkbox"
             , HA.checked props.value
             , HA.disabled attrs.disabled
+            , HA.readonly attrs.readOnly
             , HE.onCheck props.onInput
             ]
             []
@@ -982,6 +988,7 @@ type alias RadioButtonsAttributes =
     { id : Maybe String
     , color : String
     , disabled : Bool
+    , readOnly : Bool
     , vertical : Bool
     }
 
@@ -991,6 +998,7 @@ radioButtonsDefaults =
     { id = Nothing
     , color = "var(--tmspc-highlight-base)"
     , disabled = False
+    , readOnly = False
     , vertical = False
     }
 
@@ -1041,6 +1049,7 @@ radioButtons attrs_ props =
                             , HA.value (props.toValue a)
                             , HA.checked (a == props.value)
                             , HA.disabled attrs.disabled
+                            , HA.readonly attrs.readOnly
                             , HE.onCheck (\_ -> props.onInput a)
                             ]
                             []
@@ -1057,6 +1066,7 @@ radioButtons attrs_ props =
 type alias RangeAttributes =
     { id : Maybe String
     , disabled : Bool
+    , readOnly : Bool
     , color : String
     }
 
@@ -1065,6 +1075,7 @@ rangeDefaults : RangeAttributes
 rangeDefaults =
     { id = Nothing
     , disabled = False
+    , readOnly = False
     , color = "var(--tmspc-highlight-base)"
     }
 
@@ -1102,6 +1113,7 @@ rangeInput attrs_ props =
             , HA.class "ew ew-range"
             , HA.type_ "range"
             , HA.disabled attrs.disabled
+            , HA.readonly attrs.readOnly
             , HA.value <| String.fromFloat props.value
             , HA.min <| String.fromFloat props.min
             , HA.max <| String.fromFloat props.max
