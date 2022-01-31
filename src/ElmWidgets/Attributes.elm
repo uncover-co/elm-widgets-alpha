@@ -1,11 +1,10 @@
 module ElmWidgets.Attributes exposing
     ( color, background, shadow
-    , href, onClick
+    , href, onClick, onBlur, onFocus, onEnter
     , size, fill, vertical, alignRight, absolute
     , footer, header, left
-    , required, disabled, placeholder, pattern, hint, success, warning, danger
+    , readOnly, disabled, required, placeholder, pattern, hint, success, warning, danger
     , none, id, htmlAttrs
-    , onBlur, onFocus, readOnly
     )
 
 {-|
@@ -18,7 +17,7 @@ module ElmWidgets.Attributes exposing
 
 ## Actions
 
-@docs href, onClick
+@docs href, onClick, onBlur, onFocus, onEnter
 
 
 ## Layout
@@ -33,7 +32,7 @@ module ElmWidgets.Attributes exposing
 
 ## Forms
 
-@docs required, disabled, placeholder, pattern, hint, success, warning, danger
+@docs readOnly, disabled, required, placeholder, pattern, hint, success, warning, danger
 
 
 ## General
@@ -127,6 +126,12 @@ onFocus v a =
 onBlur : msg -> { a | onBlur : Maybe msg } -> { a | onBlur : Maybe msg }
 onBlur v a =
     { a | onBlur = Just v }
+
+
+{-| -}
+onEnter : msg -> { a | onEnter : Maybe msg } -> { a | onEnter : Maybe msg }
+onEnter v a =
+    { a | onEnter = Just v }
 
 
 
