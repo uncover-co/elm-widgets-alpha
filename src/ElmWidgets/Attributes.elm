@@ -2,10 +2,9 @@ module ElmWidgets.Attributes exposing
     ( color, background, shadow
     , href, onClick, onBlur, onFocus, onEnter
     , size, fill, vertical, alignRight, absolute
-    , footer, header, left
+    , footer, header, left, format
     , readOnly, disabled, required, placeholder, pattern, hint, success, warning, danger
     , none, id, htmlAttrs
-    , format
     )
 
 {-|
@@ -28,7 +27,7 @@ module ElmWidgets.Attributes exposing
 
 ## Content
 
-@docs footer, header, left
+@docs footer, header, left, format
 
 
 ## Forms
