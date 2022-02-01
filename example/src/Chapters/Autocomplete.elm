@@ -1,6 +1,6 @@
 module Chapters.Autocomplete exposing (..)
 
-import ElmBook.Actions exposing (logAction, logActionWithString)
+import ElmBook.Actions exposing (logActionWithString)
 import ElmBook.Chapter exposing (Chapter, chapter, renderComponentList)
 import ElmWidgets as W
 import ElmWidgets.Attributes as WA
@@ -41,6 +41,19 @@ chapter_ =
                     , search = ""
                     , value = Nothing
                     , options = Nothing
+                    , toLabel = String.fromInt
+                    , onInput = \a b -> logActionWithString "onInput" (result a b)
+                    }
+              )
+            , ( "Read Only"
+              , W.autocomplete
+                    [ WA.readOnly True
+                    , WA.placeholder "You can't touch me"
+                    ]
+                    { id = "loading"
+                    , search = ""
+                    , value = Nothing
+                    , options = Just (List.range 0 10)
                     , toLabel = String.fromInt
                     , onInput = \a b -> logActionWithString "onInput" (result a b)
                     }

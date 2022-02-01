@@ -118,7 +118,8 @@ chapter_ =
                         , input =
                             W.radioButtons
                                 [ WA.vertical True ]
-                                { value = "Something"
+                                { id = "radio"
+                                , value = "Something"
                                 , options = [ "Something", "In the way", "She moves", "Attracts me" ]
                                 , toLabel = identity
                                 , toValue = identity

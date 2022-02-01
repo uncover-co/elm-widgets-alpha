@@ -353,12 +353,14 @@
 
 /* Inputs – Checkbox / Radio – Helpers */
 
-.ew.ew-checkbox-input,
-.ew.ew-radio-buttons--item-input {
+[type="checkbox"].ew.ew-checkbox,
+[type="radio"].ew.ew-radio-buttons--item-input {
   appearance: none;
   width: 28px;
   height: 28px;
   border: 2px solid var(--tmspc-background-dark);
+  background: var(--tmspc-background-base);
+  box-shadow: none;
 
   display: grid;
   place-content: center;
@@ -377,42 +379,54 @@
   &:active {
     opacity: 0.75;
   }
+  &:focus {
+    box-shadow: none;
+  }
+  &:checked {
+    background: var(--tmspc-background-base);
+  }
   &:checked:before {
     transform: scale(1);
   }
-  &:disabled {
-    border-color: var(--tmspc-background-dark);
-    background-color: var(--tmspc-background-tint);
-    pointer-events: none;
-    &:hover:before {
-      transform: scale(0);
+  &.ew-is-disabled,
+  &.ew-is-read-only {
+    &:hover {
+      opacity: 1;
+    }
+    &:active {
+      opacity: 1;
     }
   }
-}
-
-.ew.ew-checkbox.is-disabled .ew-checkbox-input,
-.ew.ew-radio-buttons.is-disabled .ew-radio-buttons--item-input {
-  border-color: var(--tmspc-background-dark);
+  &.ew-is-disabled {
+    background-color: var(--tmspc-background-tint);
+    pointer-events: none;
+    &:checked:before {
+      opacity: 0.5;
+    }
+  }
+  &.ew-is-read-only {
+    background-color: var(--tmspc-background-base);
+  }
 }
 
 /* Inputs – Checkbox */
 
 .ew.ew-checkbox {
-  display: inline-block;
-  padding: 8px 0;
-}
-.ew.ew-checkbox-input {
   border-radius: var(--tmspc-border-radius);
+  &:before {
+    border-radius: calc(0.5 * var(--tmspc-border-radius));
+  }
 }
 
 /* Inputs - Radio Buttons */
 
-.ew.ew-radio-buttons.m-vertical {
+.ew.ew-radio-buttons.ew-m-vertical {
   display: flex;
   flex-direction: column;
 }
 
-.ew.ew-radio-buttons.is-disabled {
+.ew.ew-radio-buttons.ew-is-disabled,
+.ew.ew-radio-buttons.ew-is-read-only {
   .ew-radio-buttons--item {
     cursor: default;
   }
@@ -431,7 +445,7 @@
 .ew.ew-radio-buttons--item + .ew.ew-radio-buttons--item {
   padding-left: 20px;
 }
-.ew.ew-radio-buttons.m-vertical
+.ew.ew-radio-buttons.ew-m-vertical
   .ew.ew-radio-buttons--item
   + .ew.ew-radio-buttons--item {
   padding-left: 0px;
@@ -458,23 +472,25 @@
 }
 
 .ew.ew-range-value-wrapper {
+  overflow: hidden;
   display: flex;
   justify-content: center;
   position: relative;
   text-align: center;
   font-family: var(--tmspc-font-text);
-  padding-bottom: 4px;
+  height: 24px;
   &::after {
     position: absolute;
     left: 0;
     right: 0;
     top: 50%;
-    margin-top: -2px;
+    margin-top: -3px;
     display: block;
     content: "";
     border-top: 1px solid var(--tmspc-background-light);
   }
 }
+
 .ew.ew-range-value {
   position: relative;
   z-index: 1;
@@ -485,11 +501,12 @@
   padding: 0 8px;
   background-color: var(--tmspc-background-base);
 }
+
 .ew.ew-range-bounds {
   z-index: 1;
 
   font-size: 12px;
-  color: var(--tmspc-color-light);
+  color: var(--tmspc-background-dark);
 
   padding: 0 8px;
   background-color: var(--tmspc-background-base);
@@ -505,6 +522,8 @@
 }
 
 .ew.ew-range {
+  position: relative;
+  z-index: 2;
   appearance: none;
   margin: 0;
   width: 100%;

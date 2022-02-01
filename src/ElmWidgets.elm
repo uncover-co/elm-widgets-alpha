@@ -964,19 +964,26 @@ checkbox attrs_ props =
         attrs =
             applyAttrs checkboxDefaults attrs_
     in
-    H.div [ HA.class "ew ew-checkbox" ]
-        [ H.input
-            [ maybeAttr HA.id attrs.id
-            , HA.class "ew ew-focusable ew-checkbox-input"
-            , styles [ ( "--color", attrs.color ) ]
-            , HA.type_ "checkbox"
-            , HA.checked props.value
-            , HA.disabled attrs.disabled
-            , HA.readonly attrs.readOnly
-            , HE.onCheck props.onInput
+    H.input
+        [ maybeAttr HA.id attrs.id
+        , HA.class "ew ew-focusable ew-checkbox"
+        , HA.classList
+            [ ( "ew-is-disabled", attrs.disabled && not attrs.readOnly )
+            , ( "ew-is-read-only", attrs.readOnly )
             ]
-            []
+        , styles [ ( "--color", attrs.color ) ]
+        , HA.type_ "checkbox"
+        , HA.checked props.value
+
+        -- We also disable the checkbox plugin when it is readonly
+        -- Since this property is not currently respect for checkboxes
+        , HA.disabled (attrs.disabled || attrs.readOnly)
+        , HA.readonly attrs.readOnly
+
+        --
+        , HE.onCheck props.onInput
         ]
+        []
 
 
 
@@ -985,8 +992,7 @@ checkbox attrs_ props =
 
 {-| -}
 type alias RadioButtonsAttributes =
-    { id : Maybe String
-    , color : String
+    { color : String
     , disabled : Bool
     , readOnly : Bool
     , vertical : Bool
@@ -995,8 +1001,7 @@ type alias RadioButtonsAttributes =
 
 radioButtonsDefaults : RadioButtonsAttributes
 radioButtonsDefaults =
-    { id = Nothing
-    , color = "var(--tmspc-highlight-base)"
+    { color = "var(--tmspc-highlight-base)"
     , disabled = False
     , readOnly = False
     , vertical = False
@@ -1007,7 +1012,8 @@ radioButtonsDefaults =
 radioButtons :
     List (RadioButtonsAttributes -> RadioButtonsAttributes)
     ->
-        { value : a
+        { id : String
+        , value : a
         , options : List a
         , toValue : a -> String
         , toLabel : a -> String
@@ -1018,38 +1024,40 @@ radioButtons attrs_ props =
     let
         attrs =
             applyAttrs radioButtonsDefaults attrs_
-
-        name =
-            case attrs.id of
-                Just id ->
-                    id
-
-                Nothing ->
-                    props.options
-                        |> List.map props.toLabel
-                        |> String.join "-"
     in
     H.div
-        [ maybeAttr HA.id attrs.id
+        [ HA.id props.id
         , HA.class "ew ew-radio-buttons"
-        , HA.classList [ ( "m-vertical", attrs.vertical ), ( "is-disabled", attrs.disabled ) ]
+        , HA.classList
+            [ ( "ew-m-vertical", attrs.vertical )
+            , ( "ew-is-disabled", attrs.disabled && not attrs.readOnly )
+            , ( "ew-is-read-only", attrs.readOnly )
+            ]
         , styles [ ( "--color", attrs.color ) ]
         ]
         (props.options
             |> List.map
                 (\a ->
                     H.label
-                        [ HA.name name
+                        [ HA.name props.id
                         , HA.class "ew ew-radio-buttons--item"
                         ]
                         [ H.input
                             [ HA.class "ew ew-focusable ew-radio-buttons--item-input"
+                            , HA.classList
+                                [ ( "ew-is-disabled", attrs.disabled && not attrs.readOnly )
+                                , ( "ew-is-read-only", attrs.readOnly )
+                                ]
                             , HA.type_ "radio"
-                            , HA.name name
+                            , HA.name props.id
                             , HA.value (props.toValue a)
                             , HA.checked (a == props.value)
-                            , HA.disabled attrs.disabled
+
+                            -- Fallback since read only is not respected for radio inputs
+                            , HA.disabled (attrs.disabled || attrs.readOnly)
                             , HA.readonly attrs.readOnly
+
+                            --
                             , HE.onCheck (\_ -> props.onInput a)
                             ]
                             []
@@ -1068,6 +1076,7 @@ type alias RangeAttributes =
     , disabled : Bool
     , readOnly : Bool
     , color : String
+    , format : Float -> String
     }
 
 
@@ -1077,6 +1086,7 @@ rangeDefaults =
     , disabled = False
     , readOnly = False
     , color = "var(--tmspc-highlight-base)"
+    , format = String.fromFloat
     }
 
 
@@ -1100,20 +1110,26 @@ rangeInput attrs_ props =
         [ H.div [ HA.class "ew ew-range-value-wrapper" ]
             [ H.p
                 [ HA.class "ew ew-range-bounds ew-m-min" ]
-                [ H.text <| String.fromFloat props.min ]
+                [ H.text <| attrs.format props.min ]
             , H.p
-                [ HA.class "ew ew-range-value" ]
-                [ H.text <| String.fromFloat props.value ]
+                [ HA.class "ew ew-range-value"
+                ]
+                [ H.text <| attrs.format props.value ]
             , H.p
                 [ HA.class "ew ew-range-bounds ew-m-max" ]
-                [ H.text <| String.fromFloat props.max ]
+                [ H.text <| attrs.format props.max ]
             ]
         , H.input
             [ maybeAttr HA.id attrs.id
             , HA.class "ew ew-range"
+            , HA.classList [ ( "ew-m-read-only", attrs.readOnly ) ]
             , HA.type_ "range"
-            , HA.disabled attrs.disabled
+
+            -- This is a fallback since range elements will not respect read only attributes
+            , HA.disabled (attrs.disabled || attrs.readOnly)
             , HA.readonly attrs.readOnly
+
+            --
             , HA.value <| String.fromFloat props.value
             , HA.min <| String.fromFloat props.min
             , HA.max <| String.fromFloat props.max

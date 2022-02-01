@@ -5,6 +5,7 @@ module ElmWidgets.Attributes exposing
     , footer, header, left
     , readOnly, disabled, required, placeholder, pattern, hint, success, warning, danger
     , none, id, htmlAttrs
+    , format
     )
 
 {-|
@@ -154,6 +155,12 @@ header v a =
 left : H.Html msg -> { a | left : Maybe (H.Html msg) } -> { a | left : Maybe (H.Html msg) }
 left v a =
     { a | left = Just v }
+
+
+{-| -}
+format : (Float -> String) -> { a | format : Float -> String } -> { a | format : Float -> String }
+format v a =
+    { a | format = v }
 
 
 
