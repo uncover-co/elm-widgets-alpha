@@ -1,6 +1,6 @@
 {
   "name": "elm-widgets-alpha",
-  "version": "7.0.1",
+  "version": "7.0.2",
   "description": "A collection of widgets themed through ThemeSpec.",
   "scripts": {
     "dev": "watch 'node ./styles/build-styles.js' ./styles",
