@@ -1218,7 +1218,7 @@ autocomplete attrs_ props =
                    , HA.autocomplete False
                    , HA.id props.id
                    , HA.class "ew ew-input ew-focusable"
-                   , HA.list "list"
+                   , HA.list (props.id ++ "-list")
                    , HA.value props.search
                    , maybeAttr HE.onFocus attrs.onFocus
                    , maybeAttr HE.onBlur attrs.onBlur
@@ -1236,7 +1236,7 @@ autocomplete attrs_ props =
             )
             []
         , H.datalist
-            [ HA.id "list" ]
+            [ HA.id (props.id ++ "-list") ]
             (options
                 |> List.map
                     (\( label, _ ) ->
