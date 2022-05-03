@@ -1,4 +1,4 @@
-module ElmWidgets.Icons exposing (..)
+module W.Internal.Icons exposing (close)
 
 import Svg as S
 import Svg.Attributes as SA

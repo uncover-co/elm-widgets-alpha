@@ -1,9 +1,8 @@
-module Chapters.Autocomplete exposing (..)
+module Chapters.Form.InputAutocomplete exposing (..)
 
 import ElmBook.Actions exposing (logActionWithString)
 import ElmBook.Chapter exposing (Chapter, chapter, renderComponentList)
-import ElmWidgets as W
-import ElmWidgets.Attributes as WA
+import W.InputAutocomplete
 
 
 result : String -> Maybe Int -> String
@@ -23,10 +22,10 @@ result search value =
 
 chapter_ : Chapter x
 chapter_ =
-    chapter "Autocomplete"
+    chapter "Input Autocomplete"
         |> renderComponentList
             [ ( "Default"
-              , W.autocomplete [ WA.placeholder "Search for a number…" ]
+              , W.InputAutocomplete.view [ W.InputAutocomplete.placeholder "Search for a number…" ]
                     { id = "default"
                     , search = ""
                     , value = Nothing
@@ -36,7 +35,7 @@ chapter_ =
                     }
               )
             , ( "Loading"
-              , W.autocomplete [ WA.placeholder "Fetching some options…" ]
+              , W.InputAutocomplete.view [ W.InputAutocomplete.placeholder "Fetching some options…" ]
                     { id = "loading"
                     , search = ""
                     , value = Nothing
@@ -46,9 +45,9 @@ chapter_ =
                     }
               )
             , ( "Read Only"
-              , W.autocomplete
-                    [ WA.readOnly True
-                    , WA.placeholder "You can't touch me"
+              , W.InputAutocomplete.view
+                    [ W.InputAutocomplete.readOnly True
+                    , W.InputAutocomplete.placeholder "You can't touch me"
                     ]
                     { id = "loading"
                     , search = ""

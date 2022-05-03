@@ -1,12 +1,10 @@
-module Chapters.Modal exposing (chapter_)
+module Chapters.Layout.Modal exposing (chapter_)
 
 import ElmBook.Actions exposing (logAction)
 import ElmBook.Chapter exposing (Chapter, chapter, renderComponentList)
-import ElmWidgets as W
-import ElmWidgets.Attributes as WA
 import Html as H
 import Html.Attributes as HA
-import ThemeSpec
+import W.Modal
 
 
 chapter_ : Chapter x
@@ -29,7 +27,8 @@ chapter_ =
         |> renderComponentList
             [ ( "Modal"
               , wrapper
-                    [ W.modal [ WA.absolute True ]
+                    [ W.Modal.view
+                        [ W.Modal.absolute True ]
                         { onClose = Nothing
                         , content = content
                         }
@@ -37,7 +36,8 @@ chapter_ =
               )
             , ( "Modal with onClose"
               , wrapper
-                    [ W.modal [ WA.absolute True ]
+                    [ W.Modal.view
+                        [ W.Modal.absolute True ]
                         { onClose = Just (logAction "onClose")
                         , content = content
                         }

@@ -1,8 +1,9 @@
-module W.Helpers exposing
+module W.Internal.Helpers exposing
     ( applyAttrs
     , maybeAttr
     , maybeHtml
     , maybeSvgAttr
+    , onEnter
     , stringIf
     , styles
     , stylesList
@@ -10,7 +11,13 @@ module W.Helpers exposing
 
 import Html as H
 import Html.Attributes as HA
+import Html.Events as HE
+import Json.Decode as D
 import Svg.Attributes as SA
+
+
+
+-- Styles
 
 
 styles : List ( String, String ) -> H.Attribute msg
@@ -36,6 +43,10 @@ stylesList xs =
         |> HA.attribute "style"
 
 
+
+-- Html.Attributes
+
+
 maybeAttr : (a -> H.Attribute msg) -> Maybe a -> H.Attribute msg
 maybeAttr fn a =
     a
@@ -50,6 +61,10 @@ maybeSvgAttr fn a =
         |> Maybe.withDefault (SA.class "")
 
 
+
+-- Html
+
+
 maybeHtml : (a -> H.Html msg) -> Maybe a -> H.Html msg
 maybeHtml fn a =
     a
@@ -57,9 +72,36 @@ maybeHtml fn a =
         |> Maybe.withDefault (H.text "")
 
 
+
+-- Html.Events
+
+
+onEnter : msg -> H.Attribute msg
+onEnter msg =
+    HE.on "keyup"
+        (D.field "key" D.string
+            |> D.andThen
+                (\key ->
+                    if key == "Enter" then
+                        D.succeed msg
+
+                    else
+                        D.fail "Invalid key."
+                )
+        )
+
+
+
+-- Elements
+
+
 applyAttrs : a -> List (a -> a) -> a
 applyAttrs defaults fns =
     List.foldl (\fn a -> fn a) defaults fns
+
+
+
+-- Basics
 
 
 stringIf : Bool -> String -> String -> String

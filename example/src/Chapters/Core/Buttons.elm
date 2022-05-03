@@ -1,10 +1,7 @@
-module Chapters.Buttons exposing (chapter_)
+module Chapters.Core.Buttons exposing (chapter_)
 
 import ElmBook.Actions exposing (logAction)
 import ElmBook.Chapter exposing (Chapter, chapter, renderComponentList)
-import ElmWidgets as W
-import ElmWidgets.Attributes as WA
-import Html as H
 import ThemeSpec
 import UI
 import W.Button

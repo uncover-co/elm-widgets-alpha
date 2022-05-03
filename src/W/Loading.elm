@@ -25,7 +25,7 @@ import Html.Attributes as HA
 import Svg as S
 import Svg.Attributes as SA
 import ThemeSpec
-import W.Helpers as WH
+import W.Internal.Helpers as WH
 
 
 

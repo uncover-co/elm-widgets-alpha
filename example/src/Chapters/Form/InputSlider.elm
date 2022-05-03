@@ -1,9 +1,8 @@
-module Chapters.Range exposing (chapter_, init)
+module Chapters.Form.InputSlider exposing (..)
 
 import ElmBook.Actions exposing (logActionWith, updateStateWith)
-import ElmBook.Chapter exposing (Chapter, chapter, renderComponentList, renderStatefulComponent, renderStatefulComponentList)
-import ElmWidgets as W
-import ElmWidgets.Attributes as WA
+import ElmBook.Chapter exposing (Chapter, chapter, renderStatefulComponentList)
+import W.InputSlider
 
 
 type alias Model =
@@ -21,11 +20,11 @@ init =
 
 chapter_ : Chapter { m | range : Model }
 chapter_ =
-    chapter "Range"
+    chapter "Input Range"
         |> renderStatefulComponentList
             [ ( "Default"
               , \{ range } ->
-                    W.rangeInput []
+                    W.InputSlider.view []
                         { min = 0
                         , max = 10
                         , step = 1
@@ -43,7 +42,8 @@ chapter_ =
               )
             , ( "Disabled"
               , \_ ->
-                    W.rangeInput [ WA.disabled True ]
+                    W.InputSlider.view
+                        [ W.InputSlider.disabled True ]
                         { min = 0
                         , max = 10
                         , step = 1
@@ -53,7 +53,8 @@ chapter_ =
               )
             , ( "Read Only"
               , \_ ->
-                    W.rangeInput [ WA.readOnly True ]
+                    W.InputSlider.view
+                        [ W.InputSlider.readOnly True ]
                         { min = 0
                         , max = 10
                         , step = 1
@@ -63,7 +64,8 @@ chapter_ =
               )
             , ( "Custom Color"
               , \{ range } ->
-                    W.rangeInput [ WA.color "red" ]
+                    W.InputSlider.view
+                        [ W.InputSlider.color "red" ]
                         { min = 0
                         , max = 10
                         , step = 1

@@ -1,8 +1,6 @@
-module Chapters.Loading exposing (chapter_)
+module Chapters.Core.Loading exposing (chapter_)
 
 import ElmBook.Chapter exposing (Chapter, chapter, renderComponentList)
-import ElmWidgets as W
-import ElmWidgets.Attributes as WA
 import W.Loading
 
 

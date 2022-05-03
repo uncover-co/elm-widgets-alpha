@@ -1,17 +1,16 @@
-module Chapters.RadioButtons exposing (chapter_)
+module Chapters.Form.InputRadio exposing (chapter_)
 
 import ElmBook.Actions exposing (logActionWith)
 import ElmBook.Chapter exposing (Chapter, chapter, renderComponentList)
-import ElmWidgets as W
-import ElmWidgets.Attributes as WA
+import W.InputRadio
 
 
 chapter_ : Chapter x
 chapter_ =
-    chapter "Radio"
+    chapter "Input Radio"
         |> renderComponentList
             [ ( "Default"
-              , W.radioButtons
+              , W.InputRadio.view
                     []
                     { id = "default"
                     , value = 1
@@ -22,8 +21,8 @@ chapter_ =
                     }
               )
             , ( "Disabled"
-              , W.radioButtons
-                    [ WA.disabled True ]
+              , W.InputRadio.view
+                    [ W.InputRadio.disabled True ]
                     { id = "disabled"
                     , value = 2
                     , toLabel = String.fromInt
@@ -33,8 +32,8 @@ chapter_ =
                     }
               )
             , ( "Read Only"
-              , W.radioButtons
-                    [ WA.readOnly True ]
+              , W.InputRadio.view
+                    [ W.InputRadio.readOnly True ]
                     { id = "read-only"
                     , value = 2
                     , toLabel = String.fromInt
@@ -44,8 +43,8 @@ chapter_ =
                     }
               )
             , ( "Custom Colors"
-              , W.radioButtons
-                    [ WA.color "red" ]
+              , W.InputRadio.view
+                    [ W.InputRadio.color "red" ]
                     { id = "custom-colors"
                     , value = 3
                     , toLabel = String.fromInt
@@ -55,8 +54,8 @@ chapter_ =
                     }
               )
             , ( "Vertical"
-              , W.radioButtons
-                    [ WA.vertical True ]
+              , W.InputRadio.view
+                    [ W.InputRadio.vertical True ]
                     { id = "vertical"
                     , value = 2
                     , toLabel = String.fromInt

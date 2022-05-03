@@ -1,8 +1,8 @@
 module W.Button exposing
     ( view, viewLink
-    , disabled
+    , disabled, outlined, invisible
     , accent, danger, success, warning, theme
-    , fill, outlined, invisible
+    , fill
     , left, right
     , id, class, htmlAttrs, Attribute
     )
@@ -14,7 +14,7 @@ module W.Button exposing
 
 # State
 
-@docs disabled
+@docs disabled, outlined, invisible
 
 
 # Colors
@@ -24,7 +24,7 @@ module W.Button exposing
 
 # Styles
 
-@docs fill, outlined, invisible
+@docs fill
 
 
 # Elements
@@ -42,7 +42,7 @@ import Html as H
 import Html.Attributes as HA
 import Html.Events as HE
 import ThemeSpec exposing (ThemeSpecColor)
-import W.Helpers as WH
+import W.Internal.Helpers as WH
 
 
 

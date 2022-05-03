@@ -5,7 +5,20 @@
     "license": "MPL-2.0",
     "version": "7.0.2",
     "exposed-modules": [
-        "W.Button"
+        "W.Button",
+        "W.DataRow",
+        "W.Field",
+        "W.InputAutocomplete",
+        "W.InputCheckbox",
+        "W.InputDate",
+        "W.InputNumber",
+        "W.InputRadio",
+        "W.InputSelect",
+        "W.InputSlider",
+        "W.InputText",
+        "W.Loading",
+        "W.Modal",
+        "W.Styles"
     ],
     "elm-version": "0.19.0 <= v < 0.20.0",
     "dependencies": {
@@ -13,6 +26,9 @@
         "elm/html": "1.0.0 <= v < 2.0.0",
         "elm/json": "1.0.0 <= v < 2.0.0",
         "elm/svg": "1.0.1 <= v < 2.0.0",
+        "elm/time": "1.0.0 <= v < 2.0.0",
+        "justinmimbs/date": "4.0.0 <= v < 5.0.0",
+        "justinmimbs/time-extra": "1.1.0 <= v < 2.0.0",
         "uncover-co/elm-theme-spec": "5.0.0 <= v < 6.0.0"
     },
     "test-dependencies": {}
