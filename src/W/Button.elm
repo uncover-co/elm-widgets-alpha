@@ -46,7 +46,7 @@ import W.Helpers as WH
 
 
 
--- Core
+-- Attributes
 
 
 {-| -}
@@ -73,6 +73,25 @@ type ButtonStyle
     | Invisible
 
 
+defaultAttrs : Attributes msg
+defaultAttrs =
+    { id = Nothing
+    , style = Basic
+    , class = ""
+    , disabled = False
+    , fill = False
+    , left = Nothing
+    , right = Nothing
+    , theme = ThemeSpec.base
+    , htmlAttributes = []
+    }
+
+
+applyAttrs : List (Attribute msg) -> Attributes msg
+applyAttrs attrs =
+    List.foldl (\(Attribute fn) a -> fn a) defaultAttrs attrs
+
+
 styleClass : ButtonStyle -> String
 styleClass s =
     case s of
@@ -86,25 +105,16 @@ styleClass s =
             "ew-m-invisible"
 
 
-defaults : Attributes msg
-defaults =
-    { id = Nothing
-    , style = Basic
-    , class = ""
-    , disabled = False
-    , fill = False
-    , left = Nothing
-    , right = Nothing
-    , theme = ThemeSpec.base
-    , htmlAttributes = []
-    }
+
+-- Main
 
 
 attributes : List (Attribute msg) -> List (H.Attribute msg)
 attributes attrs_ =
     let
+        attrs : Attributes msg
         attrs =
-            List.foldl (\(Attribute fn) a -> fn a) defaults attrs_
+            applyAttrs attrs_
     in
     attrs.htmlAttributes
         ++ [ WH.maybeAttr HA.id attrs.id

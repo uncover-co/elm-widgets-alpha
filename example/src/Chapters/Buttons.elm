@@ -128,7 +128,7 @@ chapter_ =
                  )
                , ( "Full width"
                  , W.Button.view
-                    [ W.Button.fill True ]
+                    [ W.Button.fill ]
                     { label = "button"
                     , onClick = logAction ""
                     }

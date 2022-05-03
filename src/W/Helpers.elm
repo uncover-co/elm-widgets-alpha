@@ -2,6 +2,7 @@ module W.Helpers exposing
     ( applyAttrs
     , maybeAttr
     , maybeHtml
+    , maybeSvgAttr
     , stringIf
     , styles
     , stylesList
@@ -9,6 +10,7 @@ module W.Helpers exposing
 
 import Html as H
 import Html.Attributes as HA
+import Svg.Attributes as SA
 
 
 styles : List ( String, String ) -> H.Attribute msg
@@ -39,6 +41,13 @@ maybeAttr fn a =
     a
         |> Maybe.map fn
         |> Maybe.withDefault (HA.class "")
+
+
+maybeSvgAttr : (a -> H.Attribute msg) -> Maybe a -> H.Attribute msg
+maybeSvgAttr fn a =
+    a
+        |> Maybe.map fn
+        |> Maybe.withDefault (SA.class "")
 
 
 maybeHtml : (a -> H.Html msg) -> Maybe a -> H.Html msg

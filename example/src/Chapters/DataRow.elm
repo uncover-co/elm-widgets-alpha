@@ -6,6 +6,8 @@ import ElmWidgets as W
 import ElmWidgets.Attributes as WA
 import Html as H
 import Html.Attributes as HA
+import W.Button
+import W.Loading
 
 
 chapter_ : Chapter x
@@ -34,8 +36,8 @@ chapter_ =
               , W.dataRow [ WA.href "/logAction/#" ]
                     { label = H.text "Label"
                     , actions =
-                        [ W.primaryButton []
-                            { label = H.text "Click me"
+                        [ W.Button.view [ W.Button.accent ]
+                            { label = "Click me"
                             , onClick = logAction "onClick Action"
                             }
                         ]
@@ -48,8 +50,8 @@ chapter_ =
                     ]
                     { label = H.text "Label"
                     , actions =
-                        [ W.primaryButton []
-                            { label = H.text "Click me"
+                        [ W.Button.view [ W.Button.accent ]
+                            { label = "Click me"
                             , onClick = logAction "onClick Action"
                             }
                         ]
@@ -63,8 +65,8 @@ chapter_ =
                     ]
                     { label = H.text "Label"
                     , actions =
-                        [ W.primaryButton []
-                            { label = H.text "Click me"
+                        [ W.Button.view [ W.Button.accent ]
+                            { label = "Click me"
                             , onClick = logAction "onClick Action"
                             }
                         ]
@@ -75,12 +77,12 @@ chapter_ =
                     [ WA.href "/logAction/#"
                     , WA.header (H.text "Admin")
                     , WA.footer (H.text "user@email.com")
-                    , WA.left (W.loadingRipple [])
+                    , WA.left (W.Loading.ripples [])
                     ]
                     { label = H.text "Label"
                     , actions =
-                        [ W.primaryButton []
-                            { label = H.text "Click me"
+                        [ W.Button.view [ W.Button.accent ]
+                            { label = "Click me"
                             , onClick = logAction "onClick Action"
                             }
                         ]
@@ -104,8 +106,8 @@ chapter_ =
                     ]
                     { label = H.text "Label"
                     , actions =
-                        [ W.primaryButton []
-                            { label = H.text "Click me"
+                        [ W.Button.view [ W.Button.accent ]
+                            { label = "Click me"
                             , onClick = logAction "onClick Action"
                             }
                         ]
