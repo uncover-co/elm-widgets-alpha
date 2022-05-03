@@ -15,6 +15,7 @@ import ElmBook exposing (Book, book, withChapterGroups, withStatefulOptions, wit
 import ElmBook.StatefulOptions
 import ElmBook.ThemeOptions
 import ElmWidgets.Styles
+import ThemeProvider
 import ThemeSpec
 
 
@@ -36,10 +37,10 @@ main =
             ]
         |> withThemeOptions
             [ ElmBook.ThemeOptions.globals
-                [ ThemeSpec.globalProviderWithDarkMode
+                [ ThemeProvider.globalProviderWithDarkMode
                     { light = ThemeSpec.lightTheme
                     , dark = ThemeSpec.darkTheme
-                    , strategy = ThemeSpec.ClassStrategy "elm-book-dark-mode"
+                    , strategy = ThemeProvider.ClassStrategy "elm-book-dark-mode"
                     }
                 , ElmWidgets.Styles.globalStyles
                 ]

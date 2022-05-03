@@ -138,6 +138,8 @@
 
   font-family: var(--tmspc-font-text);
   color: var(--color);
+  background: var(--background);
+
   text-transform: uppercase;
   text-decoration: none;
   font-size: 12px;
@@ -155,6 +157,7 @@
 
   &:hover {
     opacity: 0.9;
+    box-shadow: 0 0 4px var(--shadow);
   }
 
   &:active:not(:disabled) {
@@ -162,46 +165,13 @@
   }
 }
 
-/* Buttons - Primary */
-
-.ew.ew-btn.ew-m-primary {
-  background: var(--background);
-  &:hover {
-    box-shadow: 0 0 8px var(--shadow);
-  }
-}
-
-/* Buttons - Status */
-
-.ew.ew-btn.ew-m-primary.ew-is-danger {
-  background: var(--tmspc-danger-base);
-  color: var(--tmspc-danger-contrast);
-  &:hover {
-    box-shadow: 0 0 8px var(--tmspc-danger-shadow);
-  }
-  &:active {
-    box-shadow: none;
-  }
-}
-
-.ew.ew-btn.ew-m-primary.ew-is-confirm {
-  background: var(--tmspc-success-base);
-  color: var(--tmspc-success-contrast);
-  &:hover {
-    box-shadow: 0 0 8px var(--tmspc-success-shadow);
-  }
-  &:active {
-    box-shadow: none;
-  }
-}
-
 /* Buttons - Outlined */
 
 .ew.ew-btn.ew-m-outlined {
   padding: 0 16px;
-  background: transparent;
-  border: 3px solid var(--color);
-  color: var(--color);
+  background: var(--tmspc-background);
+  border: 3px solid var(--background);
+  color: var(--background);
   box-shadow: none;
   &:hover {
     box-shadow: 0 0 4px var(--shadow);
@@ -213,22 +183,12 @@
 .ew.ew-btn.ew-m-invisible {
   position: relative;
   overflow: hidden;
-  color: var(--color);
-  background: transparent;
+  background: var(--tmspc-background);
+  color: var(--background);
   border-color: transparent;
   box-shadow: none;
-  & > .ew.ew-bg {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    opacity: 0;
-    background: var(--background);
-    transition: 0.15s;
-  }
-  &:hover > .ew.ew-bg {
-    opacity: 1;
+  &:hover {
+    background: var(--color);
   }
 }
 
@@ -240,7 +200,7 @@
   font-family: var(--tmspc-font-text);
 }
 .ew.ew-field + .ew.ew-field {
-  border-top: 2px solid var(--tmspc-background-tint);
+  border-top: 2px solid var(--tmspc-background-lighter);
 }
 
 .ew.ew-field-main.ew-m-align-right {
@@ -265,7 +225,7 @@
   font-weight: normal;
   font-size: 16px;
   padding-bottom: 8px;
-  color: var(--tmspc-color-base);
+  color: var(--tmspc-base);
   font-family: var(--tmspc-font-text);
 }
 
@@ -273,7 +233,7 @@
   padding-top: 2px;
   font-size: 14px;
   font-family: var(--tmspc-font-text);
-  color: var(--tmspc-color-light);
+  color: var(--tmspc-base-light);
 }
 
 .ew.ew-field-input {
@@ -282,20 +242,20 @@
 .ew.ew-field-message {
   margin-top: 8px;
   padding: 12px;
-  background-color: var(--tmspc-color-tint);
+  background-color: var(--tmspc-base-lighter);
   border-radius: var(--tmspc-border-radius);
-  color: var(--tmspc-color-base);
+  color: var(--tmspc-base);
   &.ew-m-success {
     color: var(--tmspc-success-dark);
-    background-color: var(--tmspc-success-tint);
+    background-color: var(--tmspc-success-lighter);
   }
   &.ew-m-warning {
     color: var(--tmspc-warning-dark);
-    background-color: var(--tmspc-warning-tint);
+    background-color: var(--tmspc-warning-lighter);
   }
   &.ew-m-danger {
     color: var(--tmspc-danger-dark);
-    background-color: var(--tmspc-danger-tint);
+    background-color: var(--tmspc-danger-lighter);
   }
 }
 
@@ -319,11 +279,11 @@
 
   font-size: 16px;
   font-family: var(--tmspc-font-text);
-  color: var(--tmspc-color-base);
+  color: var(--tmspc-base);
   line-height: 1em;
 
   &:disabled {
-    background: var(--tmspc-background-tint);
+    background: var(--tmspc-background-lighter);
   }
   &:invalid:not(:focus) {
     border-color: var(--tmspc-warning-base);
@@ -398,7 +358,7 @@
     }
   }
   &.ew-is-disabled {
-    background-color: var(--tmspc-background-tint);
+    background-color: var(--tmspc-background-lighter);
     pointer-events: none;
     &:checked:before {
       opacity: 0.5;
@@ -431,7 +391,7 @@
     cursor: default;
   }
   .ew-radio-buttons--item-label {
-    color: var(--tmspc-color-light);
+    color: var(--tmspc-base-light);
   }
 }
 
@@ -460,7 +420,7 @@
 
 .ew.ew-radio-buttons--item-label {
   font-family: var(--tmspc-font-text);
-  color: var(--tmspc-color-base);
+  color: var(--tmspc-base);
   padding-left: 12px;
 }
 
@@ -496,7 +456,7 @@
   z-index: 1;
 
   font-size: 14px;
-  color: var(--tmspc-color-base);
+  color: var(--tmspc-base);
 
   padding: 0 8px;
   background-color: var(--tmspc-background-base);
@@ -622,7 +582,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: var(--tmspc-color-light);
+  background: var(--tmspc-base-light);
   opacity: 0.2;
   transition: opacity 0.2s;
 }
@@ -684,13 +644,13 @@
 
   font-size: 16px;
   font-family: var(--tmspc-font-text);
-  color: var(--tmspc-color-base);
+  color: var(--tmspc-base);
   text-decoration: none;
 }
 .ew.ew-data-row-main.ew-m-button:hover,
 .ew.ew-data-row-main.ew-m-link:hover {
   cursor: pointer;
-  background: var(--tmspc-background-tint);
+  background: var(--tmspc-background-lighter);
 }
 .ew.ew-data-row-main.ew-m-button:active,
 .ew.ew-data-row-main.ew-m-link:active {
@@ -707,7 +667,7 @@
 .ew.ew-data-row-header,
 .ew.ew-data-row-footer {
   font-size: 14px;
-  color: var(--tmspc-color-light);
+  color: var(--tmspc-base-light);
 }
 
 .ew.ew-data-row-header {

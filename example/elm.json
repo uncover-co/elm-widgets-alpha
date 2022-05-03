@@ -13,7 +13,8 @@
             "elm/html": "1.0.0",
             "elm/json": "1.1.3",
             "elm/svg": "1.0.1",
-            "uncover-co/elm-theme-spec": "3.0.2"
+            "uncover-co/elm-theme-provider": "1.0.0",
+            "uncover-co/elm-theme-spec": "5.0.0"
         },
         "indirect": {
             "dillonkearns/elm-markdown": "7.0.0",

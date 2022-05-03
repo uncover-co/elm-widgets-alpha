@@ -5,151 +5,135 @@ import ElmBook.Chapter exposing (Chapter, chapter, renderComponentList)
 import ElmWidgets as W
 import ElmWidgets.Attributes as WA
 import Html as H
+import ThemeSpec
 import UI
+import W.Button
 
 
 chapter_ : Chapter x
 chapter_ =
     chapter "Buttons"
         |> renderComponentList
-            [ ( "primary button"
-              , UI.hSpacer
-                    [ W.primaryButton []
-                        { label = H.text "Click me"
-                        , onClick = logAction ""
-                        }
-                    , W.primaryButton
-                        [ WA.disabled True
+            ([ [ ( "Default", W.Button.theme ThemeSpec.base )
+               , ( "Accent", W.Button.accent )
+               , ( "Success", W.Button.success )
+               , ( "Warning", W.Button.warning )
+               , ( "Danger", W.Button.danger )
+               , ( "Custom"
+                 , W.Button.theme
+                    { base = "#ef67ef"
+                    , light = "#f6e1f6"
+                    , lighter = "#ffedff"
+                    , shadow = "#ef67ef"
+                    }
+                 )
+               ]
+                |> List.map
+                    (\( name, theme_ ) ->
+                        ( name
+                        , UI.vSpacer
+                            [ UI.hSpacer
+                                [ W.Button.view
+                                    [ theme_ ]
+                                    { label = "button"
+                                    , onClick = logAction ""
+                                    }
+                                , W.Button.view
+                                    [ theme_
+                                    , W.Button.outlined
+                                    ]
+                                    { label = "button"
+                                    , onClick = logAction ""
+                                    }
+                                , W.Button.view
+                                    [ theme_
+                                    , W.Button.invisible
+                                    ]
+                                    { label = "button"
+                                    , onClick = logAction ""
+                                    }
+                                ]
+                            , UI.hSpacer
+                                [ W.Button.view
+                                    [ theme_
+                                    , W.Button.disabled True
+                                    ]
+                                    { label = "button"
+                                    , onClick = logAction ""
+                                    }
+                                , W.Button.view
+                                    [ theme_
+                                    , W.Button.outlined
+                                    , W.Button.disabled True
+                                    ]
+                                    { label = "button"
+                                    , onClick = logAction ""
+                                    }
+                                , W.Button.view
+                                    [ theme_
+                                    , W.Button.invisible
+                                    , W.Button.disabled True
+                                    ]
+                                    { label = "button"
+                                    , onClick = logAction ""
+                                    }
+                                ]
+                            ]
+                        )
+                    )
+             , [ ( "As Link"
+                 , UI.vSpacer
+                    [ UI.hSpacer
+                        [ W.Button.viewLink
+                            []
+                            { label = "link"
+                            , href = "/logAction/#"
+                            }
+                        , W.Button.viewLink
+                            [ W.Button.outlined
+                            ]
+                            { label = "link"
+                            , href = "/logAction/#"
+                            }
+                        , W.Button.viewLink
+                            [ W.Button.invisible
+                            ]
+                            { label = "link"
+                            , href = "/logAction/#"
+                            }
                         ]
-                        { label = H.text "Click me"
-                        , onClick = logAction ""
-                        }
-                    ]
-              )
-            , ( "danger button"
-              , UI.hSpacer
-                    [ W.dangerButton []
-                        { label = H.text "Click me"
-                        , onClick = logAction ""
-                        }
-                    , W.dangerButton
-                        [ WA.disabled True
+                    , UI.hSpacer
+                        [ W.Button.viewLink
+                            [ W.Button.disabled True
+                            ]
+                            { label = "link"
+                            , href = "/logAction/#"
+                            }
+                        , W.Button.viewLink
+                            [ W.Button.outlined
+                            , W.Button.disabled True
+                            ]
+                            { label = "link"
+                            , href = "/logAction/#"
+                            }
+                        , W.Button.viewLink
+                            [ W.Button.invisible
+                            , W.Button.disabled True
+                            ]
+                            { label = "link"
+                            , href = "/logAction/#"
+                            }
                         ]
-                        { label = H.text "Click me"
-                        , onClick = logAction ""
-                        }
                     ]
-              )
-            , ( "confirm button"
-              , UI.hSpacer
-                    [ W.confirmButton []
-                        { label = H.text "Click me"
-                        , onClick = logAction ""
-                        }
-                    , W.confirmButton
-                        [ WA.disabled True
-                        ]
-                        { label = H.text "Click me"
-                        , onClick = logAction ""
-                        }
-                    ]
-              )
-            , ( "outline button"
-              , UI.hSpacer
-                    [ W.outlinedButton []
-                        { label = H.text "Click me"
-                        , onClick = logAction ""
-                        }
-                    , W.outlinedButton [ WA.disabled True ]
-                        { label = H.text "Click me"
-                        , onClick = logAction ""
-                        }
-                    ]
-              )
-            , ( "invisible button"
-              , UI.hSpacer
-                    [ W.invisibleButton []
-                        { label = H.text "Click me"
-                        , onClick = logAction ""
-                        }
-                    , W.invisibleButton [ WA.disabled True ]
-                        { label = H.text "Click me"
-                        , onClick = logAction ""
-                        }
-                    ]
-              )
-            , ( "custom colors"
-              , UI.hSpacer
-                    [ W.primaryButton
-                        [ WA.color "var(--tmspc-warning-contrast)"
-                        , WA.background "var(--tmspc-warning-base)"
-                        , WA.shadow "var(--tmspc-warning-shadow)"
-                        ]
-                        { label = H.text "Click me"
-                        , onClick = logAction ""
-                        }
-                    , W.outlinedButton
-                        [ WA.color "var(--tmspc-warning-base)"
-                        , WA.shadow "var(--tmspc-warning-shadow)"
-                        ]
-                        { label = H.text "Click me"
-                        , onClick = logAction ""
-                        }
-                    , W.invisibleButton
-                        [ WA.color "var(--tmspc-warning-base)"
-                        , WA.background "var(--tmspc-warning-tint)"
-                        ]
-                        { label = H.text "Click me"
-                        , onClick = logAction ""
-                        }
-                    ]
-              )
-            , ( "fill containers"
-              , UI.vSpacer
-                    [ W.primaryButton [ WA.fill True ]
-                        { label = H.text "Click me"
-                        , onClick = logAction ""
-                        }
-                    , W.dangerButton [ WA.fill True ]
-                        { label = H.text "Click me"
-                        , onClick = logAction ""
-                        }
-                    , W.confirmButton [ WA.fill True ]
-                        { label = H.text "Click me"
-                        , onClick = logAction ""
-                        }
-                    , W.outlinedButton [ WA.fill True ]
-                        { label = H.text "Click me"
-                        , onClick = logAction ""
-                        }
-                    , W.invisibleButton [ WA.fill True ]
-                        { label = H.text "Click me"
-                        , onClick = logAction ""
-                        }
-                    ]
-              )
-            , ( "buttons as links"
-              , UI.hSpacer
-                    [ W.primaryButtonLink []
-                        { label = H.text "Click me"
-                        , href = "logAction/#"
-                        }
-                    , W.dangerButtonLink []
-                        { label = H.text "Click me"
-                        , href = "logAction/#"
-                        }
-                    , W.confirmButtonLink []
-                        { label = H.text "Click me"
-                        , href = "logAction/#"
-                        }
-                    , W.outlinedButtonLink []
-                        { label = H.text "Click me"
-                        , href = "logAction/#"
-                        }
-                    , W.invisibleButtonLink []
-                        { label = H.text "Click me"
-                        , href = "logAction/#"
-                        }
-                    ]
-              )
-            ]
+                 )
+               , ( "Full width"
+                 , W.Button.view
+                    [ W.Button.fill True ]
+                    { label = "button"
+                    , onClick = logAction ""
+                    }
+                 )
+               ]
+             ]
+                |> List.concat
+            )
