@@ -5,10 +5,14 @@ import Chapters.Core.Loading
 import Chapters.Form.Field
 import Chapters.Form.InputAutocomplete
 import Chapters.Form.InputCheckbox
+import Chapters.Form.InputDate
+import Chapters.Form.InputNumber
 import Chapters.Form.InputRadio
 import Chapters.Form.InputSelect
 import Chapters.Form.InputSlider
 import Chapters.Form.InputText
+import Chapters.Form.InputTextArea
+import Chapters.Form.InputTime
 import Chapters.Information.DataRow
 import Chapters.Layout.Modal
 import ElmBook exposing (Book, book, withChapterGroups, withStatefulOptions, withThemeOptions)
@@ -24,6 +28,7 @@ type alias SharedState =
         { default : Float
         , customColor : Float
         }
+    , inputNumber : Chapters.Form.InputNumber.Model
     }
 
 
@@ -33,6 +38,7 @@ main =
         |> withStatefulOptions
             [ ElmBook.StatefulOptions.initialState
                 { range = Chapters.Form.InputSlider.init
+                , inputNumber = Chapters.Form.InputNumber.init
                 }
             ]
         |> withThemeOptions
@@ -62,6 +68,10 @@ main =
             , ( "Form"
               , [ Chapters.Form.Field.chapter_
                 , Chapters.Form.InputText.chapter_
+                , Chapters.Form.InputTextArea.chapter_
+                , Chapters.Form.InputNumber.chapter_
+                , Chapters.Form.InputTime.chapter_
+                , Chapters.Form.InputDate.chapter_
                 , Chapters.Form.InputAutocomplete.chapter_
                 , Chapters.Form.InputCheckbox.chapter_
                 , Chapters.Form.InputRadio.chapter_

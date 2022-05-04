@@ -1,8 +1,10 @@
 module W.Internal.Helpers exposing
     ( applyAttrs
+    , attrIf
     , maybeAttr
     , maybeHtml
     , maybeSvgAttr
+    , notNaN
     , onEnter
     , stringIf
     , styles
@@ -45,6 +47,15 @@ stylesList xs =
 
 
 -- Html.Attributes
+
+
+attrIf : Bool -> (a -> H.Attribute msg) -> a -> H.Attribute msg
+attrIf b fn a =
+    if b then
+        fn a
+
+    else
+        HA.class ""
 
 
 maybeAttr : (a -> H.Attribute msg) -> Maybe a -> H.Attribute msg
@@ -111,3 +122,12 @@ stringIf v a b =
 
     else
         b
+
+
+notNaN : Float -> Maybe Float
+notNaN v =
+    if isNaN v then
+        Nothing
+
+    else
+        Just v

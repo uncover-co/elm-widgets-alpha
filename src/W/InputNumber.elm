@@ -1,9 +1,9 @@
 module W.InputNumber exposing
-    ( viewInt, viewFloat
-    , min, max, step
+    ( min, max, step
     , id, class, placeholder, disabled, required, readOnly
     , onEnter, onFocus, onBlur
     , htmlAttrs, Attribute
+    , view
     )
 
 {-|
@@ -157,65 +157,36 @@ htmlAttrs v =
 -- Main
 
 
-attributes :
+view :
     List (Attribute msg)
-    -> List (H.Attribute msg)
-attributes attrs_ =
+    ->
+        { value : String
+        , onInput : String -> msg
+        }
+    -> H.Html msg
+view attrs_ props =
     let
         attrs : Attributes msg
         attrs =
             applyAttrs attrs_
     in
-    attrs.htmlAttributes
-        ++ [ HA.type_ "number"
-           , WH.maybeAttr HA.id attrs.id
-           , HA.class "ew ew-input ew-focusable"
-           , HA.disabled attrs.disabled
-           , HA.readonly attrs.readOnly
-           , WH.maybeAttr HA.min (Maybe.map String.fromFloat attrs.min)
-           , WH.maybeAttr HA.max (Maybe.map String.fromFloat attrs.max)
-           , WH.maybeAttr HA.step (Maybe.map String.fromFloat attrs.step)
-           , WH.maybeAttr HA.placeholder attrs.placeholder
-           , WH.maybeAttr HE.onFocus attrs.onFocus
-           , WH.maybeAttr HE.onBlur attrs.onBlur
-           , WH.maybeAttr WH.onEnter attrs.onEnter
-           ]
-
-
-
--- Main
-
-
-viewInt :
-    List (Attribute msg)
-    ->
-        { onInput : Int -> msg
-        , value : Int
-        }
-    -> H.Html msg
-viewInt attrs_ props =
     H.input
-        ([ HA.value (String.fromInt props.value)
-         , HE.onInput (Debug.todo "")
-         ]
-            ++ attributes attrs_
-        )
-        []
-
-
-viewFloat :
-    List (Attribute msg)
-    ->
-        { onInput : Float -> msg
-        , value : Float
-        }
-    -> H.Html msg
-viewFloat attrs_ props =
-    H.input
-        ([ HA.value (String.fromFloat props.value)
-         , HE.onInput (Debug.todo "")
-         ]
-            ++ attributes attrs_
+        (attrs.htmlAttributes
+            ++ [ HA.type_ "number"
+               , WH.maybeAttr HA.id attrs.id
+               , HA.class "ew ew-input ew-focusable"
+               , HA.disabled attrs.disabled
+               , HA.readonly attrs.readOnly
+               , WH.maybeAttr HA.min (Maybe.map String.fromFloat attrs.min)
+               , WH.maybeAttr HA.max (Maybe.map String.fromFloat attrs.max)
+               , WH.maybeAttr HA.step (Maybe.map String.fromFloat attrs.step)
+               , WH.maybeAttr HA.placeholder attrs.placeholder
+               , WH.maybeAttr HE.onFocus attrs.onFocus
+               , WH.maybeAttr HE.onBlur attrs.onBlur
+               , WH.maybeAttr WH.onEnter attrs.onEnter
+               , HA.value props.value
+               , HE.onInput props.onInput
+               ]
         )
         []
 

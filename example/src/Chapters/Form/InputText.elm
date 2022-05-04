@@ -18,40 +18,36 @@ chapter_ =
                     }
               )
             , ( "Password"
-              , W.InputText.viewPassword
-                    [ W.InputText.placeholder "Type your password…"
+              , W.InputText.view
+                    [ W.InputText.password
+                    , W.InputText.placeholder "Type your password…"
                     ]
                     { value = ""
                     , onInput = logActionWithString "onInput"
                     }
               )
             , ( "Search"
-              , W.InputText.viewSearch
-                    [ W.InputText.placeholder "Search…"
+              , W.InputText.view
+                    [ W.InputText.search
+                    , W.InputText.placeholder "Search…"
                     ]
                     { value = ""
                     , onInput = logActionWithString "onInput"
                     }
               )
             , ( "Email"
-              , W.InputText.viewEmail
-                    [ W.InputText.placeholder "user@email.com"
+              , W.InputText.view
+                    [ W.InputText.email
+                    , W.InputText.placeholder "user@email.com"
                     ]
                     { value = ""
                     , onInput = logActionWithString "onInput"
                     }
               )
             , ( "Url"
-              , W.InputText.viewUrl
-                    [ W.InputText.placeholder "https://app.site.com"
-                    ]
-                    { value = ""
-                    , onInput = logActionWithString "onInput"
-                    }
-              )
-            , ( "TextArea"
-              , W.InputText.viewTextArea
-                    [ W.InputText.placeholder "Type something longer…"
+              , W.InputText.view
+                    [ W.InputText.url
+                    , W.InputText.placeholder "https://app.site.com"
                     ]
                     { value = ""
                     , onInput = logActionWithString "onInput"

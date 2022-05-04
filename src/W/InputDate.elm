@@ -1,9 +1,9 @@
 module W.InputDate exposing
-    ( viewTime, viewDate, viewDateTime
-    , min, max
+    ( min, max
     , id, class, disabled, required, readOnly
     , onEnter, onFocus, onBlur
     , htmlAttrs, Attribute
+    , timeZone, view
     )
 
 {-|
@@ -108,6 +108,12 @@ required v =
 
 
 {-| -}
+timeZone : Time.Zone -> Attribute msg
+timeZone v =
+    Attribute <| \attrs -> { attrs | timeZone = v }
+
+
+{-| -}
 min : Time.Posix -> Attribute msg
 min v =
     Attribute <| \attrs -> { attrs | min = Just v }
@@ -145,142 +151,76 @@ htmlAttrs v =
 
 
 -- Main
-
-
-attributes : Attributes msg -> List (H.Attribute msg)
-attributes attrs =
-    attrs.htmlAttributes
-        ++ [ WH.maybeAttr HA.id attrs.id
-           , HA.class "ew ew-input ew-focusable"
-           , HA.disabled attrs.disabled
-           , HA.readonly attrs.readOnly
-           , WH.maybeAttr HE.onFocus attrs.onFocus
-           , WH.maybeAttr HE.onBlur attrs.onBlur
-           , WH.maybeAttr WH.onEnter attrs.onEnter
-           ]
-
-
-
 -- Main
 
 
-viewTime :
-    List (Attribute msg)
-    ->
-        { onInput : Int -> msg
-        , value : Int
-        }
-    -> H.Html msg
-viewTime attrs_ props =
-    let
-        attrs : Attributes msg
-        attrs =
-            applyAttrs attrs_
-    in
-    H.input
-        ([ HA.type_ "time"
-         , HA.value (String.fromInt props.value)
-         , HE.onInput (Debug.todo "")
-         ]
-            ++ attributes attrs
-        )
-        []
-
-
-viewDate :
+view :
     List (Attribute msg)
     ->
         { onInput : Maybe Time.Posix -> msg
         , value : Maybe Time.Posix
         }
     -> H.Html msg
-viewDate attrs_ props =
+view attrs_ props =
     let
         attrs : Attributes msg
         attrs =
             applyAttrs attrs_
-
-        value : String
-        value =
-            props.value
-                |> Maybe.map
-                    (\timestamp ->
-                        timestamp
-                            |> Date.fromPosix attrs.timeZone
-                            |> Date.format "yyyy-MM-dd"
-                    )
-                |> Maybe.withDefault ""
-
-        decoder : D.Decoder msg
-        decoder =
-            D.oneOf
-                [ D.field "target" (D.field "valueAsNumber" D.int)
-                    |> D.andThen
-                        (\v_ ->
-                            let
-                                v : Int
-                                v =
-                                    v_ + Time.Extra.toOffset attrs.timeZone (Time.millisToPosix v_)
-                            in
-                            case ( Maybe.map Time.posixToMillis attrs.min, Maybe.map Time.posixToMillis attrs.max ) of
-                                ( Just min_, Just max_ ) ->
-                                    if v >= min_ && v < max_ then
-                                        D.succeed (Time.millisToPosix v)
-
-                                    else
-                                        D.fail <| "Timestamp should be between " ++ String.fromInt min_ ++ " and " ++ String.fromInt max_
-
-                                ( Just min_, Nothing ) ->
-                                    if v >= min_ then
-                                        D.succeed (Time.millisToPosix v)
-
-                                    else
-                                        D.fail <| "Timestamp should be after than " ++ String.fromInt min_
-
-                                ( Nothing, Just max_ ) ->
-                                    if v < max_ then
-                                        D.succeed (Time.millisToPosix v)
-
-                                    else
-                                        D.fail <| "Timestamp should be before than " ++ String.fromInt max_
-
-                                ( Nothing, Nothing ) ->
-                                    D.succeed (Time.millisToPosix v)
+    in
+    H.input
+        (attrs.htmlAttributes
+            ++ [ WH.maybeAttr HA.id attrs.id
+               , HA.type_ "date"
+               , HA.class "ew ew-input ew-focusable"
+               , HA.disabled attrs.disabled
+               , HA.readonly attrs.readOnly
+               , WH.maybeAttr HE.onFocus attrs.onFocus
+               , WH.maybeAttr HE.onBlur attrs.onBlur
+               , WH.maybeAttr WH.onEnter attrs.onEnter
+               , props.value
+                    |> Maybe.map
+                        (\timestamp ->
+                            timestamp
+                                |> Date.fromPosix attrs.timeZone
+                                |> Date.format "yyyy-MM-dd"
                         )
-                    |> D.map Just
-                , D.succeed Nothing
-                ]
-                |> D.map props.onInput
-    in
-    H.input
-        ([ HA.type_ "date"
-         , HA.value value
-         , HE.on "input" decoder
-         ]
-            ++ attributes attrs
-        )
-        []
+                    |> Maybe.withDefault ""
+                    |> HA.value
+               , HE.on "input"
+                    (D.field "target" (D.field "valueAsNumber" D.float)
+                        |> D.andThen
+                            (\v ->
+                                if isNaN v then
+                                    D.succeed (props.onInput Nothing)
 
+                                else
+                                    let
+                                        notAdjusted : Time.Posix
+                                        notAdjusted =
+                                            Time.millisToPosix (floor v)
 
-viewDateTime :
-    List (Attribute msg)
-    ->
-        { onInput : Float -> msg
-        , value : Float
-        }
-    -> H.Html msg
-viewDateTime attrs_ props =
-    let
-        attrs : Attributes msg
-        attrs =
-            applyAttrs attrs_
-    in
-    H.input
-        ([ HA.type_ "datetime-local"
-         , HA.value (String.fromFloat props.value)
-         , HE.onInput (Debug.todo "")
-         ]
-            ++ attributes attrs
+                                        timezoneAdjusted : Int
+                                        timezoneAdjusted =
+                                            floor v - (Time.Extra.toOffset attrs.timeZone notAdjusted * 60 * 1000)
+
+                                        timeOfDayOffset : Int
+                                        timeOfDayOffset =
+                                            props.value
+                                                |> Maybe.map
+                                                    (\userValue ->
+                                                        Time.Extra.diff Time.Extra.Millisecond
+                                                            attrs.timeZone
+                                                            (Time.Extra.floor Time.Extra.Day attrs.timeZone userValue)
+                                                            userValue
+                                                    )
+                                                |> Maybe.withDefault 0
+                                    in
+                                    Just (Time.millisToPosix (timezoneAdjusted + timeOfDayOffset))
+                                        |> props.onInput
+                                        |> D.succeed
+                            )
+                    )
+               ]
         )
         []
 
