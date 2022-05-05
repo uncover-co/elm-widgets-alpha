@@ -143,6 +143,7 @@ htmlAttrs v =
     Attribute <| \attrs -> { attrs | htmlAttributes = v }
 
 
+{-| -}
 view :
     List (Attribute msg)
     ->

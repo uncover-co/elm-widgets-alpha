@@ -1,15 +1,15 @@
 module W.InputTime exposing
-    ( min, max
+    ( view
+    , min, max, timeZone
     , id, class, disabled, required, readOnly
     , onEnter, onFocus, onBlur
     , htmlAttrs, Attribute
-    , timeZone, view
     )
 
 {-|
 
-@docs viewTime, viewDate, viewDateTime
-@docs min, max
+@docs view
+@docs min, max, timeZone
 @docs id, class, disabled, required, readOnly
 @docs onEnter, onFocus, onBlur
 @docs htmlAttrs, Attribute
@@ -19,7 +19,6 @@ module W.InputTime exposing
 import Html as H
 import Html.Attributes as HA
 import Html.Events as HE
-import Json.Decode as D
 import Time
 import Time.Extra
 import W.Internal.Helpers as WH
@@ -152,6 +151,7 @@ htmlAttrs v =
 -- Main
 
 
+{-| -}
 view :
     List (Attribute msg)
     ->
@@ -198,9 +198,6 @@ view attrs_ props =
                , HE.onInput
                     (\value ->
                         let
-                            _ =
-                                Debug.log "h" (String.split "" value)
-
                             currentStartOfDay : Int
                             currentStartOfDay =
                                 props.value
@@ -247,37 +244,6 @@ view attrs_ props =
                             _ ->
                                 props.onInput Nothing
                     )
-
-               --    , HE.on "input"
-               --         (D.field "target" (D.field "valueAsNumber" D.float)
-               --             |> D.andThen
-               --                 (\value ->
-               --                     if isNaN value then
-               --                         D.succeed (props.onInput Nothing)
-               --                     else
-               --                         let
-               --                             currentStartOfDay : Int
-               --                             currentStartOfDay =
-               --                                 props.value
-               --                                     |> Maybe.map (Time.Extra.floor Time.Extra.Day attrs.timeZone)
-               --                                     |> Maybe.map Time.posixToMillis
-               --                                     |> Maybe.withDefault 0
-               --                             offset : Int
-               --                             offset =
-               --                                 value
-               --                                     |> floor
-               --                                     |> Time.millisToPosix
-               --                                     |> Time.Extra.floor Time.Extra.Hour attrs.timeZone
-               --                                     |> Time.posixToMillis
-               --                         in
-               --                         currentStartOfDay
-               --                             + offset
-               --                             |> Time.millisToPosix
-               --                             |> Just
-               --                             |> props.onInput
-               --                             |> D.succeed
-               --                 )
-               --         )
                ]
         )
         []

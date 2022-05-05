@@ -16,6 +16,8 @@
         "W.InputSelect",
         "W.InputSlider",
         "W.InputText",
+        "W.InputTextArea",
+        "W.InputTime",
         "W.Loading",
         "W.Modal",
         "W.Styles"
