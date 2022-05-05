@@ -141,7 +141,7 @@ view attrs_ props =
         [ H.input
             (attrs.htmlAttributes
                 ++ [ WH.maybeAttr HA.placeholder attrs.placeholder
-                   , HA.disabled attrs.disabled
+                   , HA.disabled (attrs.disabled || attrs.readOnly)
                    , HA.readonly attrs.readOnly
                    , HA.required attrs.required
                    , HA.autocomplete False

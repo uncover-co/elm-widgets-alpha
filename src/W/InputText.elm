@@ -228,7 +228,7 @@ view attrs_ props =
                , HA.type_ (inputTypeToString attrs.type_)
                , WH.attrIf (not attrs.unstyled) HA.class "ew ew-input ew-focusable"
                , HA.disabled attrs.disabled
-               , HA.readonly attrs.readOnly
+               , HA.readonly (attrs.readOnly || attrs.readOnly)
                , HA.value props.value
                , HE.onInput props.onInput
                , WH.maybeAttr HA.placeholder attrs.placeholder

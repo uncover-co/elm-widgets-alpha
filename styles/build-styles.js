@@ -9,12 +9,12 @@ const source = fs.readFileSync("./styles/styles.pcss");
 postcss([postcssNested, postcssAutoprefixer, postcssCssnano])
   .process(source, {
     from: "./styles/styles.pcss",
-    to: "./src/ElmWidgets/Styles.elm",
+    to: "./src/W/Styles.elm",
   })
   .then((result) => {
     fs.writeFileSync(
-      "./src/ElmWidgets/Styles.elm",
-      `module ElmWidgets.Styles exposing (..)
+      "./src/W/Styles.elm",
+      `module W.Styles exposing (..)
 
 import Html as H exposing (Html)
 

@@ -17,6 +17,15 @@ chapter_ =
                     , onInput = logActionWithString "onInput"
                     }
               )
+            , ( "Disabled"
+              , W.InputText.view
+                    [ W.InputText.placeholder "Type something…"
+                    , W.InputText.disabled True
+                    ]
+                    { value = ""
+                    , onInput = logActionWithString "onInput"
+                    }
+              )
             , ( "Password"
               , W.InputText.view
                     [ W.InputText.password

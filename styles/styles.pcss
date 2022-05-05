@@ -18,6 +18,7 @@
     outline-offset: 2px;
   }
   &:disabled {
+    outline: none;
     cursor: default;
   }
 }
@@ -200,7 +201,7 @@
   font-family: var(--tmspc-font-text);
 }
 .ew.ew-field + .ew.ew-field {
-  border-top: 2px solid var(--tmspc-background-lighter);
+  border-top: 2px solid var(--tmspc-base-lighter);
 }
 
 .ew.ew-field-main.ew-m-align-right {
@@ -241,24 +242,20 @@
 
 .ew.ew-field-message {
   margin-top: 8px;
-  padding: 12px 12px 12px 8px;
+  padding: 12px;
   background-color: var(--tmspc-base-lighter);
   border-radius: var(--tmspc-border-radius);
-  border-left: 4px solid var(--tmspc-base-light);
   color: var(--tmspc-base);
   &.ew-m-success {
     color: var(--tmspc-success);
-    border-color: var(--tmspc-success-light);
     background-color: var(--tmspc-success-lighter);
   }
   &.ew-m-warning {
     color: var(--tmspc-warning);
-    border-color: var(--tmspc-warning-light);
     background-color: var(--tmspc-warning-lighter);
   }
   &.ew-m-danger {
     color: var(--tmspc-danger);
-    border-color: var(--tmspc-danger-light);
     background-color: var(--tmspc-danger-lighter);
   }
 }
@@ -286,8 +283,8 @@
   color: var(--tmspc-base);
   line-height: 1em;
 
-  &:disabled {
-    background: var(--tmspc-background-lighter);
+  &:disabled:not(:readonly) {
+    background: var(--tmspc-base-lighter);
   }
   &:invalid:not(:focus) {
     border-color: var(--tmspc-warning-base);
@@ -296,7 +293,7 @@
 
 textarea.ew.ew-input {
   resize: vertical;
-  padding: 12px;
+  padding: 14px 12px;
 }
 
 /* Inputs – Select */
@@ -367,7 +364,7 @@ textarea.ew.ew-input {
     }
   }
   &.ew-is-disabled {
-    background-color: var(--tmspc-background-lighter);
+    background-color: var(--tmspc-base-lighter);
     pointer-events: none;
     &:checked:before {
       opacity: 0.5;
@@ -456,7 +453,7 @@ textarea.ew.ew-input {
     margin-top: -3px;
     display: block;
     content: "";
-    border-top: 1px solid var(--tmspc-background-light);
+    border-top: 1px solid var(--tmspc-background-dark);
   }
 }
 
@@ -567,7 +564,7 @@ textarea.ew.ew-input {
   align-items: center;
   justify-content: center;
   background: var(--tmspc-background);
-  --color: var(--tmspc-background-light);
+  --color: var(--tmspc-background-dark);
 }
 
 .ew.ew-modal {
@@ -659,11 +656,11 @@ textarea.ew.ew-input {
 .ew.ew-data-row-main.ew-m-button:hover,
 .ew.ew-data-row-main.ew-m-link:hover {
   cursor: pointer;
-  background: var(--tmspc-background-lighter);
+  background: var(--tmspc-base-lighter);
 }
 .ew.ew-data-row-main.ew-m-button:active,
 .ew.ew-data-row-main.ew-m-link:active {
-  background: var(--tmspc-background-light);
+  background: var(--tmspc-background-dark);
 }
 
 .ew.ew-data-row-left {

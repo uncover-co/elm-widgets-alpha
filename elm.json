@@ -29,7 +29,7 @@
         "elm/time": "1.0.0 <= v < 2.0.0",
         "justinmimbs/date": "4.0.0 <= v < 5.0.0",
         "justinmimbs/time-extra": "1.1.0 <= v < 2.0.0",
-        "uncover-co/elm-theme-spec": "5.0.0 <= v < 6.0.0"
+        "uncover-co/elm-theme-spec": "5.0.1 <= v < 6.0.0"
     },
     "test-dependencies": {}
 }

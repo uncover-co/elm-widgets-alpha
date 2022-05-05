@@ -20,7 +20,7 @@ init =
 
 chapter_ : Chapter { m | range : Model }
 chapter_ =
-    chapter "Input Range"
+    chapter "Input Slider"
         |> renderStatefulComponentList
             [ ( "Default"
               , \{ range } ->
