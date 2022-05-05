@@ -1,4 +1,16 @@
-module W.InputSelect exposing (..)
+module W.InputSelect exposing
+    ( view, viewGroups
+    , id, disabled, readOnly
+    , Attribute
+    )
+
+{-|
+
+@docs view, viewGroups
+@docs id, disabled, readOnly
+@docs Attribute
+
+-}
 
 import Dict exposing (Dict)
 import Html as H

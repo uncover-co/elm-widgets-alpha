@@ -1,4 +1,16 @@
-module W.Modal exposing (..)
+module W.Modal exposing
+    ( view
+    , id, absolute
+    , Attribute
+    )
+
+{-|
+
+@docs view
+@docs id, absolute
+@docs Attribute
+
+-}
 
 import Html as H
 import Html.Attributes as HA

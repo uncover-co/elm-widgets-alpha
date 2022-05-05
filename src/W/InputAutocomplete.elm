@@ -1,4 +1,16 @@
-module W.InputAutocomplete exposing (..)
+module W.InputAutocomplete exposing
+    ( view
+    , class, disabled, readOnly, required, placeholder, onBlur, onEnter, onFocus, htmlAttrs
+    , Attribute
+    )
+
+{-|
+
+@docs view
+@docs class, disabled, readOnly, required, placeholder, onBlur, onEnter, onFocus, htmlAttrs
+@docs Attribute
+
+-}
 
 import Dict
 import Html as H

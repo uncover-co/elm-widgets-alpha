@@ -1,14 +1,14 @@
 module W.InputNumber exposing
-    ( min, max, step
+    ( view
+    , min, max, step
     , id, class, placeholder, disabled, required, readOnly
     , onEnter, onFocus, onBlur
     , htmlAttrs, Attribute
-    , view
     )
 
 {-|
 
-@docs viewInt, viewFloat
+@docs view
 @docs min, max, step
 @docs id, class, placeholder, disabled, required, readOnly
 @docs onEnter, onFocus, onBlur
@@ -157,6 +157,7 @@ htmlAttrs v =
 -- Main
 
 
+{-| -}
 view :
     List (Attribute msg)
     ->

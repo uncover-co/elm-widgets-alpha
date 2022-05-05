@@ -1,4 +1,16 @@
-module W.InputCheckbox exposing (..)
+module W.InputCheckbox exposing
+    ( view
+    , id, color, disabled, readOnly
+    , Attribute
+    )
+
+{-|
+
+@docs view
+@docs id, color, disabled, readOnly
+@docs Attribute
+
+-}
 
 import Html as H
 import Html.Attributes as HA

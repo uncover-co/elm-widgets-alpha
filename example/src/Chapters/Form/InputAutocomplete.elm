@@ -1,4 +1,4 @@
-module Chapters.Form.InputAutocomplete exposing (..)
+module Chapters.Form.InputAutocomplete exposing (chapter_)
 
 import ElmBook.Actions exposing (logActionWithString)
 import ElmBook.Chapter exposing (Chapter, chapter, renderComponentList)

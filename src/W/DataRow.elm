@@ -1,4 +1,16 @@
-module W.DataRow exposing (..)
+module W.DataRow exposing
+    ( view
+    , header, footer, left, right, href, onClick
+    , Attribute
+    )
+
+{-|
+
+@docs view
+@docs header, footer, left, right, href, onClick
+@docs Attribute
+
+-}
 
 import Html as H
 import Html.Attributes as HA

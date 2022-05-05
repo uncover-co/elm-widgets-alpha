@@ -1,4 +1,20 @@
-module W.InputTextArea exposing (..)
+module W.InputTextArea exposing
+    ( view
+    , resizable, rows
+    , id, class, disabled, readOnly, required, placeholder, htmlAttrs
+    , onBlur, onEnter, onFocus
+    , Attribute
+    )
+
+{-|
+
+@docs view
+@docs resizable, rows
+@docs id, class, disabled, readOnly, required, placeholder, htmlAttrs
+@docs onBlur, onEnter, onFocus
+@docs Attribute
+
+-}
 
 import Html as H
 import Html.Attributes as HA

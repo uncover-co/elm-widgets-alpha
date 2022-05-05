@@ -1,4 +1,16 @@
-module W.InputRadio exposing (..)
+module W.InputRadio exposing
+    ( view
+    , color, disabled, readOnly, vertical
+    , Attribute
+    )
+
+{-|
+
+@docs view
+@docs color, disabled, readOnly, vertical
+@docs Attribute
+
+-}
 
 import Html as H
 import Html.Attributes as HA

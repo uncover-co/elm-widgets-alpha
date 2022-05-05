@@ -1,4 +1,16 @@
-module W.InputSlider exposing (..)
+module W.InputSlider exposing
+    ( view
+    , id, color, disabled, readOnly
+    , Attribute
+    )
+
+{-|
+
+@docs view
+@docs id, color, disabled, readOnly
+@docs Attribute
+
+-}
 
 import Html as H
 import Html.Attributes as HA

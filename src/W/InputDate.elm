@@ -1,15 +1,15 @@
 module W.InputDate exposing
-    ( min, max
+    ( view
+    , min, max, timeZone
     , id, class, disabled, required, readOnly
     , onEnter, onFocus, onBlur
     , htmlAttrs, Attribute
-    , timeZone, view
     )
 
 {-|
 
-@docs viewTime, viewDate, viewDateTime
-@docs min, max
+@docs view
+@docs min, max, timeZone
 @docs id, class, disabled, required, readOnly
 @docs onEnter, onFocus, onBlur
 @docs htmlAttrs, Attribute
@@ -151,9 +151,9 @@ htmlAttrs v =
 
 
 -- Main
--- Main
 
 
+{-| -}
 view :
     List (Attribute msg)
     ->

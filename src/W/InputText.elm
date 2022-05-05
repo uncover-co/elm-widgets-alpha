@@ -1,7 +1,7 @@
 module W.InputText exposing
     ( view
     , email, password, search, telephone, url
-    , id, class, placeholder, disabled, required, readOnly, pattern
+    , id, class, unstyled, placeholder, disabled, required, readOnly, pattern
     , onEnter, onFocus, onBlur
     , htmlAttrs, Attribute
     )
@@ -122,6 +122,7 @@ password =
     Attribute <| \attrs -> { attrs | type_ = Password }
 
 
+{-| -}
 search : Attribute msg
 search =
     Attribute <| \attrs -> { attrs | type_ = Search }
@@ -149,6 +150,12 @@ telephone =
 class : String -> Attribute msg
 class v =
     Attribute <| \attrs -> { attrs | class = v }
+
+
+{-| -}
+unstyled : Bool -> Attribute msg
+unstyled v =
+    Attribute <| \attrs -> { attrs | unstyled = v }
 
 
 {-| -}
@@ -209,6 +216,7 @@ htmlAttrs v =
 -- Main
 
 
+{-| -}
 view :
     List (Attribute msg)
     ->
