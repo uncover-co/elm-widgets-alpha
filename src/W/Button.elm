@@ -41,7 +41,7 @@ module W.Button exposing
 import Html as H
 import Html.Attributes as HA
 import Html.Events as HE
-import ThemeSpec exposing (ThemeSpecColor)
+import ThemeSpec exposing (ThemeSpecColor, ThemeSpecColorVariableSet)
 import W.Internal.Helpers as WH
 
 
@@ -62,7 +62,7 @@ type alias Attributes msg =
     , fill : Bool
     , left : Maybe (H.Html msg)
     , right : Maybe (H.Html msg)
-    , theme : ThemeSpecColor
+    , theme : { color : String, background : String, shadow : String }
     , htmlAttributes : List (H.Attribute msg)
     }
 
@@ -82,8 +82,22 @@ defaultAttrs =
     , fill = False
     , left = Nothing
     , right = Nothing
-    , theme = ThemeSpec.base
+    , theme = themeFromThemeSpec ThemeSpec.base
     , htmlAttributes = []
+    }
+
+
+themeFromThemeSpec :
+    ThemeSpecColorVariableSet
+    ->
+        { color : String
+        , background : String
+        , shadow : String
+        }
+themeFromThemeSpec colorSpec =
+    { color = colorSpec.inverse
+    , background = colorSpec.default
+    , shadow = "rgb(" ++ colorSpec.defaultChannels ++ " / 0.5)"
     }
 
 
@@ -123,8 +137,8 @@ attributes attrs_ =
            , HA.class (styleClass attrs.style)
            , HA.class attrs.class
            , WH.styles
-                [ ( "--color", attrs.theme.lighter )
-                , ( "--background", attrs.theme.base )
+                [ ( "--color", attrs.theme.color )
+                , ( "--background", attrs.theme.background )
                 , ( "--shadow", attrs.theme.shadow )
                 , ( "width", WH.stringIf attrs.fill "100%" "auto" )
                 ]
@@ -184,25 +198,25 @@ disabled v =
 {-| -}
 accent : Attribute msg
 accent =
-    Attribute <| \attrs -> { attrs | theme = ThemeSpec.accent }
+    Attribute <| \attrs -> { attrs | theme = themeFromThemeSpec ThemeSpec.accent }
 
 
 {-| -}
 success : Attribute msg
 success =
-    Attribute <| \attrs -> { attrs | theme = ThemeSpec.success }
+    Attribute <| \attrs -> { attrs | theme = themeFromThemeSpec ThemeSpec.success }
 
 
 {-| -}
 warning : Attribute msg
 warning =
-    Attribute <| \attrs -> { attrs | theme = ThemeSpec.warning }
+    Attribute <| \attrs -> { attrs | theme = themeFromThemeSpec ThemeSpec.warning }
 
 
 {-| -}
 danger : Attribute msg
 danger =
-    Attribute <| \attrs -> { attrs | theme = ThemeSpec.danger }
+    Attribute <| \attrs -> { attrs | theme = themeFromThemeSpec ThemeSpec.danger }
 
 
 {-| -}
@@ -236,7 +250,7 @@ right v =
 
 
 {-| -}
-theme : ThemeSpecColor -> Attribute msg
+theme : { background : String, color : String, shadow : String } -> Attribute msg
 theme v =
     Attribute <| \attrs -> { attrs | theme = v }
 

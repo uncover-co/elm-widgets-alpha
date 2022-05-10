@@ -44,8 +44,8 @@ main =
         |> withThemeOptions
             [ ElmBook.ThemeOptions.globals
                 [ ThemeProvider.globalProviderWithDarkMode
-                    { light = ThemeSpec.lightTheme
-                    , dark = ThemeSpec.darkTheme
+                    { light = ThemeSpec.theme ThemeSpec.lightTheme
+                    , dark = ThemeSpec.theme ThemeSpec.darkTheme
                     , strategy = ThemeProvider.ClassStrategy "elm-book-dark-mode"
                     }
                 , W.Styles.globalStyles

@@ -2,7 +2,6 @@ module Chapters.Core.Buttons exposing (chapter_)
 
 import ElmBook.Actions exposing (logAction)
 import ElmBook.Chapter exposing (Chapter, chapter, renderComponentList)
-import ThemeSpec
 import UI
 import W.Button
 
@@ -11,66 +10,53 @@ chapter_ : Chapter x
 chapter_ =
     chapter "Buttons"
         |> renderComponentList
-            ([ [ ( "Default", W.Button.theme ThemeSpec.base )
-               , ( "Accent", W.Button.accent )
-               , ( "Success", W.Button.success )
-               , ( "Warning", W.Button.warning )
-               , ( "Danger", W.Button.danger )
+            ([ [ ( "Default", [] )
+               , ( "Accent", [ W.Button.accent ] )
+               , ( "Success", [ W.Button.success ] )
+               , ( "Warning", [ W.Button.warning ] )
+               , ( "Danger", [ W.Button.danger ] )
                , ( "Custom"
-                 , W.Button.theme
-                    { base = "#ef67ef"
-                    , light = "#f6e1f6"
-                    , lighter = "#ffedff"
-                    , shadow = "#ef67ef"
-                    }
+                 , [ W.Button.theme
+                        { background = "#ef67ef"
+                        , color = "#f6e1f6"
+                        , shadow = "#ffedff"
+                        }
+                   ]
                  )
                ]
                 |> List.map
-                    (\( name, theme_ ) ->
+                    (\( name, attrs ) ->
                         ( name
                         , UI.vSpacer
                             [ UI.hSpacer
-                                [ W.Button.view
-                                    [ theme_ ]
+                                [ W.Button.view attrs
                                     { label = "button"
                                     , onClick = logAction ""
                                     }
                                 , W.Button.view
-                                    [ theme_
-                                    , W.Button.outlined
-                                    ]
+                                    (W.Button.outlined :: attrs)
                                     { label = "button"
                                     , onClick = logAction ""
                                     }
                                 , W.Button.view
-                                    [ theme_
-                                    , W.Button.invisible
-                                    ]
+                                    (W.Button.invisible :: attrs)
                                     { label = "button"
                                     , onClick = logAction ""
                                     }
                                 ]
                             , UI.hSpacer
                                 [ W.Button.view
-                                    [ theme_
-                                    , W.Button.disabled True
-                                    ]
+                                    (W.Button.disabled True :: attrs)
                                     { label = "button"
                                     , onClick = logAction ""
                                     }
                                 , W.Button.view
-                                    [ theme_
-                                    , W.Button.outlined
-                                    , W.Button.disabled True
-                                    ]
+                                    (W.Button.outlined :: W.Button.disabled True :: attrs)
                                     { label = "button"
                                     , onClick = logAction ""
                                     }
                                 , W.Button.view
-                                    [ theme_
-                                    , W.Button.invisible
-                                    , W.Button.disabled True
-                                    ]
+                                    (W.Button.invisible :: W.Button.disabled True :: attrs)
                                     { label = "button"
                                     , onClick = logAction ""
                                     }

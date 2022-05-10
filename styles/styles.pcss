@@ -135,7 +135,7 @@
   height: 36px;
   padding: 0 18px;
   border: none;
-  border-radius: var(--tmspc-border-radius);
+  border-radius: 4px;
 
   font-family: var(--tmspc-font-text);
   color: var(--color);
@@ -188,8 +188,20 @@
   color: var(--background);
   border-color: transparent;
   box-shadow: none;
-  &:hover {
-    background: var(--color);
+  &:before {
+    content: "";
+    display: block;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    opacity: 0;
+    background: var(--background);
+    transition: opacity 0.2s;
+  }
+  &:hover:before {
+    opacity: 0.1;
   }
 }
 
@@ -201,7 +213,7 @@
   font-family: var(--tmspc-font-text);
 }
 .ew.ew-field + .ew.ew-field {
-  border-top: 2px solid var(--tmspc-base-lighter);
+  border-top: 2px solid var(--tmspc-details-darker);
 }
 
 .ew.ew-field-main.ew-m-align-right {
@@ -243,20 +255,20 @@
 .ew.ew-field-message {
   margin-top: 8px;
   padding: 12px;
-  background-color: var(--tmspc-base-lighter);
-  border-radius: var(--tmspc-border-radius);
+  background-color: rgb(var(--tmspc-base-ch) / 0.1);
+  border-radius: 4px;
   color: var(--tmspc-base);
   &.ew-m-success {
     color: var(--tmspc-success);
-    background-color: var(--tmspc-success-lighter);
+    background-color: rgb(var(--tmspc-success-ch) / 0.1);
   }
   &.ew-m-warning {
     color: var(--tmspc-warning);
-    background-color: var(--tmspc-warning-lighter);
+    background-color: rgb(var(--tmspc-warning-ch) / 0.1);
   }
   &.ew-m-danger {
     color: var(--tmspc-danger);
-    background-color: var(--tmspc-danger-lighter);
+    background-color: rgb(var(--tmspc-danger-ch) / 0.1);
   }
 }
 
@@ -274,8 +286,8 @@
 
   background: var(--tmspc-background);
   border: none;
-  border: 2px solid var(--tmspc-base-lighter);
-  border-radius: var(--tmspc-border-radius);
+  border: 2px solid var(--tmspc-details-darker);
+  border-radius: 4px;
   box-shadow: none;
 
   font-size: 16px;
@@ -284,10 +296,10 @@
   line-height: 1em;
 
   &:disabled:not(:readonly) {
-    background: var(--tmspc-base-lighter);
+    background: var(--tmspc-background-dark);
   }
   &:invalid:not(:focus) {
-    border-color: var(--tmspc-warning-base);
+    border-color: var(--tmspc-warning);
   }
 }
 
@@ -324,7 +336,7 @@ textarea.ew.ew-input {
   appearance: none;
   width: 28px;
   height: 28px;
-  border: 2px solid var(--tmspc-base-lighter);
+  border: 2px solid var(--tmspc-details-darker);
   background: var(--tmspc-background);
   box-shadow: none;
 
@@ -364,7 +376,7 @@ textarea.ew.ew-input {
     }
   }
   &.ew-is-disabled {
-    background-color: var(--tmspc-base-lighter);
+    background-color: var(--tmspc-background-darker);
     pointer-events: none;
     &:checked:before {
       opacity: 0.5;
@@ -378,9 +390,9 @@ textarea.ew.ew-input {
 /* Inputs – Checkbox */
 
 .ew.ew-checkbox {
-  border-radius: var(--tmspc-border-radius);
+  border-radius: 4px;
   &:before {
-    border-radius: calc(0.5 * var(--tmspc-border-radius));
+    border-radius: calc(0.5 * 4px);
   }
 }
 
@@ -596,7 +608,7 @@ textarea.ew.ew-input {
   position: relative;
   background: var(--tmspc-background);
   box-shadow: 0 2px 20px var(--tmspc-background-shadow);
-  border-radius: var(--tmspc-border-radius-large);
+  border-radius: 8px;
   width: 100%;
   max-width: 960px;
   max-height: 80%;
@@ -645,7 +657,7 @@ textarea.ew.ew-input {
 
   background: none;
   border: none;
-  border-radius: var(--tmspc-border-radius);
+  border-radius: 4px;
   box-shadow: none;
 
   font-size: 16px;
@@ -656,11 +668,11 @@ textarea.ew.ew-input {
 .ew.ew-data-row-main.ew-m-button:hover,
 .ew.ew-data-row-main.ew-m-link:hover {
   cursor: pointer;
-  background: var(--tmspc-base-lighter);
+  background: var(--tmspc-background-dark);
 }
 .ew.ew-data-row-main.ew-m-button:active,
 .ew.ew-data-row-main.ew-m-link:active {
-  background: var(--tmspc-background-dark);
+  background: var(--tmspc-background-darker);
 }
 
 .ew.ew-data-row-left {
@@ -673,7 +685,7 @@ textarea.ew.ew-input {
 .ew.ew-data-row-header,
 .ew.ew-data-row-footer {
   font-size: 14px;
-  color: var(--tmspc-base-light);
+  color: var(--tmspc-base-lighter);
 }
 
 .ew.ew-data-row-header {
