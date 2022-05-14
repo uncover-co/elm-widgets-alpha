@@ -1,7 +1,7 @@
 module W.Button exposing
     ( view, viewLink
     , disabled, outlined, invisible
-    , accent, danger, success, warning, theme
+    , primary, success, warning, danger, theme
     , fill
     , left, right
     , id, class, htmlAttrs, Attribute
@@ -19,7 +19,7 @@ module W.Button exposing
 
 # Colors
 
-@docs accent, danger, success, warning, theme
+@docs primary, success, warning, danger, theme
 
 
 # Styles
@@ -41,7 +41,7 @@ module W.Button exposing
 import Html as H
 import Html.Attributes as HA
 import Html.Events as HE
-import ThemeSpec exposing (ThemeSpecColor, ThemeSpecColorVariableSet)
+import ThemeSpec exposing (ThemeSpecColorVars)
 import W.Internal.Helpers as WH
 
 
@@ -82,22 +82,22 @@ defaultAttrs =
     , fill = False
     , left = Nothing
     , right = Nothing
-    , theme = themeFromThemeSpec ThemeSpec.base
+    , theme = themeFromThemeSpec ThemeSpec.secondary
     , htmlAttributes = []
     }
 
 
 themeFromThemeSpec :
-    ThemeSpecColorVariableSet
+    ThemeSpecColorVars
     ->
         { color : String
         , background : String
         , shadow : String
         }
 themeFromThemeSpec colorSpec =
-    { color = colorSpec.inverse
-    , background = colorSpec.default
-    , shadow = "rgb(" ++ colorSpec.defaultChannels ++ " / 0.5)"
+    { color = colorSpec.contrast
+    , background = colorSpec.base
+    , shadow = "rgb(" ++ colorSpec.baseChannels ++ " / 0.5)"
     }
 
 
@@ -196,9 +196,9 @@ disabled v =
 
 
 {-| -}
-accent : Attribute msg
-accent =
-    Attribute <| \attrs -> { attrs | theme = themeFromThemeSpec ThemeSpec.accent }
+primary : Attribute msg
+primary =
+    Attribute <| \attrs -> { attrs | theme = themeFromThemeSpec ThemeSpec.primary }
 
 
 {-| -}

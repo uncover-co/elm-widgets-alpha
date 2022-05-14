@@ -34,7 +34,7 @@ chapter_ =
               , W.DataRow.view
                     [ W.DataRow.href "/logAction/#"
                     , W.DataRow.right
-                        [ W.Button.view [ W.Button.accent ]
+                        [ W.Button.view [ W.Button.primary ]
                             { label = "Click me"
                             , onClick = logAction "onClick Action"
                             }
@@ -48,7 +48,7 @@ chapter_ =
                     [ W.DataRow.href "/logAction/#"
                     , W.DataRow.footer (H.text "user@email.com")
                     , W.DataRow.right
-                        [ W.Button.view [ W.Button.accent ]
+                        [ W.Button.view [ W.Button.primary ]
                             { label = "Click me"
                             , onClick = logAction "onClick Action"
                             }
@@ -62,7 +62,7 @@ chapter_ =
                     , W.DataRow.header (H.text "Admin")
                     , W.DataRow.footer (H.text "user@email.com")
                     , W.DataRow.right
-                        [ W.Button.view [ W.Button.accent ]
+                        [ W.Button.view [ W.Button.primary ]
                             { label = "Click me"
                             , onClick = logAction "onClick Action"
                             }
@@ -77,7 +77,7 @@ chapter_ =
                     , W.DataRow.footer (H.text "user@email.com")
                     , W.DataRow.left (W.Loading.ripples [])
                     , W.DataRow.right
-                        [ W.Button.view [ W.Button.accent ]
+                        [ W.Button.view [ W.Button.primary ]
                             { label = "Click me"
                             , onClick = logAction "onClick Action"
                             }
@@ -101,7 +101,7 @@ chapter_ =
                             []
                         )
                     , W.DataRow.right
-                        [ W.Button.view [ W.Button.accent ]
+                        [ W.Button.view [ W.Button.primary ]
                             { label = "Click me"
                             , onClick = logAction "onClick Action"
                             }

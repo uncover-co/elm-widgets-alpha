@@ -26,6 +26,15 @@ chapter_ =
                     , onInput = logActionWithString "onInput"
                     }
               )
+            , ( "Read Only"
+              , W.InputText.view
+                    [ W.InputText.placeholder "Type something…"
+                    , W.InputText.readOnly True
+                    ]
+                    { value = ""
+                    , onInput = logActionWithString "onInput"
+                    }
+              )
             , ( "Password"
               , W.InputText.view
                     [ W.InputText.password

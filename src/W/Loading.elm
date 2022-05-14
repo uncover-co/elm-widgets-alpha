@@ -54,7 +54,7 @@ defaultAttrs : Attributes msg
 defaultAttrs =
     { id = Nothing
     , size = 25
-    , color = ThemeSpec.base.light
+    , color = ThemeSpec.baseline.light
     , htmlAttributes = []
     }
 

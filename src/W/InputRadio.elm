@@ -42,7 +42,7 @@ applyAttrs attrs =
 
 defaultAttrs : Attributes
 defaultAttrs =
-    { color = "var(--tmspc-accent)"
+    { color = "var(--tmspc-primary)"
     , disabled = False
     , readOnly = False
     , vertical = False

@@ -43,7 +43,7 @@ applyAttrs attrs =
 defaultAttrs : Attributes
 defaultAttrs =
     { id = Nothing
-    , color = "var(--tmspc-accent)"
+    , color = "var(--tmspc-primary)"
     , disabled = False
     , readOnly = False
     }

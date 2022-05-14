@@ -11,7 +11,7 @@ chapter_ =
     chapter "Buttons"
         |> renderComponentList
             ([ [ ( "Default", [] )
-               , ( "Accent", [ W.Button.accent ] )
+               , ( "Primary", [ W.Button.primary ] )
                , ( "Success", [ W.Button.success ] )
                , ( "Warning", [ W.Button.warning ] )
                , ( "Danger", [ W.Button.danger ] )

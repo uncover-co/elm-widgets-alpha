@@ -1,13 +1,13 @@
 module W.InputSlider exposing
     ( view
-    , id, color, disabled, readOnly
+    , id, theme, disabled, readOnly
     , Attribute
     )
 
 {-|
 
 @docs view
-@docs id, color, disabled, readOnly
+@docs id, theme, disabled, readOnly
 @docs Attribute
 
 -}
@@ -16,6 +16,7 @@ import Html as H
 import Html.Attributes as HA
 import Html.Events as HE
 import Json.Decode as D
+import ThemeSpec
 import W.Internal.Helpers as WH
 
 
@@ -32,7 +33,7 @@ type alias Attributes =
     { id : Maybe String
     , disabled : Bool
     , readOnly : Bool
-    , color : String
+    , theme : { color : String, shadow : String }
     , format : Float -> String
     }
 
@@ -47,7 +48,10 @@ defaultAttrs =
     { id = Nothing
     , disabled = False
     , readOnly = False
-    , color = "var(--tmspc-accent)"
+    , theme =
+        { color = ThemeSpec.primary.base
+        , shadow = "rgb(" ++ ThemeSpec.primary.lightChannels ++ " / 0.2)"
+        }
     , format = String.fromFloat
     }
 
@@ -63,9 +67,9 @@ id v =
 
 
 {-| -}
-color : String -> Attribute msg
-color v =
-    Attribute <| \attrs -> { attrs | color = v }
+theme : { color : String, shadow : String } -> Attribute msg
+theme v =
+    Attribute <| \attrs -> { attrs | theme = v }
 
 
 {-| -}
@@ -143,7 +147,8 @@ view attrs_ props =
                     |> D.map props.onInput
                 )
             , WH.stylesList
-                [ ( "--color", attrs.color, not attrs.disabled )
+                [ ( "--color", attrs.theme.color, not attrs.disabled )
+                , ( "--shadow", attrs.theme.shadow, not attrs.disabled )
                 , ( "--color", "var(--tmspc-background-dark)", attrs.disabled )
                 ]
             ]
