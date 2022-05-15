@@ -1,5 +1,5 @@
 /* @tailwind components; */
 
-.ew-p-4 {
-  padding: 1rem
+.ew-relative {
+  position: relative
 }

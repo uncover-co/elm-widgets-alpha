@@ -4,5 +4,5 @@ module.exports = {
   theme: {
     extend: {},
   },
-  plugins: [],
+  plugins: [require("@uncover-co/theme-spec-tailwindcss")],
 };
