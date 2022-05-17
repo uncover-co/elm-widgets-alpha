@@ -14,6 +14,7 @@ import Chapters.Form.InputText
 import Chapters.Form.InputTextArea
 import Chapters.Form.InputTime
 import Chapters.Information.DataRow
+import Chapters.Information.Popover
 import Chapters.Layout.Modal
 import ElmBook exposing (Book, book, withChapterGroups, withStatefulOptions, withThemeOptions)
 import ElmBook.StatefulOptions
@@ -63,6 +64,7 @@ main =
               )
             , ( "Information"
               , [ Chapters.Information.DataRow.chapter_
+                , Chapters.Information.Popover.chapter_
                 ]
               )
             , ( "Form"

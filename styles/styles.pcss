@@ -715,3 +715,56 @@ textarea.ew.ew-input {
   flex-shrink: 0;
   padding-left: 8px;
 }
+
+/** Popover **/
+
+.ew.ew-popover {
+  display: inline-block;
+  position: relative;
+}
+
+.ew.ew-popover-content {
+  display: none;
+  position: absolute;
+  z-index: 9999;
+  &:hover {
+    display: block;
+  }
+  &.ew-m-bottom {
+    top: calc(100% + var(--offset));
+    left: 0;
+  }
+  &.ew-m-bottom.ew-m-full {
+    right: 0;
+  }
+  &.ew-m-top {
+    bottom: calc(100% + var(--offset));
+    left: 0;
+  }
+  &.ew-m-top.ew-m-full {
+    right: 0;
+  }
+  &.ew-m-left {
+    right: calc(100% + var(--offset));
+    top: 0;
+  }
+  &.ew-m-right {
+    left: calc(100% + var(--offset));
+    top: 0;
+  }
+  &.ew-m-over {
+    top: 0;
+    left: 0;
+    right: 0;
+  }
+  &.ew-m-styled {
+    background: var(--tmspc-background);
+    border-radius: 4px;
+    border: 1px solid rgb(var(--tmspc-background-light-ch) / 0.5);
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.15);
+  }
+}
+
+.ew.ew-popover:focus-within .ew-popover-content {
+  display: block;
+}
