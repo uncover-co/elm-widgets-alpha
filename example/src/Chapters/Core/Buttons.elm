@@ -61,6 +61,38 @@ chapter_ =
                                     , onClick = logAction ""
                                     }
                                 ]
+                            , UI.hSpacer
+                                [ W.Button.view (W.Button.rounded :: attrs)
+                                    { label = "button"
+                                    , onClick = logAction ""
+                                    }
+                                , W.Button.view
+                                    (W.Button.outlined :: W.Button.rounded :: attrs)
+                                    { label = "button"
+                                    , onClick = logAction ""
+                                    }
+                                , W.Button.view
+                                    (W.Button.invisible :: W.Button.rounded :: attrs)
+                                    { label = "button"
+                                    , onClick = logAction ""
+                                    }
+                                ]
+                            , UI.hSpacer
+                                [ W.Button.view (W.Button.small :: attrs)
+                                    { label = "button"
+                                    , onClick = logAction ""
+                                    }
+                                , W.Button.view
+                                    (W.Button.outlined :: W.Button.small :: attrs)
+                                    { label = "button"
+                                    , onClick = logAction ""
+                                    }
+                                , W.Button.view
+                                    (W.Button.invisible :: W.Button.small :: attrs)
+                                    { label = "button"
+                                    , onClick = logAction ""
+                                    }
+                                ]
                             ]
                         )
                     )

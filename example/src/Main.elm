@@ -1,5 +1,6 @@
 module Main exposing (main)
 
+import Chapters.Core.ButtonGroup
 import Chapters.Core.Buttons
 import Chapters.Core.Loading
 import Chapters.Form.Field
@@ -55,6 +56,7 @@ main =
         |> withChapterGroups
             [ ( "Core"
               , [ Chapters.Core.Buttons.chapter_
+                , Chapters.Core.ButtonGroup.chapter_
                 , Chapters.Core.Loading.chapter_
                 ]
               )

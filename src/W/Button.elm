@@ -2,7 +2,7 @@ module W.Button exposing
     ( view, viewLink
     , disabled, outlined, invisible
     , primary, success, warning, danger, theme
-    , fill
+    , rounded, small, fill
     , left, right
     , id, class, htmlAttrs, Attribute
     )
@@ -24,7 +24,7 @@ module W.Button exposing
 
 # Styles
 
-@docs fill
+@docs rounded, small, fill
 
 
 # Elements
@@ -59,6 +59,8 @@ type alias Attributes msg =
     , style : ButtonStyle
     , class : String
     , disabled : Bool
+    , small : Bool
+    , rounded : Bool
     , fill : Bool
     , left : Maybe (H.Html msg)
     , right : Maybe (H.Html msg)
@@ -79,6 +81,8 @@ defaultAttrs =
     , style = Basic
     , class = ""
     , disabled = False
+    , small = False
+    , rounded = False
     , fill = False
     , left = Nothing
     , right = Nothing
@@ -136,6 +140,10 @@ attributes attrs_ =
            , HA.class "ew ew-focusable ew-btn"
            , HA.class (styleClass attrs.style)
            , HA.class attrs.class
+           , HA.classList
+                [ ( "ew-m-small", attrs.small )
+                , ( "ew-m-rounded", attrs.rounded )
+                ]
            , WH.styles
                 [ ( "--color", attrs.theme.color )
                 , ( "--background", attrs.theme.background )
@@ -235,6 +243,18 @@ invisible =
 fill : Attribute msg
 fill =
     Attribute <| \attrs -> { attrs | fill = True }
+
+
+{-| -}
+rounded : Attribute msg
+rounded =
+    Attribute <| \attrs -> { attrs | rounded = True }
+
+
+{-| -}
+small : Attribute msg
+small =
+    Attribute <| \attrs -> { attrs | small = True }
 
 
 {-| -}
