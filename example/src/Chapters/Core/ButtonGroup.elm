@@ -30,8 +30,34 @@ chapter_ =
                             , isActive = (==) 2
                             , onClick = logActionWith String.fromInt "onClick"
                             }
-                        , W.ButtonGroup.view [ W.ButtonGroup.outlined ]
+                        , W.ButtonGroup.view []
+                            { items = [ 0, 1 ]
+                            , toLabel = \i -> H.text (String.fromInt i)
+                            , isActive = (==) 2
+                            , onClick = logActionWith String.fromInt "onClick"
+                            }
+                        , W.ButtonGroup.view []
+                            { items = [ 1 ]
+                            , toLabel = \i -> H.text (String.fromInt i)
+                            , isActive = (==) 2
+                            , onClick = logActionWith String.fromInt "onClick"
+                            }
+                        ]
+                    , UI.hSpacer
+                        [ W.ButtonGroup.view [ W.ButtonGroup.outlined ]
                             { items = List.range 0 2
+                            , toLabel = \i -> H.text (String.fromInt i)
+                            , isActive = (==) 2
+                            , onClick = logActionWith String.fromInt "onClick"
+                            }
+                        , W.ButtonGroup.view [ W.ButtonGroup.outlined ]
+                            { items = [ 0, 1 ]
+                            , toLabel = \i -> H.text (String.fromInt i)
+                            , isActive = (==) 2
+                            , onClick = logActionWith String.fromInt "onClick"
+                            }
+                        , W.ButtonGroup.view [ W.ButtonGroup.outlined ]
+                            { items = [ 1 ]
                             , toLabel = \i -> H.text (String.fromInt i)
                             , isActive = (==) 2
                             , onClick = logActionWith String.fromInt "onClick"

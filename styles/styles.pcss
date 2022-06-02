@@ -249,7 +249,6 @@
   text-transform: uppercase;
 
   border: 0;
-  border-left: 2px solid rgba(255, 255, 255, 0.1);
   border-right: 2px solid rgba(255, 255, 255, 0.1);
 
   cursor: pointer;
@@ -273,14 +272,14 @@
   }
 }
 .ew.ew-button-group-item:first-child {
-  border-left: 0;
-  border-right: 0;
   border-radius: 4px 0 0 4px;
 }
 .ew.ew-button-group-item:last-child {
-  border-left: 0;
   border-right: 0;
   border-radius: 0 4px 4px 0;
+}
+.ew.ew-button-group-item:first-child:last-child {
+  border-radius: 4px;
 }
 
 .ew.ew-button-group.ew-m-rounded {
@@ -291,6 +290,9 @@
     }
     &:last-child {
       border-radius: 0 18px 18px 0;
+    }
+    &:first-child:last-child {
+      border-radius: 18px;
     }
   }
 }
@@ -322,7 +324,6 @@
     color: rgb(var(--background));
     background: rgb(var(--background) / 0.2);
     border-radius: 0;
-    border-left: 2px solid rgb(var(--background));
     border-right: 2px solid rgb(var(--background));
     &.ew-m-active {
       background: var(--tmpsc-background);
@@ -333,12 +334,7 @@
     &:active {
       background: rgb(var(--background) / 0.2);
     }
-    &:first-child {
-      border-left: 0;
-      border-right: 0;
-    }
     &:last-child {
-      border-left: 0;
       border-right: 0;
     }
   }
