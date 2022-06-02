@@ -3,9 +3,10 @@
     "name": "uncover-co/elm-widgets-alpha",
     "summary": "A collection of widgets themed through ThemeSpec.",
     "license": "MPL-2.0",
-    "version": "10.2.0",
+    "version": "10.3.0",
     "exposed-modules": [
         "W.Button",
+        "W.ButtonGroup",
         "W.DataRow",
         "W.Field",
         "W.InputAutocomplete",
