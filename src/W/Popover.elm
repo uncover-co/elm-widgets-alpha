@@ -1,14 +1,16 @@
 module W.Popover exposing
     ( view
-    , Position, top, left, right, over, offset
-    , id, class, full, htmlAttrs, Attribute
+    , top, topRight, bottomRight, left, leftBottom, right, rightBottom
+    , over, offset
+    , id, class, full, htmlAttrs, Attribute, Position
     )
 
 {-|
 
 @docs view
-@docs Position, top, left, right, over, offset
-@docs id, class, full, htmlAttrs, Attribute
+@docs top, topRight, bottomRight, left, leftBottom, right, rightBottom
+@docs over, offset
+@docs id, class, full, htmlAttrs, Attribute, Position
 
 -}
 
@@ -21,13 +23,17 @@ import W.Internal.Helpers as WH
 -- Placement
 
 
-{-| -}
+{-| TODO: Unexpose this type.
+-}
 type Position
-    = Top
-    | Left
-    | Right
-    | Bottom
-    | Over
+    = TopLeft
+    | TopRight
+    | LeftTop
+    | LeftBottom
+    | RightTop
+    | RightBottom
+    | BottomLeft
+    | BottomRight
 
 
 
@@ -44,6 +50,7 @@ type alias Attributes msg =
     , position : Position
     , offset : Float
     , full : Bool
+    , over : Bool
     , unstyled : Bool
     , class : String
     , htmlAttributes : List (H.Attribute msg)
@@ -58,9 +65,10 @@ applyAttrs attrs =
 defaultAttrs : Attributes msg
 defaultAttrs =
     { id = Nothing
-    , position = Bottom
+    , position = BottomLeft
     , offset = 0
     , full = False
+    , over = False
     , unstyled = False
     , class = ""
     , htmlAttributes = []
@@ -96,27 +104,51 @@ offset v =
 
 
 {-| -}
+bottomRight : Attribute msg
+bottomRight =
+    Attribute <| \attrs -> { attrs | position = BottomRight }
+
+
+{-| -}
 top : Attribute msg
 top =
-    Attribute <| \attrs -> { attrs | position = Top }
+    Attribute <| \attrs -> { attrs | position = TopLeft }
+
+
+{-| -}
+topRight : Attribute msg
+topRight =
+    Attribute <| \attrs -> { attrs | position = TopRight }
 
 
 {-| -}
 left : Attribute msg
 left =
-    Attribute <| \attrs -> { attrs | position = Left }
+    Attribute <| \attrs -> { attrs | position = LeftTop }
+
+
+{-| -}
+leftBottom : Attribute msg
+leftBottom =
+    Attribute <| \attrs -> { attrs | position = LeftBottom }
 
 
 {-| -}
 right : Attribute msg
 right =
-    Attribute <| \attrs -> { attrs | position = Right }
+    Attribute <| \attrs -> { attrs | position = RightTop }
+
+
+{-| -}
+rightBottom : Attribute msg
+rightBottom =
+    Attribute <| \attrs -> { attrs | position = RightBottom }
 
 
 {-| -}
 over : Attribute msg
 over =
-    Attribute <| \attrs -> { attrs | position = Over }
+    Attribute <| \attrs -> { attrs | over = True }
 
 
 {-| -}
@@ -146,20 +178,29 @@ view attrs_ props =
         positionClass : String
         positionClass =
             case attrs.position of
-                Top ->
-                    "ew-m-top"
+                TopLeft ->
+                    "ew-m-top-left"
 
-                Left ->
-                    "ew-m-left"
+                TopRight ->
+                    "ew-m-top-right"
 
-                Right ->
-                    "ew-m-right"
+                LeftTop ->
+                    "ew-m-left-top"
 
-                Bottom ->
-                    "ew-m-bottom"
+                LeftBottom ->
+                    "ew-m-left-bottom"
 
-                Over ->
-                    "ew-m-over"
+                RightTop ->
+                    "ew-m-right-top"
+
+                RightBottom ->
+                    "ew-m-right-bottom"
+
+                BottomLeft ->
+                    "ew-m-bottom-left"
+
+                BottomRight ->
+                    "ew-m-bottom-right"
     in
     H.div
         [ HA.class "ew ew-popover" ]
@@ -169,6 +210,7 @@ view attrs_ props =
             , HA.class positionClass
             , HA.classList
                 [ ( "ew-m-full", attrs.full )
+                , ( "ew-m-over", attrs.over )
                 , ( "ew-m-styled", not attrs.unstyled )
                 ]
             , WH.styles [ ( "--offset", String.fromFloat attrs.offset ++ "px" ) ]

@@ -8,16 +8,18 @@ import W.Popover
 
 
 children :
-    { content : List (H.Html msg)
-    , children : List (H.Html msg)
-    }
-children =
+    String
+    ->
+        { content : List (H.Html msg)
+        , children : List (H.Html msg)
+        }
+children label =
     { content =
-        [ H.text "Boo!" ]
+        [ H.text "Content with considerable size" ]
     , children =
         [ W.Button.viewLink []
             { href = "/logAction/"
-            , label = "Click me"
+            , label = label
             }
         ]
     }
@@ -27,19 +29,23 @@ chapter_ : Chapter x
 chapter_ =
     chapter "Popover"
         |> renderComponentList
-            ([ ( "Default", [] )
+            ([ ( "Bottom", [] )
+             , ( "Bottom Right", [ W.Popover.bottomRight ] )
              , ( "Top", [ W.Popover.top ] )
+             , ( "Top Right", [ W.Popover.topRight ] )
              , ( "Left", [ W.Popover.left ] )
+             , ( "Left Bottom", [ W.Popover.leftBottom ] )
              , ( "Right", [ W.Popover.right ] )
-             , ( "Over", [ W.Popover.over ] )
+             , ( "Right Bottom", [ W.Popover.rightBottom ] )
              ]
                 |> List.map
                     (\( label, attrs ) ->
                         ( label
                         , UI.hSpacer
-                            [ W.Popover.view attrs children
-                            , W.Popover.view (W.Popover.offset 4 :: attrs) children
-                            , W.Popover.view (W.Popover.full True :: attrs) children
+                            [ W.Popover.view attrs (children "Default")
+                            , W.Popover.view (W.Popover.over :: attrs) (children "Over")
+                            , W.Popover.view (W.Popover.offset 4 :: attrs) (children "Offset")
+                            , W.Popover.view (W.Popover.full True :: attrs) (children "Full")
                             ]
                         )
                     )
