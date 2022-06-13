@@ -170,6 +170,8 @@ view attrs_ props =
             ++ [ HA.type_ "time"
                , WH.maybeAttr HA.id attrs.id
                , HA.class "ew ew-input ew-focusable"
+               , HA.class attrs.class
+               , HA.required attrs.required
                , HA.disabled attrs.disabled
                , HA.readonly attrs.readOnly
                , WH.maybeAttr HE.onFocus attrs.onFocus

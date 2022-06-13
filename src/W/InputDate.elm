@@ -172,6 +172,8 @@ view attrs_ props =
             ++ [ WH.maybeAttr HA.id attrs.id
                , HA.type_ "date"
                , HA.class "ew ew-input ew-focusable"
+               , HA.class attrs.class
+               , HA.required attrs.required
                , HA.disabled attrs.disabled
                , HA.readonly attrs.readOnly
                , WH.maybeAttr HE.onFocus attrs.onFocus
