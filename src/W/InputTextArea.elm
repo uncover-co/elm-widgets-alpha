@@ -165,6 +165,8 @@ view attrs_ props =
         (attrs.htmlAttributes
             ++ [ WH.maybeAttr HA.id attrs.id
                , WH.attrIf (not attrs.unstyled) HA.class "ew ew-input ew-focusable"
+               , WH.attrIf (not attrs.unstyled) HA.class attrs.class
+               , HA.required attrs.required
                , HA.disabled attrs.disabled
                , HA.readonly attrs.readOnly
                , HA.rows attrs.rows

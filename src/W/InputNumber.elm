@@ -176,6 +176,8 @@ view attrs_ props =
             ++ [ HA.type_ "number"
                , WH.maybeAttr HA.id attrs.id
                , HA.class "ew ew-input ew-focusable"
+               , HA.class attrs.class
+               , HA.required attrs.required
                , HA.disabled attrs.disabled
                , HA.readonly attrs.readOnly
                , WH.maybeAttr HA.min (Maybe.map String.fromFloat attrs.min)
