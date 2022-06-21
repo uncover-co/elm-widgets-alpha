@@ -427,8 +427,8 @@
   border-radius: 4px;
   box-shadow: none;
 
-  color: var(--color);
-  background: var(--background);
+  color: var(--tmspc-baseline);
+  background: var(--tmspc-background);
 
   font-size: 16px;
   font-family: var(--tmspc-font-text);
@@ -445,6 +445,11 @@
 textarea.ew.ew-input {
   resize: vertical;
   padding: 14px 12px;
+}
+
+.ew.ew-input::-webkit-calendar-picker-indicator, 
+.ew.ew-input::-webkit-time-picker-indicator {
+  background-image: none;
 }
 
 /* Inputs – Select */
