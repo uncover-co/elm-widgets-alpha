@@ -6,6 +6,7 @@ module W.Internal.Helpers exposing
     , maybeSvgAttr
     , notNaN
     , onEnter
+    , onShiftEnter
     , stringIf
     , styles
     , stylesList
@@ -87,19 +88,40 @@ maybeHtml fn a =
 -- Html.Events
 
 
+enterDecoder : a -> D.Decoder a
+enterDecoder a =
+    D.field "key" D.string
+        |> D.andThen
+            (\key ->
+                if key == "Enter" then
+                    D.succeed a
+
+                else
+                    D.fail "Invalid key."
+            )
+
+
+shiftPressedDecoder : a -> D.Decoder a
+shiftPressedDecoder a =
+    D.field "shiftKey" D.bool
+        |> D.andThen
+            (\isPressed ->
+                if isPressed then
+                    D.succeed a
+
+                else
+                    D.fail ""
+            )
+
+
 onEnter : msg -> H.Attribute msg
 onEnter msg =
-    HE.on "keyup"
-        (D.field "key" D.string
-            |> D.andThen
-                (\key ->
-                    if key == "Enter" then
-                        D.succeed msg
+    HE.on "keyup" (enterDecoder msg)
 
-                    else
-                        D.fail "Invalid key."
-                )
-        )
+
+onShiftEnter : msg -> H.Attribute msg
+onShiftEnter msg =
+    HE.on "keyup" (D.map2 (\v _ -> v) (enterDecoder msg) (shiftPressedDecoder ()))
 
 
 
