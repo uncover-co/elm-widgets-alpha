@@ -17,7 +17,7 @@
             "justinmimbs/date": "4.0.1",
             "justinmimbs/time-extra": "1.1.1",
             "uncover-co/elm-theme-provider": "1.0.1",
-            "uncover-co/elm-theme-spec": "7.1.0"
+            "uncover-co/elm-theme-spec": "8.0.0"
         },
         "indirect": {
             "avh4/elm-color": "1.0.0",

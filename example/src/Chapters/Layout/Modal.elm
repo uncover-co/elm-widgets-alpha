@@ -15,7 +15,7 @@ chapter_ =
             H.div
                 [ HA.style "position" "relative"
                 , HA.style "height" "400px"
-                , HA.style "background" ThemeSpec.background.base
+                , HA.style "background" ThemeSpec.base.bg
                 ]
 
         content =

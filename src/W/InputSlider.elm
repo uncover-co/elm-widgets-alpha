@@ -49,8 +49,8 @@ defaultAttrs =
     , disabled = False
     , readOnly = False
     , theme =
-        { color = ThemeSpec.primary.base
-        , shadow = "rgb(" ++ ThemeSpec.primary.lightChannels ++ " / 0.2)"
+        { color = ThemeSpec.primary.bg
+        , shadow = "rgb(" ++ ThemeSpec.primary.bgChannels ++ " / 0.2)"
         }
     , format = String.fromFloat
     }
@@ -149,7 +149,7 @@ view attrs_ props =
             , WH.stylesList
                 [ ( "--color", attrs.theme.color, not attrs.disabled )
                 , ( "--shadow", attrs.theme.shadow, not attrs.disabled )
-                , ( "--color", "var(--tmspc-background-dark)", attrs.disabled )
+                , ( "--color", "var(--tmspc-base-aux)", attrs.disabled )
                 ]
             ]
             []

@@ -99,9 +99,9 @@ themeFromThemeSpec :
         , shadow : String
         }
 themeFromThemeSpec colorSpec =
-    { color = colorSpec.contrast
-    , background = colorSpec.base
-    , shadow = "rgb(" ++ colorSpec.baseChannels ++ " / 0.5)"
+    { color = colorSpec.aux
+    , background = colorSpec.bg
+    , shadow = "rgb(" ++ colorSpec.bgChannels ++ " / 0.5)"
     }
 
 

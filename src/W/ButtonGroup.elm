@@ -38,7 +38,7 @@ type alias Attributes a msg =
     , rounded : Bool
     , small : Bool
     , fill : Bool
-    , theme : { color : String, background : String }
+    , theme : ThemeSpecColorVars
     , htmlAttributes : List (H.Attribute msg)
     }
 
@@ -52,7 +52,7 @@ defaultAttrs =
     , rounded = False
     , small = False
     , fill = False
-    , theme = themeFromThemeSpec ThemeSpec.secondary
+    , theme = ThemeSpec.secondary
     , htmlAttributes = []
     }
 
@@ -60,18 +60,6 @@ defaultAttrs =
 applyAttrs : List (Attribute a msg) -> Attributes a msg
 applyAttrs attrs =
     List.foldl (\(Attribute fn) a -> fn a) defaultAttrs attrs
-
-
-themeFromThemeSpec :
-    ThemeSpecColorVars
-    ->
-        { color : String
-        , background : String
-        }
-themeFromThemeSpec colorSpec =
-    { color = colorSpec.contrast
-    , background = colorSpec.baseChannels
-    }
 
 
 
@@ -108,7 +96,8 @@ small =
     Attribute <| \attrs -> { attrs | small = True }
 
 
-{-| -}
+{-| deprecated.
+-}
 outlined : Attribute a msg
 outlined =
     Attribute <| \attrs -> { attrs | outlined = True }
@@ -149,8 +138,9 @@ view attrs_ props =
             , ( "ew-m-fill", attrs.fill )
             ]
         , WH.styles
-            [ ( "--color", attrs.theme.color )
-            , ( "--background", attrs.theme.background )
+            [ ( "--bg", attrs.theme.bgChannels )
+            , ( "--fg", attrs.theme.fgChannels )
+            , ( "--aux", attrs.theme.auxChannels )
             ]
         ]
         (props.items

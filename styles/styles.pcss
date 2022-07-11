@@ -16,7 +16,7 @@
 .ew.ew-focusable {
   cursor: pointer;
   &:focus {
-    outline: 3px solid var(--tmspc-focus);
+    outline: 3px solid var(--tmspc-primary-fg);
     outline-offset: 2px;
   }
   &:disabled {
@@ -241,8 +241,8 @@
   height: 36px;
 
   font-family: var(--tmspc-font-text);
-  color: var(--color);
-  background: rgb(var(--background) / 0.7);
+  color: rgb(var(--fg));
+  background: rgb(var(--fg) / 0.2);
 
   font-size: 12px;
   font-weight: bold;
@@ -251,26 +251,30 @@
   text-transform: uppercase;
 
   border: 0;
-  border-right: 2px solid rgba(255, 255, 255, 0.1);
+  border-right: 2px solid rgb(var(--fg) / .15);
 
   cursor: pointer;
   transition: box-shadow 0.15s, background 0.15s;
 
   &:hover {
-    opacity: 0.9;
-  }
-
-  &.ew-m-active {
-    background: rgb(var(--background));
+    background: rgb(var(--fg) / 0.25);
   }
 
   &:disabled {
-    opacity: 0.5;
+    opacity: 0.7;
     pointer-events: none;
   }
 
   &:active:not(:disabled) {
-    opacity: 0.75;
+    background: rgb(var(--fg) / 0.3);
+  }
+
+  &.ew-m-active {
+    background: rgb(var(--bg));
+    color: rgb(var(--aux));
+  }
+  &.ew-m-active:active {
+    background: rgb(var(--bg) / 0.9);
   }
 }
 .ew.ew-button-group-item:first-child {
@@ -313,31 +317,17 @@
     padding: 0 12px;
   }
 }
-
-.ew.ew-button-group.ew-m-outlined {
-  border: 3px solid rgb(var(--background));
-
-  &.ew-m-small .ew-button-group-item {
-    height: 27px;
-  }
-
+.ew.ew-button-group.ew-m-rounded {
+  border-radius: 20px;
   .ew-button-group-item {
-    height: 32px;
-    color: rgb(var(--background));
-    background: rgb(var(--background) / 0.2);
-    border-radius: 0;
-    border-right: 2px solid rgb(var(--background));
-    &.ew-m-active {
-      background: var(--tmpsc-background);
-    }
-    &:hover {
-      background: rgb(var(--background) / 0.15);
-    }
-    &:active {
-      background: rgb(var(--background) / 0.2);
+    &:first-child {
+      border-radius: 18px 0 0 18px;
     }
     &:last-child {
-      border-right: 0;
+      border-radius: 0 18px 18px 0;
+    }
+    &:first-child:last-child {
+      border-radius: 18px;
     }
   }
 }
@@ -346,7 +336,7 @@
 
 .ew.ew-field {
   padding: 16px;
-  background: var(--tmspc-background);
+  background: var(--tmspc-base-bg);
   font-family: var(--tmspc-font-text);
 }
 .ew.ew-field + .ew.ew-field {
@@ -375,7 +365,7 @@
   font-weight: normal;
   font-size: 14px;
   padding-bottom: 8px;
-  color: var(--tmspc-baseline-light);
+  color: var(--tmspc-base-aux);
   font-family: var(--tmspc-font-text);
 }
 
@@ -383,7 +373,7 @@
   padding-top: 2px;
   font-size: 14px;
   font-family: var(--tmspc-font-text);
-  color: var(--tmspc-baseline-light);
+  color: var(--tmspc-base-aux);
 }
 
 .ew.ew-field-input {
@@ -392,9 +382,9 @@
 .ew.ew-field-message {
   margin-top: 8px;
   padding: 12px;
-  background-color: rgb(var(--tmspc-baseline-light-ch) / 0.1);
+  background-color: rgb(var(--tmspc-base-aux-ch) / 0.1);
   border-radius: 4px;
-  color: var(--tmspc-baseline);
+  color: var(--tmspc-base-fg);
   &.ew-m-success {
     color: var(--tmspc-success);
     background-color: rgb(var(--tmspc-success-light-ch) / 0.1);
@@ -421,14 +411,14 @@
   min-height: 48px;
   padding: 8px 12px;
 
-  background: var(--tmspc-background);
+  background: var(--tmspc-base-bg);
   border: none;
-  border: 2px solid var(--tmspc-background-light);
+  border: 2px solid var(--tmspc-base-aux);
   border-radius: 4px;
   box-shadow: none;
 
-  color: var(--tmspc-baseline);
-  background: var(--tmspc-background);
+  color: var(--tmspc-base-fg);
+  background: var(--tmspc-base-bg);
 
   font-size: 16px;
   font-family: var(--tmspc-font-text);
@@ -467,7 +457,7 @@ textarea.ew.ew-input {
   margin-top: -6px;
   width: 10px;
   height: 10px;
-  border: 2px solid var(--tmspc-background-light);
+  border: 2px solid var(--tmspc-base-aux);
   border-top: none;
   border-left: none;
   transform: rotate(45deg);
@@ -480,8 +470,8 @@ textarea.ew.ew-input {
   appearance: none;
   width: 28px;
   height: 28px;
-  border: 2px solid var(--tmspc-background-light);
-  background: var(--tmspc-background);
+  border: 2px solid var(--tmspc-base-aux);
+  background: var(--tmspc-base-bg);
   box-shadow: none;
 
   display: grid;
@@ -505,7 +495,7 @@ textarea.ew.ew-input {
     box-shadow: none;
   }
   &:checked {
-    background: var(--tmspc-background);
+    background: var(--tmspc-base-bg);
   }
   &:checked:before {
     transform: scale(1);
@@ -527,7 +517,7 @@ textarea.ew.ew-input {
     }
   }
   &.ew-is-read-only {
-    background-color: var(--tmspc-background);
+    background-color: var(--tmspc-base-bg);
   }
 }
 
@@ -590,7 +580,7 @@ textarea.ew.ew-input {
 
 .ew.ew-slider-wrapper {
   padding-top: 8px;
-  background-color: var(--tmspc-background);
+  background-color: var(--tmspc-base-bg);
 }
 
 .ew.ew-slider-value-wrapper {
@@ -609,7 +599,7 @@ textarea.ew.ew-input {
     margin-top: -3px;
     display: block;
     content: "";
-    border-top: 1px solid var(--tmspc-background-light);
+    border-top: 1px solid rgb(var(--tmspc-base-aux-ch) / .5);
   }
 }
 
@@ -618,20 +608,20 @@ textarea.ew.ew-input {
   z-index: 1;
 
   font-size: 14px;
-  color: var(--tmspc-baseline);
+  color: var(--tmspc-base-fg);
 
   padding: 0 8px;
-  background-color: var(--tmspc-background);
+  background-color: var(--tmspc-base-bg);
 }
 
 .ew.ew-slider-bounds {
   z-index: 1;
 
   font-size: 12px;
-  color: var(--tmspc-background-light);
+  color: var(--tmspc-base-aux);
 
   padding: 0 8px;
-  background-color: var(--tmspc-background);
+  background-color: var(--tmspc-base-bg);
 
   position: absolute;
   top: 1px;
@@ -649,7 +639,7 @@ textarea.ew.ew-input {
   appearance: none;
   margin: 0;
   width: 100%;
-  background: var(--tmspc-background);
+  background: var(--tmspc-base-bg);
 
   &:focus {
     outline: none;
@@ -659,20 +649,20 @@ textarea.ew.ew-input {
     width: 100%;
     height: 3px;
     margin: 12px 8px;
-    background: var(--tmspc-background-light);
+    background: rgb(var(--tmspc-base-aux-ch) / 0.3);
     box-shadow: none;
     cursor: pointer;
     transition: 200ms;
   }
   &:focus::-webkit-slider-runnable-track {
-    background: rgb(var(--tmspc-baseline-light-ch) / 0.6);
+    background: rgb(var(--tmspc-base-aux-ch) / 0.4);
   }
 
   &::-moz-range-track {
     width: 100%;
     height: 3px;
     margin: 12px 8px;
-    background: var(--tmspc-background-light);
+    background: var(--tmspc-base-aux);
     box-shadow: none;
     cursor: pointer;
   }
@@ -732,8 +722,8 @@ textarea.ew.ew-input {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--tmspc-background);
-  --color: var(--tmspc-background-light);
+  background: var(--tmspc-base-bg);
+  --color: var(--tmspc-base-aux);
 }
 
 .ew.ew-modal {
@@ -763,7 +753,7 @@ textarea.ew.ew-input {
 }
 .ew.ew-modal-content {
   position: relative;
-  background: var(--tmspc-background);
+  background: var(--tmspc-base-bg);
   box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
   width: 100%;
@@ -780,7 +770,7 @@ textarea.ew.ew-input {
   shadow: none;
   cursor: pointer;
   margin-top: -32px;
-  color: var(--tmspc-background);
+  color: var(--tmspc-base-bg);
   pointer-events: none;
 }
 .ew.ew-modal.ew-m-can-close .ew-modal-background:hover {
@@ -800,7 +790,7 @@ textarea.ew.ew-input {
   display: flex;
   align-items: center;
   padding: 8px;
-  background: var(--tmspc-background);
+  background: var(--tmspc-base-bg);
 }
 .ew.ew-data-row-main {
   flex-grow: 1;
@@ -819,17 +809,17 @@ textarea.ew.ew-input {
 
   font-size: 16px;
   font-family: var(--tmspc-font-text);
-  color: var(--tmspc-baseline);
+  color: var(--tmspc-base-fg);
   text-decoration: none;
 }
 .ew.ew-data-row-main.ew-m-button:hover,
 .ew.ew-data-row-main.ew-m-link:hover {
   cursor: pointer;
-  background: rgb(var(--tmspc-background-light-ch) / 0.2);
+  background: rgb(var(--tmspc-base-aux-ch) / 0.07);
 }
 .ew.ew-data-row-main.ew-m-button:active,
 .ew.ew-data-row-main.ew-m-link:active {
-  background: rgb(var(--tmspc-background-light-ch) / 0.4);
+  background: rgb(var(--tmspc-base-aux-ch) / 0.1);
 }
 
 .ew.ew-data-row-left {
@@ -842,7 +832,7 @@ textarea.ew.ew-input {
 .ew.ew-data-row-header,
 .ew.ew-data-row-footer {
   font-size: 14px;
-  color: var(--tmspc-baseline-light);
+  color: var(--tmspc-base-aux);
 }
 
 .ew.ew-data-row-header {

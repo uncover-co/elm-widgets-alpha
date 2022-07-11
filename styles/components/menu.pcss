@@ -1,7 +1,7 @@
 .ew.ew-menu {
   display: block;
   list-style-type: none;
-  background: var(--tmspc-background);
+  background: var(--tmspc-base-bg);
 }
 .ew.ew-menu-item-wrapper {
   font-family: var(--tmspc-font-text);
@@ -16,7 +16,7 @@
   font-weight: bold;
   line-height: 1em;
   letter-spacing: 0.05em;
-  color: var(--tmspc-baseline-light);
+  color: var(--tmspc-base-aux);
 }
 .ew.ew-menu-item-base {
   width: 100%;
@@ -35,20 +35,20 @@
   cursor: pointer;
 
   &:hover {
-    background: rgb(var(--tmspc-background-light-ch) / 0.2);
+    background: rgb(var(--tmspc-base-aux-ch) / 0.07);
   }
   &:active {
-    background: rgb(var(--tmspc-background-light-ch) / 0.4);
+    background: rgb(var(--tmspc-base-aux-ch) / 0.1);
   }
 
   &.ew-m-selected {
-    color: var(--tmspc-primary);
-    background: rgb(var(--tmspc-primary-light-ch) / 0.15);
+    color: var(--tmspc-primary-fg);
+    background: rgb(var(--tmspc-primary-fg-ch) / 0.1);
     &:hover {
-      background: rgb(var(--tmspc-primary-light-ch) / 0.2);
+      background: rgb(var(--tmspc-primary-fg-ch) / 0.15);
     }
     &:active {
-      background: rgb(var(--tmspc-primary-light-ch) / 0.25);
+      background: rgb(var(--tmspc-primary-fg-ch) / 0.2);
     }
   }
 }

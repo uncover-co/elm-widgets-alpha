@@ -3,7 +3,7 @@
     "name": "uncover-co/elm-widgets-alpha",
     "summary": "A collection of widgets themed through ThemeSpec.",
     "license": "MPL-2.0",
-    "version": "10.5.1",
+    "version": "10.5.2",
     "exposed-modules": [
         "W.Button",
         "W.ButtonGroup",
@@ -34,7 +34,7 @@
         "elm/time": "1.0.0 <= v < 2.0.0",
         "justinmimbs/date": "4.0.0 <= v < 5.0.0",
         "justinmimbs/time-extra": "1.1.0 <= v < 2.0.0",
-        "uncover-co/elm-theme-spec": "7.1.0 <= v < 8.0.0"
+        "uncover-co/elm-theme-spec": "8.0.0 <= v < 9.0.0"
     },
     "test-dependencies": {}
 }
