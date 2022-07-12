@@ -146,8 +146,8 @@
   border-radius: 4px;
 
   font-family: var(--tmspc-font-text);
-  color: var(--color);
-  background: var(--background);
+  color: var(--aux);
+  background: var(--bg);
 
   text-transform: uppercase;
   text-decoration: none;
@@ -175,7 +175,7 @@
 
   &:hover {
     opacity: 0.9;
-    box-shadow: 0 0 4px var(--shadow);
+    box-shadow: 0 0 4px var(--bg);
   }
 
   &:active:not(:disabled) {
@@ -188,14 +188,14 @@
 .ew.ew-btn.ew-m-outlined {
   padding: 0 16px;
   background: transparent;
-  border: 3px solid var(--background);
-  color: var(--background);
+  border: 3px solid rgb(var(--fg));
+  color: rgb(var(--fg));
   box-shadow: none;
   &.ew-m-small {
     padding: 0 10px;
   }
   &:hover {
-    box-shadow: 0 0 4px var(--shadow);
+    box-shadow: 0 0 4px rgb(var(--fg));
   }
 }
 
@@ -205,23 +205,12 @@
   position: relative;
   overflow: hidden;
   background: transparent;
-  color: var(--background);
+  color: rgb(var(--fg));
   border-color: transparent;
   box-shadow: none;
-  &:before {
-    content: "";
-    display: block;
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    opacity: 0;
-    background: var(--background);
-    transition: opacity 0.2s;
-  }
-  &:hover:before {
-    opacity: 0.1;
+  transition: background 0.2s;
+  &:hover {
+    background: rgb(var(--fg) / .15);
   }
 }
 

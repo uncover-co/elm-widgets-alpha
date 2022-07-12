@@ -64,7 +64,7 @@ type alias Attributes msg =
     , fill : Bool
     , left : Maybe (H.Html msg)
     , right : Maybe (H.Html msg)
-    , theme : { color : String, background : String, shadow : String }
+    , theme : ThemeSpecColorVars
     , htmlAttributes : List (H.Attribute msg)
     }
 
@@ -86,22 +86,8 @@ defaultAttrs =
     , fill = False
     , left = Nothing
     , right = Nothing
-    , theme = themeFromThemeSpec ThemeSpec.secondary
+    , theme = ThemeSpec.secondary
     , htmlAttributes = []
-    }
-
-
-themeFromThemeSpec :
-    ThemeSpecColorVars
-    ->
-        { color : String
-        , background : String
-        , shadow : String
-        }
-themeFromThemeSpec colorSpec =
-    { color = colorSpec.aux
-    , background = colorSpec.bg
-    , shadow = "rgb(" ++ colorSpec.bgChannels ++ " / 0.5)"
     }
 
 
@@ -145,9 +131,9 @@ attributes attrs_ =
                 , ( "ew-m-rounded", attrs.rounded )
                 ]
            , WH.styles
-                [ ( "--color", attrs.theme.color )
-                , ( "--background", attrs.theme.background )
-                , ( "--shadow", attrs.theme.shadow )
+                [ ( "--bg", attrs.theme.bg )
+                , ( "--fg", attrs.theme.fgChannels )
+                , ( "--aux", attrs.theme.aux )
                 , ( "width", WH.stringIf attrs.fill "100%" "auto" )
                 ]
            ]
@@ -206,25 +192,25 @@ disabled v =
 {-| -}
 primary : Attribute msg
 primary =
-    Attribute <| \attrs -> { attrs | theme = themeFromThemeSpec ThemeSpec.primary }
+    Attribute <| \attrs -> { attrs | theme = ThemeSpec.primary }
 
 
 {-| -}
 success : Attribute msg
 success =
-    Attribute <| \attrs -> { attrs | theme = themeFromThemeSpec ThemeSpec.success }
+    Attribute <| \attrs -> { attrs | theme = ThemeSpec.success }
 
 
 {-| -}
 warning : Attribute msg
 warning =
-    Attribute <| \attrs -> { attrs | theme = themeFromThemeSpec ThemeSpec.warning }
+    Attribute <| \attrs -> { attrs | theme = ThemeSpec.warning }
 
 
 {-| -}
 danger : Attribute msg
 danger =
-    Attribute <| \attrs -> { attrs | theme = themeFromThemeSpec ThemeSpec.danger }
+    Attribute <| \attrs -> { attrs | theme = ThemeSpec.danger }
 
 
 {-| -}
@@ -270,7 +256,7 @@ right v =
 
 
 {-| -}
-theme : { background : String, color : String, shadow : String } -> Attribute msg
+theme : ThemeSpecColorVars -> Attribute msg
 theme v =
     Attribute <| \attrs -> { attrs | theme = v }
 

@@ -17,9 +17,12 @@ chapter_ =
                , ( "Danger", [ W.Button.danger ] )
                , ( "Custom"
                  , [ W.Button.theme
-                        { background = "#ef67ef"
-                        , color = "#f6e1f6"
-                        , shadow = "#ffedff"
+                        { bg = "#ef67ef"
+                        , bgChannels = "239 103 239"
+                        , fg = "#f6e1f6"
+                        , fgChannels = "246 225 246"
+                        , aux = "#ffedff"
+                        , auxChannels = "255 237 255"
                         }
                    ]
                  )
