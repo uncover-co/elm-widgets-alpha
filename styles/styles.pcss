@@ -14,17 +14,12 @@
   position: relative;
 }
 .ew.ew-focusable {
-  cursor: pointer;
   &:focus {
     outline: 3px solid var(--tmspc-primary-fg);
     outline-offset: 2px;
   }
   &:disabled {
     outline: none;
-    cursor: default;
-  }
-  &:read-only {
-    cursor: default;
   }
 }
 .ew.ew-h-space > * + * {
@@ -156,7 +151,6 @@
   line-height: 1em;
   letter-spacing: 0.05em;
 
-  cursor: pointer;
   transition: box-shadow 0.15s, background 0.15s;
 
   &.ew-m-small {
@@ -170,7 +164,6 @@
 
   &:disabled {
     opacity: 0.4;
-    pointer-events: none;
   }
 
   &:hover {
@@ -242,7 +235,6 @@
   border: 0;
   border-right: 2px solid rgb(var(--fg) / .15);
 
-  cursor: pointer;
   transition: box-shadow 0.15s, background 0.15s;
 
   &:hover {
@@ -251,7 +243,6 @@
 
   &:disabled {
     opacity: 0.7;
-    pointer-events: none;
   }
 
   &:active:not(:disabled) {
@@ -329,7 +320,7 @@
   font-family: var(--tmspc-font-text);
 }
 .ew.ew-field + .ew.ew-field {
-  border-top: 2px solid rgb(var(--tmspc-background-light-ch) / 0.5);
+  border-top: 2px solid rgb(var(--tmspc-base-fg-ch) / 0.1);
 }
 
 .ew.ew-field-main.ew-m-align-right {
@@ -375,16 +366,16 @@
   border-radius: 4px;
   color: var(--tmspc-base-fg);
   &.ew-m-success {
-    color: var(--tmspc-success);
-    background-color: rgb(var(--tmspc-success-light-ch) / 0.1);
+    color: var(--tmspc-success-fg);
+    background-color: rgb(var(--tmspc-success-fg-ch) / 0.1);
   }
   &.ew-m-warning {
-    color: var(--tmspc-warning);
-    background-color: rgb(var(--tmspc-warning-light-ch) / 0.1);
+    color: var(--tmspc-warning-fg);
+    background-color: rgb(var(--tmspc-warning-fg-ch) / 0.1);
   }
   &.ew-m-danger {
-    color: var(--tmspc-danger);
-    background-color: rgb(var(--tmspc-danger-light-ch) / 0.1);
+    color: var(--tmspc-danger-fg);
+    background-color: rgb(var(--tmspc-danger-fg-ch) / 0.1);
   }
 }
 
@@ -414,10 +405,10 @@
   line-height: 1em;
 
   &:disabled {
-    background: rgb(var(--tmspc-background-light-ch) / 0.5);
+    background: rgb(var(--tmspc-base-fg-ch) / 0.07);
   }
   &:invalid:not(:focus) {
-    border-color: var(--tmspc-warning-light);
+    border-color: var(--tmspc-warning-fg);
   }
 }
 
@@ -499,8 +490,7 @@ textarea.ew.ew-input {
     }
   }
   &.ew-is-disabled {
-    background-color: rgb(var(--tmspc-background-light-ch) / 0.5);
-    pointer-events: none;
+    background-color: rgb(var(--tmspc-base-bg-ch) / 0.2);
     &:checked:before {
       opacity: 0.5;
     }
@@ -528,11 +518,8 @@ textarea.ew.ew-input {
 
 .ew.ew-radio-buttons.ew-is-disabled,
 .ew.ew-radio-buttons.ew-is-read-only {
-  .ew-radio-buttons--item {
-    cursor: default;
-  }
   .ew-radio-buttons--item-label {
-    color: var(--tmspc-baseline-light);
+    color: var(--tmspc-base-fg);
   }
 }
 
@@ -540,7 +527,6 @@ textarea.ew.ew-input {
   display: inline-flex;
   align-items: center;
   padding: 8px 0;
-  cursor: pointer;
 }
 
 .ew.ew-radio-buttons--item + .ew.ew-radio-buttons--item {
@@ -561,7 +547,7 @@ textarea.ew.ew-input {
 
 .ew.ew-radio-buttons--item-label {
   font-family: var(--tmspc-font-text);
-  color: var(--tmspc-baseline);
+  color: var(--tmspc-base-fg);
   padding-left: 12px;
 }
 
@@ -640,7 +626,6 @@ textarea.ew.ew-input {
     margin: 12px 8px;
     background: rgb(var(--tmspc-base-aux-ch) / 0.3);
     box-shadow: none;
-    cursor: pointer;
     transition: 200ms;
   }
   &:focus::-webkit-slider-runnable-track {
@@ -653,7 +638,6 @@ textarea.ew.ew-input {
     margin: 12px 8px;
     background: var(--tmspc-base-aux);
     box-shadow: none;
-    cursor: pointer;
   }
 
   &::-webkit-slider-thumb {
@@ -663,7 +647,6 @@ textarea.ew.ew-input {
     margin-top: -9px;
     border-radius: 50%;
     background: var(--color);
-    cursor: pointer;
     transition: box-shadow 120ms;
   }
   &::-webkit-slider-thumb:hover {
@@ -681,7 +664,6 @@ textarea.ew.ew-input {
     margin-top: -9px;
     border-radius: 50%;
     background: var(--color);
-    cursor: pointer;
     transition: 0.4s;
   }
   &::-moz-range-thumb:hover {
@@ -690,10 +672,6 @@ textarea.ew.ew-input {
   &:active::-moz-range-thumb {
     box-shadow: 0 0 0 8px var(--shadow);
     transition: box-shadow 0ms;
-  }
-
-  &:disabled {
-    pointer-events: none;
   }
 }
 
@@ -757,13 +735,11 @@ textarea.ew.ew-input {
   background: transparent;
   border: none;
   shadow: none;
-  cursor: pointer;
   margin-top: -32px;
   color: var(--tmspc-base-bg);
   pointer-events: none;
 }
 .ew.ew-modal.ew-m-can-close .ew-modal-background:hover {
-  cursor: pointer;
   opacity: 0.15;
   & + .ew-modal-close {
     transform: scale(0.9);
@@ -803,7 +779,6 @@ textarea.ew.ew-input {
 }
 .ew.ew-data-row-main.ew-m-button:hover,
 .ew.ew-data-row-main.ew-m-link:hover {
-  cursor: pointer;
   background: rgb(var(--tmspc-base-aux-ch) / 0.07);
 }
 .ew.ew-data-row-main.ew-m-button:active,
