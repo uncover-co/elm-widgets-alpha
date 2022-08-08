@@ -1,31 +1,62 @@
-module Chapters.Form.InputTextArea exposing (chapter_)
+module Chapters.Form.InputTextArea exposing (Model, chapter_, init, update)
 
-import ElmBook.Actions exposing (logActionWithString)
-import ElmBook.Chapter exposing (Chapter, chapter, renderComponentList)
+import ElmBook exposing (Msg)
+import ElmBook.Actions exposing (logActionWithString, updateStateWith)
+import ElmBook.Chapter exposing (Chapter, chapter, renderComponentList, renderStatefulComponentList)
 import W.InputTextArea
 
 
-chapter_ : Chapter x
+type alias Model =
+    String
+
+
+init : String
+init =
+    "Testing a long\n long\n long\n text?"
+
+
+update : String -> Msg { b | inputTextArea : Model }
+update =
+    updateStateWith
+        (\v model ->
+            { model | inputTextArea = v }
+        )
+
+
+chapter_ : Chapter { x | inputTextArea : Model }
 chapter_ =
     chapter "Input TextArea"
-        |> renderComponentList
+        |> renderStatefulComponentList
             [ ( "Default"
-              , W.InputTextArea.view
-                    [ W.InputTextArea.placeholder "Type something…"
-                    , W.InputTextArea.rows 20
-                    ]
-                    { value = ""
-                    , onInput = logActionWithString "onInput"
-                    }
+              , \{ inputTextArea } ->
+                    W.InputTextArea.view
+                        [ W.InputTextArea.placeholder "Type something…"
+                        , W.InputTextArea.rows 4
+                        ]
+                        { value = inputTextArea
+                        , onInput = update
+                        }
               )
             , ( "Resizable"
-              , W.InputTextArea.view
-                    [ W.InputTextArea.placeholder "Type something…"
-                    , W.InputTextArea.rows 4
-                    , W.InputTextArea.resizable True
-                    ]
-                    { value = ""
-                    , onInput = logActionWithString "onInput"
-                    }
+              , \{ inputTextArea } ->
+                    W.InputTextArea.view
+                        [ W.InputTextArea.placeholder "Type something…"
+                        , W.InputTextArea.rows 4
+                        , W.InputTextArea.resizable True
+                        ]
+                        { value = inputTextArea
+                        , onInput = update
+                        }
+              )
+            , ( "Autogrow"
+              , \{ inputTextArea } ->
+                    W.InputTextArea.view
+                        [ W.InputTextArea.placeholder "Type something…"
+                        , W.InputTextArea.rows 1
+                        , W.InputTextArea.autogrow True
+                        ]
+                        { value = inputTextArea
+                        , onInput = update
+                        }
               )
             ]

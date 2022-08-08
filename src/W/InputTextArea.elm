@@ -1,6 +1,6 @@
 module W.InputTextArea exposing
     ( view
-    , resizable, rows
+    , resizable, rows, autogrow
     , id, class, disabled, readOnly, required, placeholder, htmlAttrs
     , onBlur, onEnter, onFocus
     , Attribute
@@ -9,7 +9,7 @@ module W.InputTextArea exposing
 {-|
 
 @docs view
-@docs resizable, rows
+@docs resizable, rows, autogrow
 @docs id, class, disabled, readOnly, required, placeholder, htmlAttrs
 @docs onBlur, onEnter, onFocus
 @docs Attribute
@@ -35,6 +35,7 @@ type alias Attributes msg =
     , readOnly : Bool
     , required : Bool
     , resizable : Bool
+    , autogrow : Bool
     , rows : Int
     , placeholder : Maybe String
     , onFocus : Maybe msg
@@ -59,6 +60,7 @@ defaultAttrs =
     , required = False
     , placeholder = Nothing
     , resizable = False
+    , autogrow = False
     , rows = 4
     , onFocus = Nothing
     , onBlur = Nothing
@@ -113,6 +115,16 @@ resizable v =
     Attribute <| \attrs -> { attrs | resizable = v }
 
 
+
+-- Autogrow strategy based on https://css-tricks.com/the-cleanest-trick-for-autogrowing-textareas/
+
+
+{-| -}
+autogrow : Bool -> Attribute msg
+autogrow v =
+    Attribute <| \attrs -> { attrs | autogrow = v }
+
+
 {-| -}
 rows : Int -> Attribute msg
 rows v =
@@ -157,26 +169,47 @@ view attrs_ props =
         attrs =
             applyAttrs attrs_
 
+        inputAttrs : List (H.Attribute msg)
+        inputAttrs =
+            attrs.htmlAttributes
+                ++ [ WH.maybeAttr HA.id attrs.id
+                   , HA.classList
+                        [ ( "ew ew-textarea-input ew-focusable", not attrs.unstyled && attrs.autogrow )
+                        , ( "ew ew-input ew-focusable", not attrs.unstyled && not attrs.autogrow )
+                        ]
+                   , HA.class attrs.class
+                   , HA.required attrs.required
+                   , HA.disabled attrs.disabled
+                   , HA.readonly attrs.readOnly
+                   , HA.rows attrs.rows
+                   , HA.style "resize" resizeStyle
+                   , HA.value props.value
+                   , HE.onInput props.onInput
+                   , WH.maybeAttr HA.placeholder attrs.placeholder
+                   , WH.maybeAttr HE.onFocus attrs.onFocus
+                   , WH.maybeAttr HE.onBlur attrs.onBlur
+                   , WH.maybeAttr WH.onEnter attrs.onEnter
+                   ]
+
         resizeStyle : String
         resizeStyle =
-            WH.stringIf attrs.resizable "vertical" "none"
+            if attrs.autogrow then
+                "none"
+
+            else
+                WH.stringIf attrs.resizable "vertical" "none"
     in
-    H.textarea
-        (attrs.htmlAttributes
-            ++ [ WH.maybeAttr HA.id attrs.id
-               , WH.attrIf (not attrs.unstyled) HA.class "ew ew-input ew-focusable"
-               , HA.class attrs.class
-               , HA.required attrs.required
-               , HA.disabled attrs.disabled
-               , HA.readonly attrs.readOnly
-               , HA.rows attrs.rows
-               , HA.style "resize" resizeStyle
-               , HA.value props.value
-               , HE.onInput props.onInput
-               , WH.maybeAttr HA.placeholder attrs.placeholder
-               , WH.maybeAttr HE.onFocus attrs.onFocus
-               , WH.maybeAttr HE.onBlur attrs.onBlur
-               , WH.maybeAttr WH.onEnter attrs.onEnter
-               ]
-        )
-        []
+    if not attrs.autogrow then
+        H.textarea inputAttrs []
+
+    else
+        H.label [ HA.class "ew ew-textarea m-autogrow" ]
+            [ if attrs.autogrow then
+                H.div
+                    [ HA.attribute "aria-hidden" "true", HA.class "ew ew-textarea-autogrow" ]
+                    [ H.text (props.value ++ " ") ]
+
+              else
+                H.text ""
+            , H.textarea inputAttrs []
+            ]

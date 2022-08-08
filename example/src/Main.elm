@@ -32,6 +32,7 @@ type alias SharedState =
         , customColor : Float
         }
     , inputNumber : Chapters.Form.InputNumber.Model
+    , inputTextArea : Chapters.Form.InputTextArea.Model
     }
 
 
@@ -42,6 +43,7 @@ main =
             [ ElmBook.StatefulOptions.initialState
                 { range = Chapters.Form.InputSlider.init
                 , inputNumber = Chapters.Form.InputNumber.init
+                , inputTextArea = Chapters.Form.InputTextArea.init
                 }
             ]
         |> withThemeOptions
