@@ -4,12 +4,14 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "elm-book src/Main.elm -p 3000"
+    "postinstall": "elm-tooling install",
+    "start": "elm-book src/Main.elm -p 3000",
+    "build": "elm make src/Main.elm --output=dist/index.html"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "elm-book": "^1.0.1",
-    "elm-tooling": "^1.7.0"
+    "elm-tooling": "^1.8.0"
   }
 }
