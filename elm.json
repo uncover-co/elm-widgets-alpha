@@ -1,12 +1,14 @@
 {
     "type": "package",
     "name": "uncover-co/elm-widgets-alpha",
-    "summary": "A collection of widgets themed through ThemeSpec.",
+    "summary": "A collection of stateless, themable widgets for Elm applications.",
     "license": "MPL-2.0",
     "version": "11.0.1",
     "exposed-modules": [
+        "W.Badge",
         "W.Button",
         "W.ButtonGroup",
+        "W.Divider",
         "W.DataRow",
         "W.Field",
         "W.InputAutocomplete",
@@ -22,8 +24,13 @@
         "W.Loading",
         "W.Modal",
         "W.Menu",
+        "W.Message",
+        "W.Pagination",
         "W.Popover",
-        "W.Styles"
+        "W.Styles",
+        "W.Tag",
+        "W.Table",
+        "W.Tooltip"
     ],
     "elm-version": "0.19.0 <= v < 0.20.0",
     "dependencies": {
@@ -34,7 +41,10 @@
         "elm/time": "1.0.0 <= v < 2.0.0",
         "justinmimbs/date": "4.0.0 <= v < 5.0.0",
         "justinmimbs/time-extra": "1.1.0 <= v < 2.0.0",
+        "uncover-co/elm-theme": "1.0.0 <= v < 2.0.0",
         "uncover-co/elm-theme-spec": "8.0.1 <= v < 9.0.0"
     },
-    "test-dependencies": {}
+    "test-dependencies": {
+        "elm-explorations/test": "1.2.2 <= v < 2.0.0"
+    }
 }

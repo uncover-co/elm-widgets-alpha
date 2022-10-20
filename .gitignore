@@ -1,3 +1,14 @@
+# Build
 node_modules
 elm-stuff
-example/index.html
+
+# Dist
+styles/output
+example/dist/main.js
+
+# System
+.DS_Store
+
+# tmp
+src/Internal/Hash.elm
+src/Theme.elm

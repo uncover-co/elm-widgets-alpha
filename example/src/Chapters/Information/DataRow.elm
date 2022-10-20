@@ -35,7 +35,7 @@ chapter_ =
                     [ W.DataRow.href "/logAction/#"
                     , W.DataRow.right
                         [ W.Button.view [ W.Button.primary ]
-                            { label = "Click me"
+                            { label = H.text "Click me"
                             , onClick = logAction "onClick Action"
                             }
                         ]
@@ -49,7 +49,7 @@ chapter_ =
                     , W.DataRow.footer (H.text "user@email.com")
                     , W.DataRow.right
                         [ W.Button.view [ W.Button.primary ]
-                            { label = "Click me"
+                            { label = H.text "Click me"
                             , onClick = logAction "onClick Action"
                             }
                         ]
@@ -63,7 +63,7 @@ chapter_ =
                     , W.DataRow.footer (H.text "user@email.com")
                     , W.DataRow.right
                         [ W.Button.view [ W.Button.primary ]
-                            { label = "Click me"
+                            { label = H.text "Click me"
                             , onClick = logAction "onClick Action"
                             }
                         ]
@@ -78,7 +78,7 @@ chapter_ =
                     , W.DataRow.left (W.Loading.ripples [])
                     , W.DataRow.right
                         [ W.Button.view [ W.Button.primary ]
-                            { label = "Click me"
+                            { label = H.text "Click me"
                             , onClick = logAction "onClick Action"
                             }
                         ]
@@ -102,7 +102,7 @@ chapter_ =
                         )
                     , W.DataRow.right
                         [ W.Button.view [ W.Button.primary ]
-                            { label = "Click me"
+                            { label = H.text "Click me"
                             , onClick = logAction "onClick Action"
                             }
                         ]

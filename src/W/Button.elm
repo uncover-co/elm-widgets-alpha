@@ -1,10 +1,10 @@
 module W.Button exposing
     ( view, viewLink
     , disabled, outlined, invisible
-    , primary, success, warning, danger, theme
-    , rounded, small, fill
+    , primary, secondary, success, warning, danger, theme, ButtonTheme
+    , rounded, large, small, icon, fill
     , left, right
-    , id, class, htmlAttrs, Attribute
+    , id, class, htmlAttrs, noAttr, Attribute
     )
 
 {-|
@@ -19,12 +19,12 @@ module W.Button exposing
 
 # Colors
 
-@docs primary, success, warning, danger, theme
+@docs primary, secondary, success, warning, danger, theme, ButtonTheme
 
 
 # Styles
 
-@docs rounded, small, fill
+@docs rounded, large, small, icon, fill
 
 
 # Elements
@@ -34,14 +34,14 @@ module W.Button exposing
 
 # Html
 
-@docs id, class, htmlAttrs, Attribute
+@docs id, class, htmlAttrs, noAttr, Attribute
 
 -}
 
 import Html as H
 import Html.Attributes as HA
 import Html.Events as HE
-import ThemeSpec exposing (ThemeSpecColorVars)
+import Theme exposing (ThemeColorSetValues)
 import W.Internal.Helpers as WH
 
 
@@ -59,12 +59,12 @@ type alias Attributes msg =
     , style : ButtonStyle
     , class : String
     , disabled : Bool
-    , small : Bool
+    , size : ButtonSize
     , rounded : Bool
-    , fill : Bool
+    , width : ButtonWidth
     , left : Maybe (H.Html msg)
     , right : Maybe (H.Html msg)
-    , theme : ThemeSpecColorVars
+    , theme : ButtonTheme
     , htmlAttributes : List (H.Attribute msg)
     }
 
@@ -75,18 +75,46 @@ type ButtonStyle
     | Invisible
 
 
+type ButtonSize
+    = Small
+    | Medium
+    | Large
+
+
+type ButtonWidth
+    = Fill
+    | Icon
+    | Base
+
+
+{-| -}
+type alias ButtonTheme =
+    { foreground : String
+    , background : String
+    , aux : String
+    }
+
+
+toButtonTheme : ThemeColorSetValues -> ButtonTheme
+toButtonTheme color =
+    { foreground = color.foreground
+    , background = color.background
+    , aux = color.aux
+    }
+
+
 defaultAttrs : Attributes msg
 defaultAttrs =
     { id = Nothing
     , style = Basic
     , class = ""
     , disabled = False
-    , small = False
+    , size = Medium
     , rounded = False
-    , fill = False
+    , width = Base
     , left = Nothing
     , right = Nothing
-    , theme = ThemeSpec.secondary
+    , theme = toButtonTheme Theme.neutral
     , htmlAttributes = []
     }
 
@@ -96,17 +124,46 @@ applyAttrs attrs =
     List.foldl (\(Attribute fn) a -> fn a) defaultAttrs attrs
 
 
-styleClass : ButtonStyle -> String
-styleClass s =
-    case s of
+styleAttrs : Attributes msg -> List (H.Attribute msg)
+styleAttrs attrs =
+    case attrs.style of
         Basic ->
-            ""
+            [ HA.style "color" attrs.theme.aux
+            , HA.style "background" attrs.theme.background
+            , HA.class "ew-border-0"
+            ]
 
         Outlined ->
-            "ew-m-outlined"
+            [ HA.style "color" attrs.theme.foreground
+            , HA.style "border-color" attrs.theme.foreground
+            , HA.style "background" Theme.baseBackground
+            , HA.class "ew-border-solid ew-border-[3px]"
+            ]
 
         Invisible ->
-            "ew-m-invisible"
+            [ HA.class "ew-relative ew-bg-transparent ew-border-0"
+            , HA.class "before:ew-content-[''] before:ew-block before:ew-absolute before:ew-inset-0 before:ew-bg-current before:ew-opacity-0 hover:before:ew-opacity-[0.15] before:ew-transition-opacity"
+            , HA.style "color" attrs.theme.foreground
+            ]
+
+
+roundedAttrs : Attributes msg -> H.Attribute msg
+roundedAttrs attrs =
+    case ( attrs.rounded, attrs.size ) of
+        ( False, Large ) ->
+            HA.class "ew-rounded-xl before:ew-rounded-xl"
+
+        ( False, _ ) ->
+            HA.class "ew-rounded-lg before:ew-rounded-lg"
+
+        ( True, Large ) ->
+            HA.class "ew-rounded-[20px] before:ew-rounded-[24px]"
+
+        ( True, Medium ) ->
+            HA.class "ew-rounded-[20px] before:ew-rounded-[20px]"
+
+        ( True, Small ) ->
+            HA.class "ew-rounded-[16px] before:ew-rounded-[16px]"
 
 
 
@@ -121,20 +178,23 @@ attributes attrs_ =
             applyAttrs attrs_
     in
     attrs.htmlAttributes
+        ++ styleAttrs attrs
         ++ [ WH.maybeAttr HA.id attrs.id
            , HA.disabled attrs.disabled
-           , HA.class "ew ew-focusable ew-btn"
-           , HA.class (styleClass attrs.style)
+           , roundedAttrs attrs
            , HA.class attrs.class
+           , HA.class "ew-btn ew-focusable"
            , HA.classList
-                [ ( "ew-m-small", attrs.small )
-                , ( "ew-m-rounded", attrs.rounded )
-                ]
-           , WH.styles
-                [ ( "--bg", attrs.theme.bg )
-                , ( "--fg", attrs.theme.fgChannels )
-                , ( "--aux", attrs.theme.aux )
-                , ( "width", WH.stringIf attrs.fill "100%" "auto" )
+                [ ( "ew-h-[32px] ew-text-sm", attrs.size == Small )
+                , ( "ew-h-[40px] ew-text-base", attrs.size == Medium )
+                , ( "ew-h-[48px] ew-text-base", attrs.size == Large )
+                , ( "ew-px-3", attrs.size == Small && attrs.width == Base )
+                , ( "ew-px-5", attrs.size == Medium && attrs.width == Base )
+                , ( "ew-px-6", attrs.size == Large && attrs.width == Base )
+                , ( "ew-min-w-[32px] ew-px-1", attrs.size == Small && attrs.width == Icon )
+                , ( "ew-min-w-[40px] ew-px-1", attrs.size == Medium && attrs.width == Icon )
+                , ( "ew-min-w-[48px] ew-px-1", attrs.size == Large && attrs.width == Icon )
+                , ( "ew-w-full", attrs.width == Fill )
                 ]
            ]
 
@@ -143,28 +203,28 @@ attributes attrs_ =
 view :
     List (Attribute msg)
     ->
-        { label : String
+        { label : H.Html msg
         , onClick : msg
         }
     -> H.Html msg
 view attrs props =
     H.button
         (HE.onClick props.onClick :: attributes attrs)
-        [ H.text props.label ]
+        [ props.label ]
 
 
 {-| -}
 viewLink :
     List (Attribute msg)
     ->
-        { label : String
+        { label : H.Html msg
         , href : String
         }
     -> H.Html msg
 viewLink attrs props =
     H.a
         (HA.href props.href :: attributes attrs)
-        [ H.text props.label ]
+        [ props.label ]
 
 
 
@@ -192,25 +252,31 @@ disabled v =
 {-| -}
 primary : Attribute msg
 primary =
-    Attribute <| \attrs -> { attrs | theme = ThemeSpec.primary }
+    Attribute <| \attrs -> { attrs | theme = toButtonTheme Theme.primary }
+
+
+{-| -}
+secondary : Attribute msg
+secondary =
+    Attribute <| \attrs -> { attrs | theme = toButtonTheme Theme.secondary }
 
 
 {-| -}
 success : Attribute msg
 success =
-    Attribute <| \attrs -> { attrs | theme = ThemeSpec.success }
+    Attribute <| \attrs -> { attrs | theme = toButtonTheme Theme.success }
 
 
 {-| -}
 warning : Attribute msg
 warning =
-    Attribute <| \attrs -> { attrs | theme = ThemeSpec.warning }
+    Attribute <| \attrs -> { attrs | theme = toButtonTheme Theme.warning }
 
 
 {-| -}
 danger : Attribute msg
 danger =
-    Attribute <| \attrs -> { attrs | theme = ThemeSpec.danger }
+    Attribute <| \attrs -> { attrs | theme = toButtonTheme Theme.danger }
 
 
 {-| -}
@@ -228,7 +294,13 @@ invisible =
 {-| -}
 fill : Attribute msg
 fill =
-    Attribute <| \attrs -> { attrs | fill = True }
+    Attribute <| \attrs -> { attrs | width = Fill }
+
+
+{-| -}
+icon : Attribute msg
+icon =
+    Attribute <| \attrs -> { attrs | width = Icon }
 
 
 {-| -}
@@ -240,7 +312,13 @@ rounded =
 {-| -}
 small : Attribute msg
 small =
-    Attribute <| \attrs -> { attrs | small = True }
+    Attribute <| \attrs -> { attrs | size = Small }
+
+
+{-| -}
+large : Attribute msg
+large =
+    Attribute <| \attrs -> { attrs | size = Large }
 
 
 {-| -}
@@ -256,7 +334,7 @@ right v =
 
 
 {-| -}
-theme : ThemeSpecColorVars -> Attribute msg
+theme : ButtonTheme -> Attribute msg
 theme v =
     Attribute <| \attrs -> { attrs | theme = v }
 
@@ -265,3 +343,9 @@ theme v =
 htmlAttrs : List (H.Attribute msg) -> Attribute msg
 htmlAttrs v =
     Attribute <| \attrs -> { attrs | htmlAttributes = v }
+
+
+{-| -}
+noAttr : Attribute msg
+noAttr =
+    Attribute identity

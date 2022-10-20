@@ -1,6 +1,6 @@
 module W.ButtonGroup exposing
     ( view
-    , toId, toDisabled, disabled
+    , id, disabled, highlighted
     , outlined, rounded, small, fill
     , Attribute
     )
@@ -8,7 +8,7 @@ module W.ButtonGroup exposing
 {-|
 
 @docs view
-@docs toId, toDisabled, disabled
+@docs id, disabled, highlighted
 @docs outlined, rounded, small, fill
 @docs Attribute
 
@@ -31,9 +31,9 @@ type Attribute a msg
 
 
 type alias Attributes a msg =
-    { disabled : Bool
-    , toId : Maybe (a -> String)
-    , toDisabled : a -> Bool
+    { id : Maybe (a -> String)
+    , disabled : a -> Bool
+    , highlighted : a -> Bool
     , outlined : Bool
     , rounded : Bool
     , small : Bool
@@ -45,9 +45,9 @@ type alias Attributes a msg =
 
 defaultAttrs : Attributes a msg
 defaultAttrs =
-    { disabled = False
-    , toId = Nothing
-    , toDisabled = \_ -> False
+    { id = Nothing
+    , disabled = \_ -> False
+    , highlighted = \_ -> False
     , outlined = False
     , rounded = False
     , small = False
@@ -67,21 +67,21 @@ applyAttrs attrs =
 
 
 {-| -}
-toId : (a -> String) -> Attribute a msg
-toId v =
-    Attribute <| \attrs -> { attrs | toId = Just v }
+id : (a -> String) -> Attribute a msg
+id v =
+    Attribute <| \attrs -> { attrs | id = Just v }
 
 
 {-| -}
-disabled : Bool -> Attribute a msg
+disabled : (a -> Bool) -> Attribute a msg
 disabled v =
     Attribute <| \attrs -> { attrs | disabled = v }
 
 
 {-| -}
-toDisabled : (a -> Bool) -> Attribute a msg
-toDisabled v =
-    Attribute <| \attrs -> { attrs | toDisabled = v }
+highlighted : (a -> Bool) -> Attribute a msg
+highlighted v =
+    Attribute <| \attrs -> { attrs | highlighted = v }
 
 
 {-| -}
@@ -118,7 +118,6 @@ view :
     List (Attribute a msg)
     ->
         { items : List a
-        , isActive : a -> Bool
         , toLabel : a -> H.Html msg
         , onClick : a -> msg
         }
@@ -130,27 +129,35 @@ view attrs_ props =
             applyAttrs attrs_
     in
     H.div
-        [ HA.class "ew ew-button-group"
+        [ HA.class "ew-inline-flex ew-items-center"
         , HA.classList
             [ ( "ew-m-outlined", attrs.outlined )
-            , ( "ew-m-rounded", attrs.rounded )
-            , ( "ew-m-small", attrs.small )
-            , ( "ew-m-fill", attrs.fill )
-            ]
-        , WH.styles
-            [ ( "--bg", attrs.theme.bgChannels )
-            , ( "--fg", attrs.theme.fgChannels )
-            , ( "--aux", attrs.theme.auxChannels )
+            , ( "ew-w-full", attrs.fill )
             ]
         ]
         (props.items
             |> List.map
                 (\item ->
                     H.button
-                        [ WH.maybeAttr (\fn -> HA.id (fn item)) attrs.toId
-                        , HA.class "ew ew-focusable ew-button-group-item"
-                        , HA.classList [ ( "ew-m-active", props.isActive item ) ]
-                        , HA.disabled (attrs.disabled || attrs.toDisabled item)
+                        [ WH.maybeAttr (\fn -> HA.id (fn item)) attrs.id
+                        , HA.class "ew-grow ew-shrink-0 ew-box-border"
+                        , HA.class "ew-focusable ew-inline-flex ew-items-center ew-justify-center"
+                        , HA.class "ew-py-0 ew-px-4 ew-border-solid"
+                        , HA.class "ew-font-text ew-text-base ew-font-medium ew-leading-0"
+                        , HA.class "focus:ew-relative ew-z-1"
+                        , HA.classList
+                            [ ( "ew-h-[32px]", attrs.small )
+                            , ( "ew-h-[40px]", not attrs.small )
+                            , ( "first:ew-rounded-l-lg last:ew-rounded-r-lg", not attrs.rounded )
+                            , ( "first:ew-rounded-l-[16px] last:ew-rounded-r-[16px]", attrs.rounded && attrs.small )
+                            , ( "first:ew-rounded-l-[20px] last:ew-rounded-r-[20px]", attrs.rounded && not attrs.small )
+                            , ( "ew-border-0 ew-bg-primary-bg ew-text-primary-aux", attrs.highlighted item && not attrs.outlined )
+                            , ( "ew-border-0 ew-bg-neutral-bg ew-text-neutral-aux", not (attrs.highlighted item) && not attrs.outlined )
+                            , ( "ew-border-primary-fg ew-text-primary-fg", attrs.highlighted item && attrs.outlined )
+                            , ( "ew-border-neutral-fg ew-text-neutral-fg", not (attrs.highlighted item) && attrs.outlined )
+                            , ( "-ew-mx-px first:ew-ml-0 last:ew-mr-0", attrs.outlined )
+                            ]
+                        , HA.disabled (attrs.disabled item)
                         , HE.onClick (props.onClick item)
                         ]
                         [ props.toLabel item ]

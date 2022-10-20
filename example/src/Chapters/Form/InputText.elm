@@ -71,4 +71,15 @@ chapter_ =
                     , onInput = logActionWithString "onInput"
                     }
               )
+            , ( "Validation"
+              , W.InputText.viewWithValidation
+                    [ W.InputText.url
+                    , W.InputText.minLength 2
+                    , W.InputText.placeholder "https://app.site.com"
+                    ]
+                    { value = ""
+                    , onInput = \value result ->
+                        logActionWithString "onInput" (Debug.toString (value, result))
+                    }
+              )
             ]

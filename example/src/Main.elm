@@ -2,6 +2,7 @@ module Main exposing (main)
 
 import Chapters.Core.ButtonGroup
 import Chapters.Core.Buttons
+import Chapters.Core.Divider
 import Chapters.Core.Loading
 import Chapters.Form.Field
 import Chapters.Form.InputAutocomplete
@@ -14,15 +15,22 @@ import Chapters.Form.InputSlider
 import Chapters.Form.InputText
 import Chapters.Form.InputTextArea
 import Chapters.Form.InputTime
+import Chapters.Information.Badge
 import Chapters.Information.DataRow
 import Chapters.Information.Menu
+import Chapters.Information.Message
+import Chapters.Information.Notification
+import Chapters.Information.Pagination
 import Chapters.Information.Popover
+import Chapters.Information.Table
+import Chapters.Information.Tag
+import Chapters.Information.Tooltip
 import Chapters.Layout.Modal
 import ElmBook exposing (Book, book, withChapterGroups, withStatefulOptions, withThemeOptions)
+import ElmBook.Chapter
 import ElmBook.StatefulOptions
 import ElmBook.ThemeOptions
-import ThemeProvider
-import ThemeSpec
+import Theme
 import W.Styles
 
 
@@ -34,6 +42,11 @@ type alias SharedState =
     , inputNumber : Chapters.Form.InputNumber.Model
     , inputTextArea : Chapters.Form.InputTextArea.Model
     }
+
+
+wip : String -> ElmBook.Chapter.Chapter x
+wip title =
+    ElmBook.Chapter.chapter (title ++ " WIP") |> ElmBook.Chapter.render "WIP"
 
 
 main : Book SharedState
@@ -48,10 +61,10 @@ main =
             ]
         |> withThemeOptions
             [ ElmBook.ThemeOptions.globals
-                [ ThemeProvider.globalProviderWithDarkMode
-                    { light = ThemeSpec.theme ThemeSpec.lightTheme
-                    , dark = ThemeSpec.theme ThemeSpec.darkTheme
-                    , strategy = ThemeProvider.ClassStrategy "elm-book-dark-mode"
+                [ Theme.globalProviderWithDarkMode
+                    { light = Theme.lightTheme
+                    , dark = Theme.darkTheme
+                    , strategy = Theme.classStrategy "elm-book-dark-mode"
                     }
                 , W.Styles.globalStyles
                 ]
@@ -60,6 +73,7 @@ main =
             [ ( "Core"
               , [ Chapters.Core.Buttons.chapter_
                 , Chapters.Core.ButtonGroup.chapter_
+                , Chapters.Core.Divider.chapter_
                 , Chapters.Core.Loading.chapter_
                 ]
               )
@@ -70,7 +84,14 @@ main =
             , ( "Information"
               , [ Chapters.Information.DataRow.chapter_
                 , Chapters.Information.Popover.chapter_
+                , Chapters.Information.Tooltip.chapter_
                 , Chapters.Information.Menu.chapter_
+                , Chapters.Information.Tag.chapter_
+                , Chapters.Information.Badge.chapter_
+                , Chapters.Information.Table.chapter_
+                , Chapters.Information.Message.chapter_
+                , Chapters.Information.Notification.chapter_
+                , Chapters.Information.Pagination.chapter_
                 ]
               )
             , ( "Form"

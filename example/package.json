@@ -5,13 +5,17 @@
   "main": "index.js",
   "scripts": {
     "postinstall": "elm-tooling install",
-    "start": "elm-book src/Main.elm -p 3000",
-    "build": "elm make src/Main.elm --output=dist/index.html"
+    "start": "run-pty % npm run start:elm % npm run start:http",
+    "start:elm": "elm-watch hot",
+    "start:http": "serve dist -s",
+    "build": "elm-watch make --optimize"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "elm-book": "^1.0.1",
-    "elm-tooling": "^1.8.0"
+    "elm-tooling": "^1.8.0",
+    "elm-watch": "^1.1.0-beta.2",
+    "run-pty": "^4.0.2",
+    "serve": "^14.0.1"
   }
 }

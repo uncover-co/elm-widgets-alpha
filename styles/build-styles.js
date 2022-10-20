@@ -1,22 +1,13 @@
 const fs = require("fs");
-const postcss = require("postcss");
 
-const source = fs.readFileSync("./styles/styles.pcss");
+const file =
+    fs
+        .readFileSync("./styles/output/index.css", "utf-8")
+        .replace(/\\(?!\\)/g, "\\\\")
 
-postcss([
-  require("postcss-import"),
-  require("postcss-nested"),
-  require("autoprefixer"),
-  require("cssnano"),
-])
-  .process(source, {
-    from: "./styles/styles.pcss",
-    to: "./src/W/Styles.elm",
-  })
-  .then((result) => {
-    fs.writeFileSync(
-      "./src/W/Styles.elm",
-      `module W.Styles exposing (globalStyles)
+fs.writeFileSync(
+    "./src/W/Styles.elm",
+    `module W.Styles exposing (baseTheme, globalStyles)
 
 {-|
 
@@ -24,14 +15,20 @@ postcss([
 
 -}
 
-import Html as H exposing (Html)
+import Html as H
+import Theme
 
 
 {-| -}
-globalStyles : Html msg
+baseTheme : H.Html msg
+baseTheme =
+    Theme.globalProvider Theme.lightTheme
+
+
+{-| -}
+globalStyles : H.Html msg
 globalStyles =
     H.node "style"
         []
-        [ H.text """${result.content}""" ]`
-    );
-  });
+        [ H.text """${file}""" ]`
+);
