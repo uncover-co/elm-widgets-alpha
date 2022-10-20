@@ -9,6 +9,3 @@ example/dist/main.js
 # System
 .DS_Store
 
-# tmp
-src/Internal/Hash.elm
-src/Theme.elm

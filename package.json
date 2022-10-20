@@ -6,7 +6,7 @@
     "postinstall": "elm-tooling install",
     "test": "elm-test-rs",
     "start": "concurrently \"npm:watch:*\"",
-    "watch:styles": "watch 'node ./styles/build-styles.js' ./styles/output",
+    "watch:styles": "watch 'node ./styles/build-styles.js' ./styles/output ./src/Template/W",
     "watch:tailwind": "tailwindcss -i ./styles/index.css -o ./styles/output/index.css --minify --watch",
     "docs": "elm-doc-preview"
   },
