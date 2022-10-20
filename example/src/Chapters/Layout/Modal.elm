@@ -4,7 +4,7 @@ import ElmBook.Actions exposing (logAction)
 import ElmBook.Chapter exposing (Chapter, chapter, renderComponentList)
 import Html as H
 import Html.Attributes as HA
-import ThemeSpec
+import Theme
 import W.Modal
 
 
@@ -15,7 +15,7 @@ chapter_ =
             H.div
                 [ HA.style "position" "relative"
                 , HA.style "height" "400px"
-                , HA.style "background" ThemeSpec.base.bg
+                , HA.style "background" Theme.baseBackground
                 ]
 
         content =

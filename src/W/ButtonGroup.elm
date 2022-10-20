@@ -17,7 +17,6 @@ module W.ButtonGroup exposing
 import Html as H
 import Html.Attributes as HA
 import Html.Events as HE
-import ThemeSpec exposing (ThemeSpecColorVars)
 import W.Internal.Helpers as WH
 
 
@@ -38,7 +37,6 @@ type alias Attributes a msg =
     , rounded : Bool
     , small : Bool
     , fill : Bool
-    , theme : ThemeSpecColorVars
     , htmlAttributes : List (H.Attribute msg)
     }
 
@@ -52,7 +50,6 @@ defaultAttrs =
     , rounded = False
     , small = False
     , fill = False
-    , theme = ThemeSpec.secondary
     , htmlAttributes = []
     }
 

@@ -17,9 +17,7 @@
             "elm/time": "1.0.0",
             "justinmimbs/date": "4.0.1",
             "justinmimbs/time-extra": "1.1.1",
-            "uncover-co/elm-theme": "1.0.0",
-            "uncover-co/elm-theme-provider": "2.0.0",
-            "uncover-co/elm-theme-spec": "8.0.1"
+            "uncover-co/elm-theme": "1.0.0"
         },
         "indirect": {
             "dillonkearns/elm-markdown": "7.0.0",
