@@ -1,13 +1,13 @@
 module W.Table exposing
     ( view
-    , string, int, float, percent, bool, html
+    , string, int, float, bool, html
     , onClick, groups, maxHeight
     )
 
 {-|
 
 @docs view
-@docs string, int, float, percent, bool, html
+@docs string, int, float, bool, html
 @docs onClick, groups, maxHeight
 
 -}
@@ -314,24 +314,6 @@ float label fn attrs_ =
         { label = label
         , size = Nothing
         , toHtml = \a -> H.text (String.fromFloat (fn a))
-        , attrs = attrs
-        }
-
-
-{-| -}
-percent : String -> (a -> Float) -> List (ColumnAttribute msg) -> Column a msg
-percent label fn attrs_ =
-    let
-        attrs : ColumnAttributes msg
-        attrs =
-            applyColumnAttrs
-                { defaultColumnAttrs | alignment = HA.class "ew-justify-center" }
-                attrs_
-    in
-    Column
-        { label = label
-        , size = Nothing
-        , toHtml = \a -> H.text (pctString (fn a))
         , attrs = attrs
         }
 

@@ -96,7 +96,8 @@ viewGroups attrs_ props =
                 |> List.map (\a -> ( props.toValue a, a ))
                 |> Dict.fromList
     in
-    H.div [ HA.class "ew-select ew-relative" ]
+    H.div
+        [ HA.class "ew-select ew-relative" ]
         [ H.select
             [ WH.maybeAttr HA.id attrs.id
             , HA.class W.Internal.Input.baseClass

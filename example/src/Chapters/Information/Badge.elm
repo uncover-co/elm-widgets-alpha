@@ -17,7 +17,10 @@ chapter_ =
                         { value = Just [ H.text "!" ]
                         , children = [ H.text "Hello!" ]
                         }
-                    , W.Badge.view [ W.Badge.background "purple" ]
+                    , W.Badge.view
+                        [ W.Badge.background "purple"
+                        , W.Badge.color "white"
+                        ]
                         { value = Just [ H.text "999" ]
                         , children = [ H.text "Hello!" ]
                         }
@@ -38,7 +41,7 @@ chapter_ =
                     , W.Badge.viewInline [ W.Badge.warning ]
                         [ H.text "999" ]
                     , W.Badge.viewInline
-                        [ W.Badge.background "purple" ]
+                        [ W.Badge.background "purple", W.Badge.color "white" ]
                         [ H.text "999" ]
                     ]
               )

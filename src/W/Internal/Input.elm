@@ -22,7 +22,7 @@ areaClass =
         ++ " ew-relative"
         ++ " ew-w-full ew-min-h-[48px] ew-py-2 ew-px-3"
         ++ " ew-bg-base-aux/[0.07] ew-border ew-border-solid ew-border-base-aux/30 ew-rounded ew-shadow-none"
-        ++ " ew-font-text ew-text-base"
+        ++ " ew-font-text ew-text-base ew-text-base-fg ew-placeholder-base-aux"
         ++ " ew-transition"
         ++ " ew-outline-0 ew-ring-offset-0 ew-ring-primary-fg/50"
         ++ " disabled:ew-bg-base-aux/[0.25] disabled:ew-border-base-aux/[0.25]"
@@ -33,7 +33,7 @@ areaClass =
 iconWrapper : String -> H.Html msg -> H.Html msg
 iconWrapper class child =
     H.div
-        [ HA.class "ew-absolute ew-inset-y-1 ew-right-1 ew-w-8 ew-flex ew-items-center ew-justify-center"
+        [ HA.class "ew-absolute ew-inset-y-1 ew-right-1 ew-pointer-events-none ew-w-8 ew-flex ew-items-center ew-justify-center"
         , HA.class class
         ]
         [ child ]

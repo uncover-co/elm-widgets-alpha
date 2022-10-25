@@ -11,7 +11,6 @@ data :
     List
         { age : Int
         , score : Float
-        , pct : Float
         , ready : Bool
         , picture : String
         , name : String
@@ -20,14 +19,12 @@ data =
     [ { name = "Georges Alphonse Prado Boris"
       , age = 33
       , score = 85
-      , pct = 0.7
       , ready = False
       , picture = "https://picsum.photos/100"
       }
     , { name = "Janine Bonfadini"
       , age = 35
       , score = 904.6
-      , pct = 0.78
       , ready = True
       , picture = "https://picsum.photos/120"
       }
@@ -48,7 +45,6 @@ chapter_ =
                     , W.Table.string "Name" .name []
                     , W.Table.int "Age" .age []
                     , W.Table.float "Score" .score []
-                    , W.Table.percent "Total" .pct []
                     , W.Table.bool "Ready" .ready []
                     ]
                     data
@@ -63,7 +59,6 @@ chapter_ =
                     , W.Table.string "Name" .name []
                     , W.Table.int "Age" .age []
                     , W.Table.float "Score" .score []
-                    , W.Table.percent "Total" .pct []
                     , W.Table.bool "Ready" .ready []
                     ]
                     data

@@ -152,7 +152,7 @@ view attrs_ props =
                 [ HA.classList [ ( "ew-w-[40%] ew-pr-4 ew-pt-1", attrs.alignRight ) ]
                 ]
                 [ H.h1
-                    [ HA.class "ew-m-0 ew-font-normal ew-text-sm ew-pb-2 ew-font-text"
+                    [ HA.class "ew-m-0 ew-font-normal ew-text-sm ew-pb-2 ew-font-text ew-text-base-fg"
                     , HA.classList [ ( "ew-pb-0", attrs.alignRight ) ]
                     ]
                     [ props.label ]

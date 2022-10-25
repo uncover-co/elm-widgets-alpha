@@ -236,7 +236,7 @@ view attrs_ props =
     in
     H.div
         [ HA.class "ew-inline-block ew-relative ew-group" ]
-        [ H.div [ HA.tabindex 0 ] props.children
+        [ H.div [ HA.tabindex 0, HA.class "ew-inline-flex" ] props.children
         , H.div
             (positionAttrs
                 ++ [ HA.class "ew-hidden ew-absolute ew-z-[9999] group-focus-within:ew-block hover:ew-block"
