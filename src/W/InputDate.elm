@@ -2,6 +2,7 @@ module W.InputDate exposing
     ( view
     , min, max, step, timeZone
     , id, class, disabled, required, readOnly
+    , prefix, suffix
     , viewWithValidation, errorToString, Error(..)
     , onEnter, onFocus, onBlur
     , htmlAttrs, Attribute
@@ -12,6 +13,7 @@ module W.InputDate exposing
 @docs view
 @docs min, max, step, timeZone
 @docs id, class, disabled, required, readOnly
+@docs prefix, suffix
 @docs viewWithValidation, errorToString, Error
 @docs onEnter, onFocus, onBlur
 @docs htmlAttrs, Attribute
@@ -81,6 +83,8 @@ type alias Attributes msg =
     , min : Maybe Time.Posix
     , max : Maybe Time.Posix
     , step : Maybe Int
+    , prefix : Maybe (H.Html msg)
+    , suffix : Maybe (H.Html msg)
     , onFocus : Maybe msg
     , onBlur : Maybe msg
     , onEnter : Maybe msg
@@ -104,6 +108,8 @@ defaultAttrs =
     , min = Nothing
     , max = Nothing
     , step = Nothing
+    , prefix = Nothing
+    , suffix = Nothing
     , onFocus = Nothing
     , onBlur = Nothing
     , onEnter = Nothing
@@ -167,6 +173,18 @@ max v =
 step : Int -> Attribute msg
 step v =
     Attribute <| \attrs -> { attrs | step = Just v }
+
+
+{-| -}
+prefix : H.Html msg -> Attribute msg
+prefix v =
+    Attribute <| \attrs -> { attrs | prefix = Just v }
+
+
+{-| -}
+suffix : H.Html msg -> Attribute msg
+suffix v =
+    Attribute <| \attrs -> { attrs | suffix = Just v }
 
 
 {-| -}
@@ -247,6 +265,7 @@ view attrs_ props =
             :: baseAttrs attrs props.value
         )
         []
+        |> W.Internal.Input.view attrs
 
 
 {-| -}
@@ -322,6 +341,11 @@ viewWithValidation attrs_ props =
             :: baseAttrs attrs props.value
         )
         []
+        |> W.Internal.Input.view attrs
+
+
+
+-- Helpers
 
 
 valueFromDate : Attributes msg -> Time.Posix -> String

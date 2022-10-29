@@ -2,6 +2,7 @@ module W.InputNumber exposing
     ( view
     , min, max, step
     , id, class, placeholder, disabled, required, readOnly
+    , prefix, suffix
     , viewWithValidation, errorToString, Error(..)
     , onEnter, onFocus, onBlur
     , htmlAttrs, Attribute
@@ -12,6 +13,7 @@ module W.InputNumber exposing
 @docs view
 @docs min, max, step
 @docs id, class, placeholder, disabled, required, readOnly
+@docs prefix, suffix
 @docs viewWithValidation, errorToString, Error
 @docs onEnter, onFocus, onBlur
 @docs htmlAttrs, Attribute
@@ -74,6 +76,8 @@ type alias Attributes msg =
     , max : Maybe Float
     , step : Maybe Float
     , placeholder : Maybe String
+    , prefix : Maybe (H.Html msg)
+    , suffix : Maybe (H.Html msg)
     , onFocus : Maybe msg
     , onBlur : Maybe msg
     , onEnter : Maybe msg
@@ -97,6 +101,8 @@ defaultAttrs =
     , max = Nothing
     , step = Nothing
     , placeholder = Nothing
+    , prefix = Nothing
+    , suffix = Nothing
     , onFocus = Nothing
     , onBlur = Nothing
     , onEnter = Nothing
@@ -163,6 +169,18 @@ step v =
 
 
 {-| -}
+prefix : H.Html msg -> Attribute msg
+prefix v =
+    Attribute <| \attrs -> { attrs | prefix = Just v }
+
+
+{-| -}
+suffix : H.Html msg -> Attribute msg
+suffix v =
+    Attribute <| \attrs -> { attrs | suffix = Just v }
+
+
+{-| -}
 onBlur : msg -> Attribute msg
 onBlur v =
     Attribute <| \attrs -> { attrs | onBlur = Just v }
@@ -225,13 +243,15 @@ view attrs_ props =
         attrs =
             applyAttrs attrs_
     in
-    H.input
-        (baseAttrs attrs
-            ++ [ HA.value props.value
-               , HE.onInput props.onInput
-               ]
+    W.Internal.Input.view attrs
+        (H.input
+            (baseAttrs attrs
+                ++ [ HA.value props.value
+                   , HE.onInput props.onInput
+                   ]
+            )
+            []
         )
-        []
 
 
 {-| -}
@@ -283,3 +303,4 @@ viewWithValidation attrs_ props =
                ]
         )
         []
+        |> W.Internal.Input.view attrs

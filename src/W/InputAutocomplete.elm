@@ -1,6 +1,7 @@
 module W.InputAutocomplete exposing
     ( view
     , class, disabled, readOnly, required, placeholder, onBlur, onEnter, onFocus, htmlAttrs
+    , prefix, suffix
     , Attribute
     )
 
@@ -8,6 +9,7 @@ module W.InputAutocomplete exposing
 
 @docs view
 @docs class, disabled, readOnly, required, placeholder, onBlur, onEnter, onFocus, htmlAttrs
+@docs prefix, suffix
 @docs Attribute
 
 -}
@@ -37,6 +39,8 @@ type alias Attributes msg =
     , required : Bool
     , readOnly : Bool
     , placeholder : Maybe String
+    , prefix : Maybe (H.Html msg)
+    , suffix : Maybe (H.Html msg)
     , onFocus : Maybe msg
     , onBlur : Maybe msg
     , onEnter : Maybe msg
@@ -56,6 +60,8 @@ defaultAttrs =
     , required = False
     , readOnly = False
     , placeholder = Nothing
+    , prefix = Nothing
+    , suffix = Nothing
     , onFocus = Nothing
     , onBlur = Nothing
     , onEnter = Nothing
@@ -95,6 +101,18 @@ readOnly v =
 required : Bool -> Attribute msg
 required v =
     Attribute <| \attrs -> { attrs | required = v }
+
+
+{-| -}
+prefix : H.Html msg -> Attribute msg
+prefix v =
+    Attribute <| \attrs -> { attrs | prefix = Just v }
+
+
+{-| -}
+suffix : H.Html msg -> Attribute msg
+suffix v =
+    Attribute <| \attrs -> { attrs | suffix = Just v }
 
 
 {-| -}
@@ -150,48 +168,50 @@ view attrs_ props =
         optionsDict =
             Dict.fromList options
     in
-    H.div [ HA.class "ew-relative" ]
-        [ H.input
-            (attrs.htmlAttributes
-                ++ [ WH.maybeAttr HA.placeholder attrs.placeholder
-                   , HA.disabled (attrs.disabled || attrs.readOnly)
-                   , HA.readonly attrs.readOnly
-                   , HA.required attrs.required
-                   , HA.autocomplete False
-                   , HA.id props.id
-                   , HA.class attrs.class
-                   , HA.class W.Internal.Input.baseClass
-                   , HA.class "ew-input-with-picker ew-pr-10"
-                   , HA.list (props.id ++ "-list")
-                   , HA.value props.search
-                   , WH.maybeAttr HE.onFocus attrs.onFocus
-                   , WH.maybeAttr HE.onBlur attrs.onBlur
-                   , WH.maybeAttr WH.onEnter attrs.onEnter
-                   , HE.on "input"
-                        (D.at [ "target", "value" ] D.string
-                            |> D.andThen
-                                (\value ->
-                                    Dict.get value optionsDict
-                                        |> props.onInput value
-                                        |> D.succeed
-                                )
+    W.Internal.Input.view attrs
+        (H.div [ HA.class "ew-w-full ew-flex ew-relative" ]
+            [ H.input
+                (attrs.htmlAttributes
+                    ++ [ WH.maybeAttr HA.placeholder attrs.placeholder
+                       , HA.disabled (attrs.disabled || attrs.readOnly)
+                       , HA.readonly attrs.readOnly
+                       , HA.required attrs.required
+                       , HA.autocomplete False
+                       , HA.id props.id
+                       , HA.class attrs.class
+                       , HA.class W.Internal.Input.baseClass
+                       , HA.class "ew-pr-10"
+                       , HA.list (props.id ++ "-list")
+                       , HA.value props.search
+                       , WH.maybeAttr HE.onFocus attrs.onFocus
+                       , WH.maybeAttr HE.onBlur attrs.onBlur
+                       , WH.maybeAttr WH.onEnter attrs.onEnter
+                       , HE.on "input"
+                            (D.at [ "target", "value" ] D.string
+                                |> D.andThen
+                                    (\value ->
+                                        Dict.get value optionsDict
+                                            |> props.onInput value
+                                            |> D.succeed
+                                    )
+                            )
+                       ]
+                )
+                []
+            , H.datalist
+                [ HA.id (props.id ++ "-list") ]
+                (options
+                    |> List.map
+                        (\( label, _ ) ->
+                            H.option [ HA.value label ] []
                         )
-                   ]
-            )
-            []
-        , H.datalist
-            [ HA.id (props.id ++ "-list") ]
-            (options
-                |> List.map
-                    (\( label, _ ) ->
-                        H.option [ HA.value label ] []
-                    )
-            )
-        , W.Internal.Input.iconWrapper "ew-text-base-aux"
-            (if props.options == Nothing then
-                W.Loading.circles [ W.Loading.size 28 ]
+                )
+            , W.Internal.Input.iconWrapper "ew-text-base-aux"
+                (if props.options == Nothing then
+                    W.Loading.circles [ W.Loading.size 28 ]
 
-             else
-                W.Internal.Input.iconChevronDown
-            )
-        ]
+                 else
+                    W.Internal.Input.iconChevronDown
+                )
+            ]
+        )

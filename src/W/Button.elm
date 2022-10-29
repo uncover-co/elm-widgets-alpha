@@ -150,9 +150,6 @@ styleAttrs attrs =
 roundedAttrs : Attributes msg -> H.Attribute msg
 roundedAttrs attrs =
     case ( attrs.rounded, attrs.size ) of
-        ( False, Large ) ->
-            HA.class "ew-rounded-xl before:ew-rounded-xl"
-
         ( False, _ ) ->
             HA.class "ew-rounded-lg before:ew-rounded-lg"
 

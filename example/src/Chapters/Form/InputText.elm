@@ -1,8 +1,10 @@
 module Chapters.Form.InputText exposing (chapter_)
 
-import ElmBook.Actions exposing (logActionWithString)
+import ElmBook.Actions exposing (logAction, logActionWithString)
 import ElmBook.Chapter exposing (Chapter, chapter, renderComponentList)
 import W.InputText
+import W.Button
+import Html as H
 
 
 chapter_ : Chapter x
@@ -12,6 +14,7 @@ chapter_ =
             [ ( "Default"
               , W.InputText.view
                     [ W.InputText.placeholder "Type something…"
+                    , W.InputText.prefix (H.text "$")
                     ]
                     { value = ""
                     , onInput = logActionWithString "onInput"
@@ -20,6 +23,7 @@ chapter_ =
             , ( "Disabled"
               , W.InputText.view
                     [ W.InputText.placeholder "Type something…"
+                    , W.InputText.suffix (H.text "Email")
                     , W.InputText.disabled True
                     ]
                     { value = ""
@@ -39,6 +43,12 @@ chapter_ =
               , W.InputText.view
                     [ W.InputText.password
                     , W.InputText.placeholder "Type your password…"
+                    , W.InputText.suffix
+                        (W.Button.view 
+                            [ W.Button.small, W.Button.invisible ]
+                            { label = H.text "Show"
+                            , onClick = logAction "onClick" 
+                        })
                     ]
                     { value = ""
                     , onInput = logActionWithString "onInput"

@@ -55,8 +55,8 @@
   display: none;
 }
 
-.ew-input::-webkit-calendar-picker-indicator, 
-.ew-input::-webkit-time-picker-indicator {
+.ew-input input::-webkit-calendar-picker-indicator, 
+.ew-input input::-webkit-time-picker-indicator {
   background-image: none;
   opacity: 0;
 }

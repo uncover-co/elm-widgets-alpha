@@ -3,17 +3,79 @@ module W.Internal.Input exposing
     , baseClass
     , iconChevronDown
     , iconWrapper
+    , view
     )
 
 import Html as H
 import Html.Attributes as HA
 
 
+view :
+    { x
+        | prefix : Maybe (H.Html msg)
+        , suffix : Maybe (H.Html msg)
+        , readOnly : Bool
+    }
+    -> H.Html msg
+    -> H.Html msg
+view attrs input =
+    H.label
+        [ HA.class "ew-input ew-bg-base-bg ew-box-border"
+        , HA.class "ew-flex ew-items-stretch"
+        , HA.class "ew-border ew-border-solid ew-border-base-aux/30 ew-rounded ew-overflow-hidden"
+        , HA.class "ew-font-text ew-text-base ew-text-base-fg"
+        , HA.class "ew-transition"
+        , HA.class "ew-ring-offset-0 ew-ring-primary-fg/50"
+        , HA.classList
+            [ ( "focus-within:ew-ring focus-within:ew-border-primary-fg", not attrs.readOnly )
+            ]
+        ]
+        [ case attrs.prefix of
+            Just prefix ->
+                H.div
+                    [ prefixSuffixClass
+                    , HA.class "ew-border-r"
+                    ]
+                    [ prefix ]
+
+            Nothing ->
+                H.text ""
+        , input
+        , case attrs.suffix of
+            Just suffix ->
+                H.div
+                    [ prefixSuffixClass
+                    , HA.class "ew-border-l"
+                    ]
+                    [ suffix ]
+
+            Nothing ->
+                H.text ""
+        ]
+
+
+prefixSuffixClass : H.Attribute msg
+prefixSuffixClass =
+    HA.class <|
+        "ew-flex ew-items-center ew-justify-center ew-box-border"
+            ++ " ew-border-0 ew-border-solid ew-border-base-aux/30"
+            ++ " ew-p-2 ew-min-w-[48px] ew-self-stretch"
+            ++ " ew-text-sm ew-text-base ew-text-base-aux"
+
+
 baseClass : String
 baseClass =
-    areaClass
-        ++ " ew-flex ew-items-center"
+    "ew-appearance-none ew-box-border ew-grow ew-self-stretch"
         ++ " ew-leading-none"
+        ++ " ew-w-full ew-min-h-[48px] ew-py-2 ew-px-3"
+        ++ " ew-border-0"
+        ++ " ew-font-text ew-text-base ew-text-base-fg ew-placeholder-base-aux"
+        ++ " ew-outline-0"
+        ++ " ew-bg-base-aux/[0.07]"
+        ++ " disabled:ew-bg-base-aux/20"
+        ++ " read-only:disabled:ew-bg-base-aux/[0.07]"
+        ++ " read-only:focus:ew-bg-base-aux/10"
+        ++ " focus:ew-bg-base-bg"
 
 
 areaClass : String

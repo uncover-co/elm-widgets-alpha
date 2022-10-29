@@ -1,14 +1,18 @@
 module W.Table exposing
     ( view
     , string, int, float, bool, html
-    , onClick, groups, maxHeight
+    , groups, headerHeight
+    , onClick, onMouseEnter, onMouseLeave
+    , htmlAttrs
     )
 
 {-|
 
 @docs view
 @docs string, int, float, bool, html
-@docs onClick, groups, maxHeight
+@docs groups, headerHeight
+@docs onClick, onMouseEnter, onMouseLeave
+@docs htmlAttrs
 
 -}
 
@@ -29,10 +33,12 @@ type Attribute msg a
 
 
 type alias Attributes msg a =
-    { onClick : Maybe (a -> msg)
-    , headerHeight : Int
-    , maxHeight : Maybe String
+    { headerHeight : Int
     , groups : List (a -> String)
+    , onClick : Maybe (a -> msg)
+    , onMouseEnter : Maybe (a -> msg)
+    , onMouseLeave : Maybe msg
+    , htmlAttributes : List (H.Attribute msg)
     }
 
 
@@ -43,17 +49,37 @@ applyAttrs attrs =
 
 defaultAttrs : Attributes msg a
 defaultAttrs =
-    { onClick = Nothing
-    , headerHeight = 40
-    , maxHeight = Nothing
+    { headerHeight = 40
     , groups = []
+    , onClick = Nothing
+    , onMouseEnter = Nothing
+    , onMouseLeave = Nothing
+    , htmlAttributes = []
     }
 
 
 {-| -}
-maxHeight : String -> Attribute msg a
-maxHeight v =
-    Attribute (\attrs -> { attrs | maxHeight = Just v })
+headerHeight : Int -> Attribute msg a
+headerHeight v =
+    Attribute (\attrs -> { attrs | headerHeight = v })
+
+
+{-| -}
+groups : List (a -> String) -> Attribute msg a
+groups v =
+    Attribute (\attrs -> { attrs | groups = v })
+
+
+{-| -}
+onMouseEnter : (a -> msg) -> Attribute msg a
+onMouseEnter v =
+    Attribute (\attrs -> { attrs | onMouseEnter = Just v })
+
+
+{-| -}
+onMouseLeave : msg -> Attribute msg a
+onMouseLeave v =
+    Attribute (\attrs -> { attrs | onMouseLeave = Just v })
 
 
 {-| -}
@@ -63,9 +89,9 @@ onClick v =
 
 
 {-| -}
-groups : List (a -> String) -> Attribute msg a
-groups v =
-    Attribute (\attrs -> { attrs | groups = v })
+htmlAttrs : List (H.Attribute msg) -> Attribute msg a
+htmlAttrs v =
+    Attribute <| \attrs -> { attrs | htmlAttributes = v }
 
 
 
@@ -133,25 +159,23 @@ view attrs_ columns data =
     in
     if List.isEmpty attrs.groups then
         viewWrapper
-            attrs.maxHeight
+            attrs.htmlAttributes
             (viewTableHead columnSize attrs columns)
             (viewTableBody columnSize attrs columns data)
 
     else
         viewWrapper
-            attrs.maxHeight
+            attrs.htmlAttributes
             (viewTableHead columnSize attrs columns)
             (W.Internal.Table.toTableGroup attrs.groups data
                 |> viewTableGroup columnSize attrs columns
             )
 
 
-viewWrapper : Maybe String -> H.Html msg -> H.Html msg -> H.Html msg
-viewWrapper maxHeight_ header table =
+viewWrapper : List (H.Attribute msg) -> H.Html msg -> H.Html msg -> H.Html msg
+viewWrapper htmlAttrs_ header table =
     H.article
-        [ HA.class "ew-bg-base-bg ew-text-base-fg ew-font-text ew-overflow-auto"
-        , WH.maybeAttr (HA.style "max-height") maxHeight_
-        ]
+        (htmlAttrs_ ++ [ HA.class "ew-bg-base-bg ew-text-base-fg ew-font-text ew-overflow-auto" ])
         [ header
         , table
         ]
@@ -166,7 +190,7 @@ viewTable =
 viewTableHead : String -> Attributes msg a -> List (Column a msg) -> H.Html msg
 viewTableHead columnSize attrs columns =
     H.header
-        [ HA.class "ew-flex ew-sticky ew-top-0 ew-bg-base-bg ew-z-10 ew-box-border"
+        [ HA.class "ew-flex ew-sticky ew-z-10 ew-top-0 ew-bg-base-bg ew-z-10 ew-box-border"
         , HA.class "ew-border-0 ew-border-b ew-border-solid ew-border-base-aux/20"
         , HA.style "height" (pxString attrs.headerHeight)
         ]
@@ -193,7 +217,7 @@ viewTableGroupHeader attrs label =
         , HA.class "before:ew-content-[''] before:ew-block before:ew-inset-0 before:ew-absolute before:ew-bg-base-fg/[0.07]"
         , HA.class "ew-border-0 ew-border-b ew-border-solid ew-border-base-aux/20"
         , HA.class "ew-font-text ew-text-sm ew-font-medium ew-text-base-fg"
-        , HA.class "ew-sticky"
+        , HA.class "ew-sticky ew-z-10"
         , HA.style "top" (pxString attrs.headerHeight)
         ]
         [ H.text label ]
@@ -222,21 +246,17 @@ viewTableGroup columnSize attrs columns tableGroup =
 viewTableBody : String -> Attributes msg a -> List (Column a msg) -> List a -> H.Html msg
 viewTableBody columnSize attrs columns data =
     H.ol
-        [ HA.class "ew-list-none ew-m-0 ew-p-0" ]
+        [ HA.class "ew-list-none ew-m-0 ew-p-0"
+        , WH.maybeAttr HE.onMouseLeave attrs.onMouseLeave
+        ]
         (data
             |> List.map
                 (\datum ->
                     H.li
-                        (case attrs.onClick of
-                            Just onClick_ ->
-                                [ HE.onClick (onClick_ datum)
-                                , HA.class "ew-group"
-                                , HA.class "ew-flex ew-items-stretch"
-                                ]
-
-                            Nothing ->
-                                [ HA.class "ew-flex ew-p-0 ew-items-stretch" ]
-                        )
+                        [ HA.class "ew-group ew-flex ew-p-0 ew-items-stretch"
+                        , WH.maybeAttr (\onClick_ -> HE.onClick (onClick_ datum)) attrs.onClick
+                        , WH.maybeAttr (\onMouseEnter_ -> HE.onMouseEnter (onMouseEnter_ datum)) attrs.onMouseEnter
+                        ]
                         (columns
                             |> List.map
                                 (\(Column column) ->

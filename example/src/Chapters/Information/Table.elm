@@ -1,6 +1,6 @@
 module Chapters.Information.Table exposing (..)
 
-import ElmBook.Actions exposing (logActionWithString)
+import ElmBook.Actions exposing (logActionWithString, logAction)
 import ElmBook.Chapter exposing (Chapter, chapter, renderComponentList)
 import Html as H
 import Html.Attributes as HA
@@ -40,6 +40,8 @@ chapter_ =
             [ ( "Default"
               , W.Table.view
                     [ W.Table.onClick (logActionWithString "onClick" << .name)
+                    , W.Table.onMouseEnter (logActionWithString "onMouseEnter" << .name)
+                    , W.Table.onMouseLeave (logAction "onMouseLeave")
                     ]
                     [ W.Table.html "Image" .picture [] (\s -> H.img [ HA.src s, HA.height 60 ] [])
                     , W.Table.string "Name" .name []
@@ -53,7 +55,7 @@ chapter_ =
               , W.Table.view
                     [ W.Table.onClick (logActionWithString "onClick" << .name)
                     , W.Table.groups [ .name ]
-                    , W.Table.maxHeight "400px"
+                    , W.Table.htmlAttrs [ HA.style "max-height" "400px" ]
                     ]
                     [ W.Table.html "Image" .picture [] (\s -> H.img [ HA.src s, HA.height 60 ] [])
                     , W.Table.string "Name" .name []
