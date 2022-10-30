@@ -1,7 +1,7 @@
 module W.Table exposing
     ( view
-    , string, int, float, bool, html
-    , groups, headerHeight
+    , string, int, float, bool, html, Column, ColumnAttribute
+    , groups, headerHeight, Attribute
     , onClick, onMouseEnter, onMouseLeave
     , htmlAttrs
     )
@@ -9,8 +9,8 @@ module W.Table exposing
 {-|
 
 @docs view
-@docs string, int, float, bool, html
-@docs groups, headerHeight
+@docs string, int, float, bool, html, Column, ColumnAttribute
+@docs groups, headerHeight, Attribute
 @docs onClick, onMouseEnter, onMouseLeave
 @docs htmlAttrs
 
@@ -28,6 +28,7 @@ import W.Internal.Table exposing (TableGroup(..))
 -- Table Attributes
 
 
+{-| -}
 type Attribute msg a
     = Attribute (Attributes msg a -> Attributes msg a)
 
@@ -98,6 +99,7 @@ htmlAttrs v =
 -- Column Attributes
 
 
+{-| -}
 type Column a msg
     = Column
         { label : String
@@ -107,6 +109,7 @@ type Column a msg
         }
 
 
+{-| -}
 type ColumnAttribute msg
     = ColumnAttribute (ColumnAttributes msg -> ColumnAttributes msg)
 
