@@ -298,21 +298,13 @@ baseAttrs attrs =
         ++ [ WH.maybeAttr HA.id attrs.id
            , HA.type_ (inputInputTypeToString attrs.type_)
            , HA.class attrs.class
-
-           -- , HA.classList [ ( WI.baseClass, not attrs.unstyled ) ]
-           , HA.class "ew-appearance-none ew-box-border"
-           , HA.class "ew-w-full ew-min-h-[48px] ew-py-2 ew-px-3"
-           , HA.class "ew-border-0"
-           , HA.class "ew-font-text ew-text-base ew-text-base-fg ew-placeholder-base-aux"
-           , HA.class "ew-outline-0"
-           , HA.class "ew-bg-base-aux/[0.07]"
-           , HA.class "disabled:ew-bg-base-aux/[0.25]"
-           , HA.class "read-only:focus:ew-bg-base-aux/10"
-           , HA.class "focus:ew-bg-base-bg"
+           , HA.classList [ ( WI.baseClass, not attrs.unstyled ) ]
            , WH.attrIf attrs.readOnly HA.tabindex -1
            , HA.required attrs.required
            , HA.disabled attrs.disabled
            , HA.readonly attrs.readOnly
+           , WH.attrIf attrs.readOnly (HA.attribute "aria-readonly") "true"
+           , WH.attrIf attrs.disabled (HA.attribute "aria-disabled") "true"
            , WH.maybeAttr HA.placeholder attrs.placeholder
            , WH.maybeAttr HA.minlength attrs.minLength
            , WH.maybeAttr HA.maxlength attrs.maxLength

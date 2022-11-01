@@ -224,6 +224,8 @@ baseAttrs attrs value =
            , HA.required attrs.required
            , HA.disabled attrs.disabled
            , HA.readonly attrs.readOnly
+           , WH.attrIf attrs.readOnly (HA.attribute "aria-readonly") "true"
+           , WH.attrIf attrs.disabled (HA.attribute "aria-disabled") "true"
            , WH.maybeAttr HA.min (Maybe.map (valueFromTime attrs) attrs.min)
            , WH.maybeAttr HA.max (Maybe.map (valueFromTime attrs) attrs.max)
            , WH.maybeAttr HA.step (Maybe.map String.fromInt attrs.step)

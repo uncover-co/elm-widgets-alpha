@@ -51,10 +51,12 @@
  * ======================================================
  */
 
-.ew-select::-ms-expand {
+/* Select */
+.ew-input input::-ms-expand {
   display: none;
 }
 
+/* Time, Date, Autocomplete */
 .ew-input input::-webkit-calendar-picker-indicator, 
 .ew-input input::-webkit-time-picker-indicator {
   background-image: none;

@@ -175,6 +175,8 @@ view attrs_ props =
                     ++ [ WH.maybeAttr HA.placeholder attrs.placeholder
                        , HA.disabled (attrs.disabled || attrs.readOnly)
                        , HA.readonly attrs.readOnly
+                       , WH.attrIf attrs.readOnly (HA.attribute "aria-readonly") "true"
+                       , WH.attrIf attrs.disabled (HA.attribute "aria-disabled") "true"
                        , HA.required attrs.required
                        , HA.autocomplete False
                        , HA.id props.id

@@ -251,7 +251,7 @@ viewTableHead columnSize attrs columns =
 viewTableHeaderCell : String -> Column a msg -> H.Html msg
 viewTableHeaderCell columnSize (Column column) =
     H.p
-        [ HA.class "ew-m-0 ew-p-2 ew-box-border ew-font-semibold ew-text-sm"
+        [ HA.class "ew-m-0 ew-p-2 ew-box-border ew-font-semibold ew-text-sm ew-text-base-aux"
         , HA.class "ew-flex ew-items-center"
         , HA.style "min-width" "48px"
         , column.attrs.alignment
@@ -270,7 +270,7 @@ viewTableGroupHeader attrs label =
         [ HA.class "ew-m-0 ew-p-2"
         , HA.class "ew-bg-base-bg"
         , HA.class "ew-border-0 ew-border-b ew-border-solid ew-border-base-aux/10"
-        , HA.class "ew-font-text ew-text-sm ew-font-medium ew-text-base-fg"
+        , HA.class "ew-font-text ew-text-sm ew-font-medium ew-text-base-aux"
         , HA.class "ew-sticky ew-z-10"
         , HA.style "top" (pxString attrs.headerHeight)
         ]

@@ -72,10 +72,10 @@ baseClass =
         ++ " ew-font-text ew-text-base ew-text-base-fg ew-placeholder-base-aux"
         ++ " ew-outline-0"
         ++ " ew-bg-base-aux/[0.07]"
-        ++ " disabled:ew-bg-base-aux/20"
-        ++ " read-only:disabled:ew-bg-base-aux/[0.07]"
-        ++ " read-only:focus:ew-bg-base-aux/10"
         ++ " focus:ew-bg-base-bg"
+        ++ " disabled:ew-bg-base-aux/30"
+        ++ " aria-readonly:disabled:ew-bg-base-aux/[0.07]"
+        ++ " aria-readonly:read-only:focus:ew-bg-base-aux/10"
 
 
 areaClass : String

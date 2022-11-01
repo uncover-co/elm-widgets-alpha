@@ -1,13 +1,13 @@
 module W.DataRow exposing
     ( view
-    , header, footer, left, right, href, onClick
+    , header, footer, left, right, href, htmlAttrs, onClick
     , Attribute
     )
 
 {-|
 
 @docs view
-@docs header, footer, left, right, href, onClick
+@docs header, footer, left, right, href, htmlAttrs, onClick
 @docs Attribute
 
 -}
@@ -34,6 +34,7 @@ type alias Attributes msg =
     , right : Maybe (List (H.Html msg))
     , onClick : Maybe msg
     , href : Maybe String
+    , htmlAttributes : List (H.Attribute msg)
     }
 
 
@@ -50,6 +51,7 @@ defaultAttrs =
     , right = Nothing
     , onClick = Nothing
     , href = Nothing
+    , htmlAttributes = []
     }
 
 
@@ -91,6 +93,12 @@ onClick v =
 href : String -> Attribute msg
 href v =
     Attribute <| \attrs -> { attrs | href = Just v }
+
+
+{-| -}
+htmlAttrs : List (H.Attribute msg) -> Attribute msg
+htmlAttrs v =
+    Attribute <| \attrs -> { attrs | htmlAttributes = v }
 
 
 {-| -}
@@ -137,7 +145,10 @@ view attrs_ children =
                 _ ->
                     H.div mainAttrs
     in
-    H.div [ HA.class "ew-flex ew-items-center ew-p-2 ew-box-border ew-bg-base-bg" ]
+    H.div
+        (HA.class "ew-flex ew-items-center ew-p-2 ew-box-border ew-bg-base-bg"
+            :: attrs.htmlAttributes
+        )
         [ main_
             [ WH.maybeHtml (\left_ -> H.div [ HA.class "ew-shrink-0 ew-px-3 ew-py-2 ew-pl-0" ] [ left_ ]) attrs.left
             , H.div [ HA.class "ew-grow" ]
