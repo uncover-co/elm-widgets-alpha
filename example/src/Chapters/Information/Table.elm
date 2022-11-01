@@ -42,8 +42,10 @@ chapter_ =
                     [ W.Table.onClick (logActionWithString "onClick" << .name)
                     , W.Table.onMouseEnter (logActionWithString "onMouseEnter" << .name)
                     , W.Table.onMouseLeave (logAction "onMouseLeave")
+                    , W.Table.highlight (.age >> (==) 35)
                     ]
-                    [ W.Table.html "Image" .picture [] (\s -> H.img [ HA.src s, HA.height 60 ] [])
+                    [ W.Table.html "Image" .picture 
+                        [ W.Table.size 72 ] (\s -> H.img [ HA.src s, HA.height 60 ] [])
                     , W.Table.string "Name" .name []
                     , W.Table.int "Age" .age []
                     , W.Table.float "Score" .score []
@@ -54,10 +56,12 @@ chapter_ =
             , ( "Groups"
               , W.Table.view
                     [ W.Table.onClick (logActionWithString "onClick" << .name)
-                    , W.Table.groups [ .name ]
+                    , W.Table.groups [ .name, .age >> String.fromInt ]
                     , W.Table.htmlAttrs [ HA.style "max-height" "400px" ]
                     ]
-                    [ W.Table.html "Image" .picture [] (\s -> H.img [ HA.src s, HA.height 60 ] [])
+                    [ W.Table.html "Image" .picture 
+                        [ W.Table.size 72 ]
+                        (\s -> H.img [ HA.src s, HA.height 60 ] [])
                     , W.Table.string "Name" .name []
                     , W.Table.int "Age" .age []
                     , W.Table.float "Score" .score []

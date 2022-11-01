@@ -88,8 +88,8 @@ chapter_ =
                     , W.InputText.placeholder "https://app.site.com"
                     ]
                     { value = ""
-                    , onInput = \value result ->
-                        logActionWithString "onInput" (Debug.toString (value, result))
+                    , onInput = \value _ ->
+                        logActionWithString "onInput" value
                     }
               )
             ]

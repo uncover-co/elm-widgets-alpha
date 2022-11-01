@@ -1,17 +1,19 @@
 module W.Table exposing
     ( view
-    , string, int, float, bool, html, Column, ColumnAttribute
-    , groups, headerHeight, Attribute
+    , groups, highlight, headerHeight, Attribute
     , onClick, onMouseEnter, onMouseLeave
+    , string, int, float, bool, html, Column
+    , size, noAutosize, alignRight, alignLeft, alignCenter, columnHtmlAttrs, ColumnAttribute
     , htmlAttrs
     )
 
 {-|
 
 @docs view
-@docs string, int, float, bool, html, Column, ColumnAttribute
-@docs groups, headerHeight, Attribute
+@docs groups, highlight, headerHeight, Attribute
 @docs onClick, onMouseEnter, onMouseLeave
+@docs string, int, float, bool, html, Column
+@docs size, noAutosize, alignRight, alignLeft, alignCenter, columnHtmlAttrs, ColumnAttribute
 @docs htmlAttrs
 
 -}
@@ -36,6 +38,7 @@ type Attribute msg a
 type alias Attributes msg a =
     { headerHeight : Int
     , groups : List (a -> String)
+    , highlight : a -> Bool
     , onClick : Maybe (a -> msg)
     , onMouseEnter : Maybe (a -> msg)
     , onMouseLeave : Maybe msg
@@ -52,6 +55,7 @@ defaultAttrs : Attributes msg a
 defaultAttrs =
     { headerHeight = 40
     , groups = []
+    , highlight = \_ -> False
     , onClick = Nothing
     , onMouseEnter = Nothing
     , onMouseLeave = Nothing
@@ -69,6 +73,12 @@ headerHeight v =
 groups : List (a -> String) -> Attribute msg a
 groups v =
     Attribute (\attrs -> { attrs | groups = v })
+
+
+{-| -}
+highlight : (a -> Bool) -> Attribute msg a
+highlight v =
+    Attribute (\attrs -> { attrs | highlight = v })
 
 
 {-| -}
@@ -115,10 +125,11 @@ type ColumnAttribute msg
 
 
 type alias ColumnAttributes msg =
-    { class : String
-    , width : Maybe String
+    { size : Maybe String
+    , autosize : Bool
     , alignment : H.Attribute msg
     , customLabel : Maybe (H.Html msg)
+    , htmlAttributes : List (H.Attribute msg)
     }
 
 
@@ -129,11 +140,48 @@ applyColumnAttrs default attrs =
 
 defaultColumnAttrs : ColumnAttributes msg
 defaultColumnAttrs =
-    { class = ""
-    , width = Nothing
+    { size = Nothing
+    , autosize = True
     , alignment = HA.class "ew-flex-start"
     , customLabel = Nothing
+    , htmlAttributes = []
     }
+
+
+{-| -}
+columnHtmlAttrs : List (H.Attribute msg) -> ColumnAttribute msg
+columnHtmlAttrs v =
+    ColumnAttribute (\attrs -> { attrs | htmlAttributes = v })
+
+
+{-| -}
+alignLeft : ColumnAttribute msg
+alignLeft =
+    ColumnAttribute (\attrs -> { attrs | alignment = HA.class "ew-flex-start" })
+
+
+{-| -}
+alignRight : ColumnAttribute msg
+alignRight =
+    ColumnAttribute (\attrs -> { attrs | alignment = HA.class "ew-flex-end" })
+
+
+{-| -}
+alignCenter : ColumnAttribute msg
+alignCenter =
+    ColumnAttribute (\attrs -> { attrs | alignment = HA.class "ew-flex-center" })
+
+
+{-| -}
+size : Int -> ColumnAttribute msg
+size v =
+    ColumnAttribute (\attrs -> { attrs | size = Just (pxString v) })
+
+
+{-| -}
+noAutosize : ColumnAttribute msg
+noAutosize =
+    ColumnAttribute (\attrs -> { attrs | autosize = False })
 
 
 
@@ -193,8 +241,8 @@ viewTable =
 viewTableHead : String -> Attributes msg a -> List (Column a msg) -> H.Html msg
 viewTableHead columnSize attrs columns =
     H.header
-        [ HA.class "ew-flex ew-sticky ew-z-10 ew-top-0 ew-bg-base-bg ew-z-10 ew-box-border"
-        , HA.class "ew-border-0 ew-border-b ew-border-solid ew-border-base-aux/20"
+        [ HA.class "ew-flex ew-sticky ew-z-20 ew-top-0 ew-z-10 ew-bg-base-bg ew-box-border"
+        , HA.class "ew-border-0 ew-border-b ew-border-solid ew-border-base-aux/10"
         , HA.style "height" (pxString attrs.headerHeight)
         ]
         (List.map (viewTableHeaderCell columnSize) columns)
@@ -203,10 +251,14 @@ viewTableHead columnSize attrs columns =
 viewTableHeaderCell : String -> Column a msg -> H.Html msg
 viewTableHeaderCell columnSize (Column column) =
     H.p
-        [ HA.class "ew-m-0 ew-p-2 ew-font-semibold ew-text-sm"
-        , HA.style "width" (Maybe.withDefault columnSize column.attrs.width)
+        [ HA.class "ew-m-0 ew-p-2 ew-box-border ew-font-semibold ew-text-sm"
         , HA.class "ew-flex ew-items-center"
+        , HA.style "min-width" "48px"
         , column.attrs.alignment
+        , WH.attrIf
+            column.attrs.autosize
+            (HA.style "width")
+            (Maybe.withDefault columnSize column.attrs.size)
         ]
         [ H.text column.label
         ]
@@ -217,8 +269,7 @@ viewTableGroupHeader attrs label =
     H.p
         [ HA.class "ew-m-0 ew-p-2"
         , HA.class "ew-bg-base-bg"
-        , HA.class "before:ew-content-[''] before:ew-block before:ew-inset-0 before:ew-absolute before:ew-bg-base-fg/[0.07]"
-        , HA.class "ew-border-0 ew-border-b ew-border-solid ew-border-base-aux/20"
+        , HA.class "ew-border-0 ew-border-b ew-border-solid ew-border-base-aux/10"
         , HA.class "ew-font-text ew-text-sm ew-font-medium ew-text-base-fg"
         , HA.class "ew-sticky ew-z-10"
         , HA.style "top" (pxString attrs.headerHeight)
@@ -256,7 +307,17 @@ viewTableBody columnSize attrs columns data =
             |> List.map
                 (\datum ->
                     H.li
-                        [ HA.class "ew-group ew-flex ew-p-0 ew-items-stretch"
+                        [ HA.class "ew-flex ew-p-0 ew-items-stretch"
+                        , if attrs.highlight datum then
+                            HA.classList
+                                [ ( "ew-bg-base-aux/[0.07]", True )
+                                , ( "hover:ew-bg-base-aux/10", attrs.onClick /= Nothing )
+                                ]
+
+                          else
+                            HA.classList
+                                [ ( "hover:ew-bg-base-aux/[0.07]", attrs.onClick /= Nothing )
+                                ]
                         , WH.maybeAttr (\onClick_ -> HE.onClick (onClick_ datum)) attrs.onClick
                         , WH.maybeAttr (\onMouseEnter_ -> HE.onMouseEnter (onMouseEnter_ datum)) attrs.onMouseEnter
                         ]
@@ -264,18 +325,17 @@ viewTableBody columnSize attrs columns data =
                             |> List.map
                                 (\(Column column) ->
                                     H.p
-                                        [ HA.class "ew-shrink-0 ew-box-border ew-m-0 ew-p-2 ew-break-words"
-                                        , HA.class "ew-flex ew-items-center"
-                                        , column.attrs.alignment
-                                        , HA.style "width"
-                                            (Maybe.withDefault columnSize column.attrs.width)
-                                        , HA.style "min-width" "48px"
-                                        , HA.classList
-                                            [ ( "group-hover:ew-bg-base-aux/[0.07]"
-                                              , attrs.onClick /= Nothing
-                                              )
-                                            ]
-                                        ]
+                                        (column.attrs.htmlAttributes
+                                            ++ [ HA.class "ew-shrink-0 ew-box-border ew-m-0 ew-p-2 ew-break-words"
+                                               , HA.class "ew-flex ew-items-center"
+                                               , column.attrs.alignment
+                                               , HA.style "min-width" "48px"
+                                               , WH.attrIf
+                                                    column.attrs.autosize
+                                                    (HA.style "width")
+                                                    (Maybe.withDefault columnSize column.attrs.size)
+                                               ]
+                                        )
                                         [ column.toHtml datum ]
                                 )
                         )

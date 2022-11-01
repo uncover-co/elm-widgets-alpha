@@ -100,7 +100,7 @@ view attrs_ props =
     let
         attrs : Attributes
         attrs =
-            applyAttrs attrs_ |> Debug.log ""
+            applyAttrs attrs_
 
         valueString : String
         valueString =

@@ -366,9 +366,6 @@ viewWithValidation attrs_ props =
                         (D.map8
                             (\value_ valid patternMismatch typeMismatch tooLong tooShort valueMissing validationMessage ->
                                 let
-                                    _ =
-                                        Debug.log "here" ""
-
                                     customError : Maybe customError
                                     customError =
                                         attrs.validation
