@@ -1,7 +1,7 @@
 module W.InputText exposing
     ( view
     , email, password, search, telephone, url, InputType
-    , id, class, unstyled, placeholder, disabled, required, readOnly
+    , id, class, unstyled, mask, placeholder, disabled, required, readOnly
     , prefix, suffix
     , viewWithValidation, minLength, maxLength, pattern, validation, errorToString, Error(..)
     , onEnter, onFocus, onBlur
@@ -12,7 +12,7 @@ module W.InputText exposing
 
 @docs view
 @docs email, password, search, telephone, url, InputType
-@docs id, class, unstyled, placeholder, disabled, required, readOnly
+@docs id, class, unstyled, mask, placeholder, disabled, required, readOnly
 @docs prefix, suffix
 @docs viewWithValidation, minLength, maxLength, pattern, validation, errorToString, Error
 @docs onEnter, onFocus, onBlur
@@ -115,6 +115,7 @@ type alias Attributes customError msg =
     , pattern : Maybe String
     , placeholder : Maybe String
     , validation : Maybe (String -> Maybe customError)
+    , mask : Maybe (String -> String)
     , prefix : Maybe (H.Html msg)
     , suffix : Maybe (H.Html msg)
     , onFocus : Maybe msg
@@ -145,6 +146,7 @@ defaultAttrs =
     , placeholder = Nothing
     , prefix = Nothing
     , suffix = Nothing
+    , mask = Nothing
     , onFocus = Nothing
     , onBlur = Nothing
     , onEnter = Nothing
@@ -265,6 +267,12 @@ suffix v =
 
 
 {-| -}
+mask : (String -> String) -> Attribute customError msg
+mask v =
+    Attribute <| \attrs -> { attrs | mask = Just v }
+
+
+{-| -}
 onBlur : msg -> Attribute customError msg
 onBlur v =
     Attribute <| \attrs -> { attrs | onBlur = Just v }
@@ -299,6 +307,7 @@ baseAttrs attrs =
            , HA.type_ (inputInputTypeToString attrs.type_)
            , HA.class attrs.class
            , HA.classList [ ( WI.baseClass, not attrs.unstyled ) ]
+           , WI.maskClass attrs.mask
            , WH.attrIf attrs.readOnly HA.tabindex -1
            , HA.required attrs.required
            , HA.disabled attrs.disabled
@@ -330,9 +339,16 @@ view attrs_ props =
             applyAttrs attrs_
     in
     WI.view attrs
-        (H.input
-            (baseAttrs attrs ++ [ HA.value props.value, HE.onInput props.onInput ])
-            []
+        (H.div [ HA.class "ew-group ew-w-full ew-relative" ]
+            [ H.input
+                (baseAttrs attrs
+                    ++ [ HA.value props.value
+                       , HE.onInput props.onInput
+                       ]
+                )
+                []
+            , WI.mask attrs.mask props.value
+            ]
         )
 
 
@@ -351,55 +367,58 @@ viewWithValidation attrs_ props =
             applyAttrs attrs_
     in
     WI.view attrs
-        (H.input
-            (baseAttrs attrs
-                ++ [ HA.value props.value
-                   , HE.on "keyup"
-                        (D.map8
-                            (\value_ valid patternMismatch typeMismatch tooLong tooShort valueMissing validationMessage ->
-                                let
-                                    customError : Maybe customError
-                                    customError =
-                                        attrs.validation
-                                            |> Maybe.map (\fn -> fn value_)
-                                            |> Maybe.withDefault Nothing
-                                in
-                                if valid && customError == Nothing then
-                                    props.onInput value_ (Ok value_)
+        (H.div [ HA.class "ew-group ew-relative ew-w-full" ]
+            [ H.input
+                (baseAttrs attrs
+                    ++ [ HA.value props.value
+                       , HE.on "input"
+                            (D.map8
+                                (\value_ valid patternMismatch typeMismatch tooLong tooShort valueMissing validationMessage ->
+                                    let
+                                        customError : Maybe customError
+                                        customError =
+                                            attrs.validation
+                                                |> Maybe.map (\fn -> fn value_)
+                                                |> Maybe.withDefault Nothing
+                                    in
+                                    if valid && customError == Nothing then
+                                        props.onInput value_ (Ok value_)
 
-                                else if valueMissing then
-                                    props.onInput value_ (Err (ValueMissing validationMessage))
+                                    else if valueMissing then
+                                        props.onInput value_ (Err (ValueMissing validationMessage))
 
-                                else if tooShort then
-                                    props.onInput value_ (Err (TooShort (Maybe.withDefault 0 attrs.minLength) validationMessage))
+                                    else if tooShort then
+                                        props.onInput value_ (Err (TooShort (Maybe.withDefault 0 attrs.minLength) validationMessage))
 
-                                else if typeMismatch then
-                                    props.onInput value_ (Err (InputTypeMismatch attrs.type_ validationMessage))
+                                    else if typeMismatch then
+                                        props.onInput value_ (Err (InputTypeMismatch attrs.type_ validationMessage))
 
-                                else if tooLong then
-                                    props.onInput value_ (Err (TooLong (Maybe.withDefault 0 attrs.maxLength) validationMessage))
+                                    else if tooLong then
+                                        props.onInput value_ (Err (TooLong (Maybe.withDefault 0 attrs.maxLength) validationMessage))
 
-                                else if patternMismatch then
-                                    props.onInput value_ (Err (PatternMismatch validationMessage))
+                                    else if patternMismatch then
+                                        props.onInput value_ (Err (PatternMismatch validationMessage))
 
-                                else
-                                    props.onInput
-                                        value_
-                                        (customError
-                                            |> Maybe.map (Err << Custom)
-                                            |> Maybe.withDefault (Ok value_)
-                                        )
+                                    else
+                                        props.onInput
+                                            value_
+                                            (customError
+                                                |> Maybe.map (Err << Custom)
+                                                |> Maybe.withDefault (Ok value_)
+                                            )
+                                )
+                                (D.at [ "target", "value" ] D.string)
+                                (D.at [ "target", "validity", "valid" ] D.bool)
+                                (D.at [ "target", "validity", "patternMismatch" ] D.bool)
+                                (D.at [ "target", "validity", "typeMismatch" ] D.bool)
+                                (D.at [ "target", "validity", "tooLong" ] D.bool)
+                                (D.at [ "target", "validity", "tooShort" ] D.bool)
+                                (D.at [ "target", "validity", "valueMissing" ] D.bool)
+                                (D.at [ "target", "validationMessage" ] D.string)
                             )
-                            (D.at [ "target", "value" ] D.string)
-                            (D.at [ "target", "validity", "valid" ] D.bool)
-                            (D.at [ "target", "validity", "patternMismatch" ] D.bool)
-                            (D.at [ "target", "validity", "typeMismatch" ] D.bool)
-                            (D.at [ "target", "validity", "tooLong" ] D.bool)
-                            (D.at [ "target", "validity", "tooShort" ] D.bool)
-                            (D.at [ "target", "validity", "valueMissing" ] D.bool)
-                            (D.at [ "target", "validationMessage" ] D.string)
-                        )
-                   ]
-            )
-            []
+                       ]
+                )
+                []
+            , WI.mask attrs.mask props.value
+            ]
         )

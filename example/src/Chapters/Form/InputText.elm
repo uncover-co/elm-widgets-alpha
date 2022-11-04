@@ -1,27 +1,50 @@
-module Chapters.Form.InputText exposing (chapter_)
+module Chapters.Form.InputText exposing (Model, init, chapter_)
 
-import ElmBook.Actions exposing (logAction, logActionWithString)
-import ElmBook.Chapter exposing (Chapter, chapter, renderComponentList)
+import ElmBook.Actions exposing (updateStateWith, updateState, logAction, logActionWithString)
+import ElmBook.Chapter exposing (Chapter, chapter, renderStatefulComponentList)
 import W.InputText
 import W.Button
 import Html as H
 
 
-chapter_ : Chapter x
+
+type alias Model =
+    { value : String
+    , validated : String
+    }
+
+
+init : Model
+init =
+    { value = "Some text"
+    , validated = "Some text"
+    }
+
+
+chapter_ : Chapter { x | inputText : Model }
 chapter_ =
     chapter "Input Text"
-        |> renderComponentList
+        |> renderStatefulComponentList
             [ ( "Default"
-              , W.InputText.view
+              , \{ inputText } -> W.InputText.view
                     [ W.InputText.placeholder "Type something…"
+                    , W.InputText.mask (\s -> "R$ " ++ s)
                     , W.InputText.prefix (H.text "$")
                     ]
-                    { value = ""
-                    , onInput = logActionWithString "onInput"
+                    { value = inputText.value
+                    , onInput =
+                            updateStateWith
+                                (\v model ->
+                                    let
+                                        inputText_ =
+                                            model.inputText
+                                    in
+                                    { model | inputText = { inputText_ | value = v } }
+                                )
                     }
               )
             , ( "Disabled"
-              , W.InputText.view
+              , \_ -> W.InputText.view
                     [ W.InputText.placeholder "Type something…"
                     , W.InputText.suffix (H.text "Email")
                     , W.InputText.disabled True
@@ -31,7 +54,7 @@ chapter_ =
                     }
               )
             , ( "Read Only"
-              , W.InputText.view
+              , \_ -> W.InputText.view
                     [ W.InputText.placeholder "Type something…"
                     , W.InputText.readOnly True
                     ]
@@ -40,7 +63,7 @@ chapter_ =
                     }
               )
             , ( "Password"
-              , W.InputText.view
+              , \_ -> W.InputText.view
                     [ W.InputText.password
                     , W.InputText.placeholder "Type your password…"
                     , W.InputText.suffix
@@ -55,7 +78,7 @@ chapter_ =
                     }
               )
             , ( "Search"
-              , W.InputText.view
+              , \_ -> W.InputText.view
                     [ W.InputText.search
                     , W.InputText.placeholder "Search…"
                     ]
@@ -64,7 +87,7 @@ chapter_ =
                     }
               )
             , ( "Email"
-              , W.InputText.view
+              , \_ -> W.InputText.view
                     [ W.InputText.email
                     , W.InputText.placeholder "user@email.com"
                     ]
@@ -73,7 +96,7 @@ chapter_ =
                     }
               )
             , ( "Url"
-              , W.InputText.view
+              , \_ -> W.InputText.view
                     [ W.InputText.url
                     , W.InputText.placeholder "https://app.site.com"
                     ]
@@ -82,14 +105,22 @@ chapter_ =
                     }
               )
             , ( "Validation"
-              , W.InputText.viewWithValidation
+              , \{ inputText } -> W.InputText.viewWithValidation
                     [ W.InputText.url
                     , W.InputText.minLength 2
+                    , W.InputText.mask (\s -> "Validated: " ++ s)
                     , W.InputText.placeholder "https://app.site.com"
                     ]
-                    { value = ""
-                    , onInput = \value _ ->
-                        logActionWithString "onInput" value
+                    { value = inputText.validated
+                    , onInput = \v r ->
+                        updateState
+                            (\model ->
+                                let
+                                    inputText_ =
+                                        model.inputText
+                                in
+                                { model | inputText = { inputText_ | validated = v } }
+                            )
                     }
               )
             ]

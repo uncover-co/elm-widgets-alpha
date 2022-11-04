@@ -8,7 +8,8 @@ import Chapters.Form.Field
 import Chapters.Form.InputAutocomplete
 import Chapters.Form.InputCheckbox
 import Chapters.Form.InputDate
-import Chapters.Form.InputNumber
+import Chapters.Form.InputInt
+import Chapters.Form.InputFloat
 import Chapters.Form.InputRadio
 import Chapters.Form.InputSelect
 import Chapters.Form.InputSlider
@@ -39,14 +40,11 @@ type alias SharedState =
         { default : Float
         , customColor : Float
         }
-    , inputNumber : Chapters.Form.InputNumber.Model
+    , inputText : Chapters.Form.InputText.Model
+    , inputInt : Chapters.Form.InputInt.Model
+    , inputFloat : Chapters.Form.InputFloat.Model
     , inputTextArea : Chapters.Form.InputTextArea.Model
     }
-
-
-wip : String -> ElmBook.Chapter.Chapter x
-wip title =
-    ElmBook.Chapter.chapter (title ++ " WIP") |> ElmBook.Chapter.render "WIP"
 
 
 main : Book SharedState
@@ -55,7 +53,9 @@ main =
         |> withStatefulOptions
             [ ElmBook.StatefulOptions.initialState
                 { range = Chapters.Form.InputSlider.init
-                , inputNumber = Chapters.Form.InputNumber.init
+                , inputText = Chapters.Form.InputText.init
+                , inputInt = Chapters.Form.InputInt.init
+                , inputFloat = Chapters.Form.InputFloat.init
                 , inputTextArea = Chapters.Form.InputTextArea.init
                 }
             ]
@@ -98,7 +98,8 @@ main =
               , [ Chapters.Form.Field.chapter_
                 , Chapters.Form.InputText.chapter_
                 , Chapters.Form.InputTextArea.chapter_
-                , Chapters.Form.InputNumber.chapter_
+                , Chapters.Form.InputInt.chapter_
+                , Chapters.Form.InputFloat.chapter_
                 , Chapters.Form.InputTime.chapter_
                 , Chapters.Form.InputDate.chapter_
                 , Chapters.Form.InputAutocomplete.chapter_

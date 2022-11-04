@@ -1,7 +1,7 @@
-module W.InputNumber exposing
+module W.InputFloat exposing
     ( view
     , min, max, step
-    , id, class, placeholder, disabled, required, readOnly
+    , id, class, placeholder, mask, disabled, required, readOnly
     , prefix, suffix
     , viewWithValidation, errorToString, Error(..)
     , onEnter, onFocus, onBlur
@@ -12,7 +12,7 @@ module W.InputNumber exposing
 
 @docs view
 @docs min, max, step
-@docs id, class, placeholder, disabled, required, readOnly
+@docs id, class, placeholder, mask, disabled, required, readOnly
 @docs prefix, suffix
 @docs viewWithValidation, errorToString, Error
 @docs onEnter, onFocus, onBlur
@@ -76,6 +76,7 @@ type alias Attributes msg =
     , max : Maybe Float
     , step : Maybe Float
     , placeholder : Maybe String
+    , mask : Maybe (String -> String)
     , prefix : Maybe (H.Html msg)
     , suffix : Maybe (H.Html msg)
     , onFocus : Maybe msg
@@ -101,6 +102,7 @@ defaultAttrs =
     , max = Nothing
     , step = Nothing
     , placeholder = Nothing
+    , mask = Nothing
     , prefix = Nothing
     , suffix = Nothing
     , onFocus = Nothing
@@ -130,6 +132,12 @@ class v =
 placeholder : String -> Attribute msg
 placeholder v =
     Attribute <| \attrs -> { attrs | placeholder = Just v }
+
+
+{-| -}
+mask : (String -> String) -> Attribute msg
+mask v =
+    Attribute <| \attrs -> { attrs | mask = Just v }
 
 
 {-| -}
@@ -216,6 +224,7 @@ baseAttrs attrs =
            , WH.maybeAttr HA.id attrs.id
            , HA.class W.Internal.Input.baseClass
            , HA.class attrs.class
+           , W.Internal.Input.maskClass attrs.mask
            , HA.required attrs.required
            , HA.disabled attrs.disabled
            , HA.readonly attrs.readOnly
@@ -236,7 +245,7 @@ view :
     List (Attribute msg)
     ->
         { value : String
-        , onInput : String -> msg
+        , onInput : Float -> String -> msg
         }
     -> H.Html msg
 view attrs_ props =
@@ -246,13 +255,19 @@ view attrs_ props =
             applyAttrs attrs_
     in
     W.Internal.Input.view attrs
-        (H.input
-            (baseAttrs attrs
-                ++ [ HA.value props.value
-                   , HE.onInput props.onInput
-                   ]
-            )
-            []
+        (H.div [ HA.class "ew-group ew-w-full ew-relative" ]
+            [ H.input
+                (baseAttrs attrs
+                    ++ [ HA.value props.value
+                       , HE.on "input"
+                            (D.at [ "target", "value" ] D.string
+                                |> D.map (toInputMsg props.onInput props.value)
+                            )
+                       ]
+                )
+                []
+            , W.Internal.Input.mask attrs.mask props.value
+            ]
         )
 
 
@@ -261,7 +276,7 @@ viewWithValidation :
     List (Attribute msg)
     ->
         { value : String
-        , onInput : String -> Result Error String -> msg
+        , onInput : Result Error String -> Float -> String -> msg
         }
     -> H.Html msg
 viewWithValidation attrs_ props =
@@ -270,39 +285,66 @@ viewWithValidation attrs_ props =
         attrs =
             applyAttrs attrs_
     in
-    H.input
-        (baseAttrs attrs
-            ++ [ HA.value props.value
-               , HE.on "keyup"
-                    (D.map7
-                        (\value_ valid rangeOverflow rangeUnderflow stepMismatch valueMissing validationMessage ->
-                            if valid then
-                                props.onInput value_ (Ok value_)
+    W.Internal.Input.view attrs
+        (H.div [ HA.class "ew-group ew-w-full ew-relative" ]
+            [ H.input
+                (baseAttrs attrs
+                    ++ [ HA.value props.value
+                       , HE.on "input"
+                            (D.map7
+                                (\value_ valid rangeOverflow rangeUnderflow stepMismatch valueMissing validationMessage ->
+                                    let
+                                        result =
+                                            if valid then
+                                                Ok value_
 
-                            else if valueMissing then
-                                props.onInput value_ (Err (ValueMissing validationMessage))
+                                            else if valueMissing then
+                                                Err (ValueMissing validationMessage)
 
-                            else if rangeUnderflow then
-                                props.onInput value_ (Err (TooLow (Maybe.withDefault 0 attrs.min) validationMessage))
+                                            else if rangeUnderflow then
+                                                Err (TooLow (Maybe.withDefault 0 attrs.min) validationMessage)
 
-                            else if rangeOverflow then
-                                props.onInput value_ (Err (TooHigh (Maybe.withDefault 0 attrs.max) validationMessage))
+                                            else if rangeOverflow then
+                                                Err (TooHigh (Maybe.withDefault 0 attrs.max) validationMessage)
 
-                            else if stepMismatch then
-                                props.onInput value_ (Err (StepMismatch (Maybe.withDefault 0 attrs.step) validationMessage))
+                                            else if stepMismatch then
+                                                Err (StepMismatch (Maybe.withDefault 0 attrs.step) validationMessage)
 
-                            else
-                                props.onInput value_ (Ok value_)
-                        )
-                        (D.at [ "target", "value" ] D.string)
-                        (D.at [ "target", "validity", "valid" ] D.bool)
-                        (D.at [ "target", "validity", "rangeOverflow" ] D.bool)
-                        (D.at [ "target", "validity", "rangeUnderflow" ] D.bool)
-                        (D.at [ "target", "validity", "stepMismatch" ] D.bool)
-                        (D.at [ "target", "validity", "valueMissing" ] D.bool)
-                        (D.at [ "target", "validationMessage" ] D.string)
-                    )
-               ]
+                                            else
+                                                Ok value_
+                                    in
+                                    toInputMsg (props.onInput result) props.value value_
+                                )
+                                (D.at [ "target", "value" ] D.string)
+                                (D.at [ "target", "validity", "valid" ] D.bool)
+                                (D.at [ "target", "validity", "rangeOverflow" ] D.bool)
+                                (D.at [ "target", "validity", "rangeUnderflow" ] D.bool)
+                                (D.at [ "target", "validity", "stepMismatch" ] D.bool)
+                                (D.at [ "target", "validity", "valueMissing" ] D.bool)
+                                (D.at [ "target", "validationMessage" ] D.string)
+                            )
+                       ]
+                )
+                []
+            , W.Internal.Input.mask attrs.mask props.value
+            ]
         )
-        []
-        |> W.Internal.Input.view attrs
+
+
+toInputMsg : (Float -> String -> msg) -> String -> String -> msg
+toInputMsg onInput previous value =
+    case String.toFloat value of
+        Just v ->
+            onInput v value
+
+        Nothing ->
+            if value == "" then
+                onInput 0 value
+
+            else
+                case String.toFloat previous of
+                    Just v_ ->
+                        onInput v_ value
+
+                    Nothing ->
+                        onInput 0 value

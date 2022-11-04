@@ -3,6 +3,8 @@ module W.Internal.Input exposing
     , baseClass
     , iconChevronDown
     , iconWrapper
+    , mask
+    , maskClass
     , view
     )
 
@@ -61,6 +63,36 @@ prefixSuffixClass =
             ++ " ew-border-0 ew-border-solid ew-border-base-aux/30"
             ++ " ew-p-2 ew-min-w-[48px] ew-self-stretch"
             ++ " ew-text-sm ew-text-base ew-text-base-aux"
+
+
+maskClass : Maybe (a -> String) -> H.Attribute msg
+maskClass fn =
+    HA.classList
+        [ ( "ew-text-transparent focus:ew-text-base-fg focus:ew-pb-[18px] focus:ew-pt-0"
+          , fn /= Nothing
+          )
+        ]
+
+
+mask : Maybe (a -> String) -> a -> H.Html msg
+mask fn value =
+    case fn of
+        Just fn_ ->
+            H.p
+                [ HA.class "ew-absolute ew-inset-y-0 ew-inset-x-3"
+                , HA.class "ew-flex ew-items-center"
+                , HA.class "ew-leading-0 ew-text-base ew-text-base-fg"
+                , HA.class "ew-m-0 ew-p-0 ew-box-border"
+                , HA.class "ew-transition ew-cursor-text"
+                , HA.class "group-focus-within:ew-top-[22px]"
+                , HA.class "group-focus-within:ew-text-sm group-focus-within:ew-text-base-aux"
+                , HA.style "transition" "position 0.2s"
+                , HA.attribute "aria-hidden" "true"
+                ]
+                [ H.text (fn_ value) ]
+
+        Nothing ->
+            H.text ""
 
 
 baseClass : String
