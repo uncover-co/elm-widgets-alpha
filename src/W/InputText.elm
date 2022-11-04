@@ -357,7 +357,7 @@ viewWithValidation :
     List (Attribute customError msg)
     ->
         { value : String
-        , onInput : String -> Result (Error customError) String -> msg
+        , onInput : Result (Error customError) String -> String -> msg
         }
     -> H.Html msg
 viewWithValidation attrs_ props =
@@ -380,32 +380,33 @@ viewWithValidation attrs_ props =
                                             attrs.validation
                                                 |> Maybe.map (\fn -> fn value_)
                                                 |> Maybe.withDefault Nothing
+
+                                        result : Result (Error customError) String
+                                        result =
+                                            if valid && customError == Nothing then
+                                                Ok value_
+
+                                            else if valueMissing then
+                                                Err (ValueMissing validationMessage)
+
+                                            else if tooShort then
+                                                Err (TooShort (Maybe.withDefault 0 attrs.minLength) validationMessage)
+
+                                            else if typeMismatch then
+                                                Err (InputTypeMismatch attrs.type_ validationMessage)
+
+                                            else if tooLong then
+                                                Err (TooLong (Maybe.withDefault 0 attrs.maxLength) validationMessage)
+
+                                            else if patternMismatch then
+                                                Err (PatternMismatch validationMessage)
+
+                                            else
+                                                customError
+                                                    |> Maybe.map (Err << Custom)
+                                                    |> Maybe.withDefault (Ok value_)
                                     in
-                                    if valid && customError == Nothing then
-                                        props.onInput value_ (Ok value_)
-
-                                    else if valueMissing then
-                                        props.onInput value_ (Err (ValueMissing validationMessage))
-
-                                    else if tooShort then
-                                        props.onInput value_ (Err (TooShort (Maybe.withDefault 0 attrs.minLength) validationMessage))
-
-                                    else if typeMismatch then
-                                        props.onInput value_ (Err (InputTypeMismatch attrs.type_ validationMessage))
-
-                                    else if tooLong then
-                                        props.onInput value_ (Err (TooLong (Maybe.withDefault 0 attrs.maxLength) validationMessage))
-
-                                    else if patternMismatch then
-                                        props.onInput value_ (Err (PatternMismatch validationMessage))
-
-                                    else
-                                        props.onInput
-                                            value_
-                                            (customError
-                                                |> Maybe.map (Err << Custom)
-                                                |> Maybe.withDefault (Ok value_)
-                                            )
+                                    props.onInput result value_
                                 )
                                 (D.at [ "target", "value" ] D.string)
                                 (D.at [ "target", "validity", "valid" ] D.bool)

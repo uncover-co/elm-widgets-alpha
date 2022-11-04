@@ -1,6 +1,6 @@
 module W.InputInt exposing
     ( view
-    , min, max
+    , min, max, minLength, maxLength
     , id, class, placeholder, mask, disabled, required, readOnly
     , prefix, suffix
     , viewWithValidation, errorToString, Error(..)
@@ -11,7 +11,7 @@ module W.InputInt exposing
 {-|
 
 @docs view
-@docs min, max
+@docs min, max, minLength, maxLength
 @docs id, class, placeholder, mask, disabled, required, readOnly
 @docs prefix, suffix
 @docs viewWithValidation, errorToString, Error
@@ -36,6 +36,8 @@ import W.Internal.Input
 type Error
     = TooLow Float String
     | TooHigh Float String
+    | TooLong Int String
+    | TooShort Int String
     | ValueMissing String
 
 
@@ -47,6 +49,12 @@ errorToString error =
             message
 
         TooHigh _ message ->
+            message
+
+        TooLong _ message ->
+            message
+
+        TooShort _ message ->
             message
 
         ValueMissing message ->
@@ -70,6 +78,8 @@ type alias Attributes msg =
     , required : Bool
     , min : Maybe Float
     , max : Maybe Float
+    , minLength : Maybe Int
+    , maxLength : Maybe Int
     , placeholder : Maybe String
     , mask : Maybe (String -> String)
     , prefix : Maybe (H.Html msg)
@@ -95,6 +105,8 @@ defaultAttrs =
     , required = False
     , min = Nothing
     , max = Nothing
+    , minLength = Nothing
+    , maxLength = Nothing
     , placeholder = Nothing
     , mask = Nothing
     , prefix = Nothing
@@ -162,6 +174,18 @@ min v =
 max : Float -> Attribute msg
 max v =
     Attribute <| \attrs -> { attrs | min = Just v }
+
+
+{-| -}
+minLength : Int -> Attribute msg
+minLength v =
+    Attribute <| \attrs -> { attrs | minLength = Just v }
+
+
+{-| -}
+maxLength : Int -> Attribute msg
+maxLength v =
+    Attribute <| \attrs -> { attrs | maxLength = Just v }
 
 
 {-| -}
@@ -279,8 +303,8 @@ viewWithValidation attrs_ props =
                 (baseAttrs attrs
                     ++ [ HA.value props.value
                        , HE.on "input"
-                            (D.map6
-                                (\value_ valid rangeOverflow rangeUnderflow valueMissing validationMessage ->
+                            (D.map8
+                                (\value_ valid rangeOverflow rangeUnderflow tooLong tooShort valueMissing validationMessage ->
                                     let
                                         result : Result Error String
                                         result =
@@ -296,6 +320,12 @@ viewWithValidation attrs_ props =
                                             else if rangeOverflow then
                                                 Err (TooHigh (Maybe.withDefault 0 attrs.max) validationMessage)
 
+                                            else if tooShort then
+                                                Err (TooShort (Maybe.withDefault 0 attrs.minLength) validationMessage)
+
+                                            else if tooLong then
+                                                Err (TooLong (Maybe.withDefault 0 attrs.maxLength) validationMessage)
+
                                             else
                                                 Ok value_
                                     in
@@ -305,6 +335,8 @@ viewWithValidation attrs_ props =
                                 (D.at [ "target", "validity", "valid" ] D.bool)
                                 (D.at [ "target", "validity", "rangeOverflow" ] D.bool)
                                 (D.at [ "target", "validity", "rangeUnderflow" ] D.bool)
+                                (D.at [ "target", "validity", "tooLong" ] D.bool)
+                                (D.at [ "target", "validity", "tooShort" ] D.bool)
                                 (D.at [ "target", "validity", "valueMissing" ] D.bool)
                                 (D.at [ "target", "validationMessage" ] D.string)
                             )

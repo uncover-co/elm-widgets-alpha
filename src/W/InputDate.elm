@@ -274,7 +274,7 @@ view attrs_ props =
 viewWithValidation :
     List (Attribute msg)
     ->
-        { onInput : Maybe Time.Posix -> Result Error Time.Posix -> msg
+        { onInput : Result Error Time.Posix -> Maybe Time.Posix -> msg
         , value : Maybe Time.Posix
         }
     -> H.Html msg
@@ -290,47 +290,49 @@ viewWithValidation attrs_ props =
                 (\value_ valid rangeOverflow rangeUnderflow stepMismatch valueMissing validationMessage ->
                     case dateFromValue attrs props.value value_ of
                         Nothing ->
-                            props.onInput Nothing (Err BadInput)
+                            props.onInput (Err BadInput) Nothing
 
                         Just time ->
                             if valid then
-                                props.onInput (Just time) (Ok time)
+                                props.onInput (Ok time) (Just time)
 
                             else if valueMissing then
                                 props.onInput
-                                    (Just time)
                                     (Err (ValueMissing validationMessage))
+                                    (Just time)
 
                             else if rangeUnderflow then
-                                props.onInput (Just time)
+                                props.onInput
                                     (Err
                                         (TooLow
                                             (Maybe.withDefault (Time.millisToPosix 0) attrs.min)
                                             validationMessage
                                         )
                                     )
+                                    (Just time)
 
                             else if rangeOverflow then
-                                props.onInput (Just time)
+                                props.onInput
                                     (Err
                                         (TooHigh
                                             (Maybe.withDefault (Time.millisToPosix 0) attrs.max)
                                             validationMessage
                                         )
                                     )
+                                    (Just time)
 
                             else if stepMismatch then
                                 props.onInput
-                                    (Just time)
                                     (Err
                                         (StepMismatch
                                             (Maybe.withDefault 0 attrs.step)
                                             validationMessage
                                         )
                                     )
+                                    (Just time)
 
                             else
-                                props.onInput (Just time) (Ok time)
+                                props.onInput (Ok time) (Just time)
                 )
                 (D.at [ "target", "valueAsNumber" ] D.float)
                 (D.at [ "target", "validity", "valid" ] D.bool)

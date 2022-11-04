@@ -112,7 +112,7 @@ chapter_ =
                     , W.InputText.placeholder "https://app.site.com"
                     ]
                     { value = inputText.validated
-                    , onInput = \v r ->
+                    , onInput = \_ v ->
                         updateState
                             (\model ->
                                 let

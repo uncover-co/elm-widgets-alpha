@@ -1,6 +1,6 @@
 module W.InputFloat exposing
     ( view
-    , min, max, step
+    , min, max, step, minLength, maxLength
     , id, class, placeholder, mask, disabled, required, readOnly
     , prefix, suffix
     , viewWithValidation, errorToString, Error(..)
@@ -11,7 +11,7 @@ module W.InputFloat exposing
 {-|
 
 @docs view
-@docs min, max, step
+@docs min, max, step, minLength, maxLength
 @docs id, class, placeholder, mask, disabled, required, readOnly
 @docs prefix, suffix
 @docs viewWithValidation, errorToString, Error
@@ -36,6 +36,8 @@ import W.Internal.Input
 type Error
     = TooLow Float String
     | TooHigh Float String
+    | TooLong Int String
+    | TooShort Int String
     | StepMismatch Float String
     | ValueMissing String
 
@@ -48,6 +50,12 @@ errorToString error =
             message
 
         TooHigh _ message ->
+            message
+
+        TooLong _ message ->
+            message
+
+        TooShort _ message ->
             message
 
         StepMismatch _ message ->
@@ -74,6 +82,8 @@ type alias Attributes msg =
     , required : Bool
     , min : Maybe Float
     , max : Maybe Float
+    , minLength : Maybe Int
+    , maxLength : Maybe Int
     , step : Maybe Float
     , placeholder : Maybe String
     , mask : Maybe (String -> String)
@@ -100,6 +110,8 @@ defaultAttrs =
     , required = False
     , min = Nothing
     , max = Nothing
+    , minLength = Nothing
+    , maxLength = Nothing
     , step = Nothing
     , placeholder = Nothing
     , mask = Nothing
@@ -168,6 +180,18 @@ min v =
 max : Float -> Attribute msg
 max v =
     Attribute <| \attrs -> { attrs | min = Just v }
+
+
+{-| -}
+minLength : Int -> Attribute msg
+minLength v =
+    Attribute <| \attrs -> { attrs | minLength = Just v }
+
+
+{-| -}
+maxLength : Int -> Attribute msg
+maxLength v =
+    Attribute <| \attrs -> { attrs | maxLength = Just v }
 
 
 {-| -}
@@ -291,8 +315,8 @@ viewWithValidation attrs_ props =
                 (baseAttrs attrs
                     ++ [ HA.value props.value
                        , HE.on "input"
-                            (D.map7
-                                (\value_ valid rangeOverflow rangeUnderflow stepMismatch valueMissing validationMessage ->
+                            (D.map8
+                                (\( value_, valid ) rangeOverflow rangeUnderflow tooLong tooShort stepMismatch valueMissing validationMessage ->
                                     let
                                         result =
                                             if valid then
@@ -307,6 +331,12 @@ viewWithValidation attrs_ props =
                                             else if rangeOverflow then
                                                 Err (TooHigh (Maybe.withDefault 0 attrs.max) validationMessage)
 
+                                            else if tooShort then
+                                                Err (TooShort (Maybe.withDefault 0 attrs.minLength) validationMessage)
+
+                                            else if tooLong then
+                                                Err (TooLong (Maybe.withDefault 0 attrs.maxLength) validationMessage)
+
                                             else if stepMismatch then
                                                 Err (StepMismatch (Maybe.withDefault 0 attrs.step) validationMessage)
 
@@ -315,10 +345,14 @@ viewWithValidation attrs_ props =
                                     in
                                     toInputMsg (props.onInput result) props.value value_
                                 )
-                                (D.at [ "target", "value" ] D.string)
-                                (D.at [ "target", "validity", "valid" ] D.bool)
+                                (D.map2 Tuple.pair
+                                    (D.at [ "target", "value" ] D.string)
+                                    (D.at [ "target", "validity", "valid" ] D.bool)
+                                )
                                 (D.at [ "target", "validity", "rangeOverflow" ] D.bool)
                                 (D.at [ "target", "validity", "rangeUnderflow" ] D.bool)
+                                (D.at [ "target", "validity", "tooLong" ] D.bool)
+                                (D.at [ "target", "validity", "tooShort" ] D.bool)
                                 (D.at [ "target", "validity", "stepMismatch" ] D.bool)
                                 (D.at [ "target", "validity", "valueMissing" ] D.bool)
                                 (D.at [ "target", "validationMessage" ] D.string)
