@@ -1,5 +1,5 @@
 module W.Button exposing
-    ( view, viewLink
+    ( view, viewLink, viewDummy
     , disabled, outlined, invisible
     , primary, secondary, success, warning, danger, theme, ButtonTheme
     , rounded, large, small, icon, fill
@@ -9,7 +9,7 @@ module W.Button exposing
 
 {-|
 
-@docs view, viewLink
+@docs view, viewLink, viewDummy
 
 
 # State
@@ -208,6 +208,15 @@ view attrs props =
     H.button
         (HE.onClick props.onClick :: attributes attrs)
         [ props.label ]
+
+
+{-| -}
+viewDummy :
+    List (Attribute msg)
+    -> List (H.Html msg)
+    -> H.Html msg
+viewDummy attrs children =
+    H.div (attributes attrs) children
 
 
 {-| -}

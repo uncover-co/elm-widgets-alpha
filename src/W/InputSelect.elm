@@ -94,7 +94,6 @@ viewGroups :
         { value : a
         , options : List a
         , optionGroups : List ( String, List a )
-        , toValue : a -> String
         , toLabel : a -> String
         , onInput : a -> msg
         }
@@ -109,7 +108,7 @@ viewGroups attrs_ props =
             props.optionGroups
                 |> List.concatMap Tuple.second
                 |> List.append props.options
-                |> List.map (\a -> ( props.toValue a, a ))
+                |> List.map (\a -> ( props.toLabel a, a ))
                 |> Dict.fromList
     in
     W.Internal.Input.view attrs
@@ -136,7 +135,7 @@ viewGroups attrs_ props =
                             (\a ->
                                 H.option
                                     [ HA.selected (a == props.value)
-                                    , HA.value (props.toValue a)
+                                    , HA.value (props.toLabel a)
                                     ]
                                     [ H.text (props.toLabel a) ]
                             )
@@ -149,7 +148,7 @@ viewGroups attrs_ props =
                                             (\a ->
                                                 H.option
                                                     [ HA.selected (a == props.value)
-                                                    , HA.value (props.toValue a)
+                                                    , HA.value (props.toLabel a)
                                                     ]
                                                     [ H.text (props.toLabel a) ]
                                             )
@@ -169,7 +168,6 @@ view :
     ->
         { value : a
         , options : List a
-        , toValue : a -> String
         , toLabel : a -> String
         , onInput : a -> msg
         }
@@ -179,7 +177,6 @@ view attrs_ props =
         { value = props.value
         , options = props.options
         , optionGroups = []
-        , toValue = props.toValue
         , toLabel = props.toLabel
         , onInput = props.onInput
         }

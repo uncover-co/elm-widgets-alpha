@@ -14,7 +14,6 @@ chapter_ =
                     []
                     { value = 1
                     , toLabel = String.fromInt
-                    , toValue = String.fromInt
                     , onInput = logActionWith String.fromInt "onInput"
                     , options = [ 1, 2 ]
                     }
@@ -24,7 +23,6 @@ chapter_ =
                     [ W.InputSelect.disabled True ]
                     { value = 1
                     , toLabel = String.fromInt
-                    , toValue = String.fromInt
                     , onInput = logActionWith String.fromInt "onInput"
                     , options = [ 1, 2 ]
                     }
@@ -34,7 +32,6 @@ chapter_ =
                     []
                     { value = 2
                     , toLabel = String.fromInt
-                    , toValue = String.fromInt
                     , onInput = logActionWith String.fromInt "onInput"
                     , options = [ 1, 2 ]
                     }
@@ -43,7 +40,6 @@ chapter_ =
               , W.InputSelect.viewGroups
                     []
                     { value = 2000
-                    , toValue = String.fromInt
                     , toLabel = String.fromInt
                     , onInput = logActionWith String.fromInt "onInput"
                     , options = [ 1900, 2000 ]

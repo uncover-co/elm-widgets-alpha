@@ -7,12 +7,12 @@ import W.InputInt
 
 
 type alias Model =
-    ( Int, String )
+    W.InputInt.Value
 
 
 init : Model
 init =
-    ( 4, "4" )
+    W.InputInt.init (Just 4)
 
 
 chapter_ : Chapter { x | inputInt : Model }
@@ -26,13 +26,9 @@ chapter_ =
                             [ W.InputInt.placeholder "Type something…"
                             , W.InputInt.mask (\s -> s ++ s)
                             ]
-                            { value = Tuple.second inputInt
+                            { value = inputInt
                             , onInput =
-                                \v vv ->
-                                    updateState
-                                        (\model ->
-                                            { model | inputInt = (v, vv) }
-                                        )
+                                \v -> updateState (\model -> { model | inputInt = v })
                             }
                         ]
               )

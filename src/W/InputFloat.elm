@@ -6,6 +6,7 @@ module W.InputFloat exposing
     , viewWithValidation, errorToString, Error(..)
     , onEnter, onFocus, onBlur
     , htmlAttrs, Attribute
+    , Value, init, toFloat, toString, validation
     )
 
 {-|
@@ -26,6 +27,34 @@ import Html.Events as HE
 import Json.Decode as D
 import W.Internal.Helpers as WH
 import W.Internal.Input
+
+
+
+-- Value
+
+
+type Value
+    = Value String Float
+
+
+init : Maybe Float -> Value
+init value =
+    case value of
+        Just v ->
+            Value (String.fromFloat v) v
+
+        Nothing ->
+            Value "" 0
+
+
+toFloat : Value -> Float
+toFloat (Value _ v) =
+    v
+
+
+toString : Value -> String
+toString (Value v _) =
+    v
 
 
 
@@ -97,7 +126,7 @@ type alias Attributes customError msg =
     , onFocus : Maybe msg
     , onBlur : Maybe msg
     , onEnter : Maybe msg
-    , htmlAttributes : List (H.Attribute  msg)
+    , htmlAttributes : List (H.Attribute msg)
     }
 
 
@@ -243,7 +272,7 @@ onEnter v =
 
 
 {-| -}
-htmlAttrs : List (H.Attribute  msg) -> Attribute customError msg
+htmlAttrs : List (H.Attribute msg) -> Attribute customError msg
 htmlAttrs v =
     Attribute <| \attrs -> { attrs | htmlAttributes = v }
 
@@ -253,7 +282,7 @@ htmlAttrs v =
 
 
 {-| -}
-baseAttrs : Attributes customError msg -> List (H.Attribute  msg)
+baseAttrs : Attributes customError msg -> List (H.Attribute msg)
 baseAttrs attrs =
     attrs.htmlAttributes
         ++ [ HA.type_ "number"
@@ -280,8 +309,8 @@ baseAttrs attrs =
 view :
     List (Attribute customError msg)
     ->
-        { value : String
-        , onInput : Float -> String -> msg
+        { value : Value
+        , onInput : Value -> msg
         }
     -> H.Html msg
 view attrs_ props =
@@ -294,15 +323,15 @@ view attrs_ props =
         (H.div [ HA.class "ew-group ew-w-full ew-relative" ]
             [ H.input
                 (baseAttrs attrs
-                    ++ [ HA.value props.value
+                    ++ [ HA.value (toString props.value)
                        , HE.on "input"
                             (D.at [ "target", "value" ] D.string
-                                |> D.map (toInput props.onInput props.value)
+                                |> D.map (props.onInput << toValue props.value)
                             )
                        ]
                 )
                 []
-            , W.Internal.Input.mask attrs.mask props.value
+            , W.Internal.Input.mask attrs.mask (toString props.value)
             ]
         )
 
@@ -311,8 +340,8 @@ view attrs_ props =
 viewWithValidation :
     List (Attribute customError msg)
     ->
-        { value : String
-        , onInput : Result (Error customError) String -> Float -> String -> msg
+        { value : Value
+        , onInput : Result (Error customError) Float -> Value -> msg
         }
     -> H.Html msg
 viewWithValidation attrs_ props =
@@ -325,23 +354,25 @@ viewWithValidation attrs_ props =
         (H.div [ HA.class "ew-group ew-w-full ew-relative" ]
             [ H.input
                 (baseAttrs attrs
-                    ++ [ HA.value props.value
+                    ++ [ HA.value (toString props.value)
                        , HE.on "input"
                             (D.map8
                                 (\( value_, valid ) rangeOverflow rangeUnderflow tooLong tooShort stepMismatch valueMissing validationMessage ->
                                     let
+                                        value__ : Value
+                                        value__ =
+                                            toValue props.value value_
+
                                         customError : Maybe customError
                                         customError =
                                             attrs.validation
-                                                |> Maybe.map (\fn ->
-                                                    toInput fn props.value value_
-                                                )
+                                                |> Maybe.map (\fn -> fn (toFloat value__) value_)
                                                 |> Maybe.withDefault Nothing
-                                        
-                                        result : Result (Error customError) String
+
+                                        result : Result (Error customError) Float
                                         result =
                                             if valid && customError == Nothing then
-                                                Ok value_
+                                                Ok (toFloat value__)
 
                                             else if valueMissing then
                                                 Err (ValueMissing validationMessage)
@@ -364,9 +395,9 @@ viewWithValidation attrs_ props =
                                             else
                                                 customError
                                                     |> Maybe.map (Err << Custom)
-                                                    |> Maybe.withDefault (Ok value_)
+                                                    |> Maybe.withDefault (Ok (toFloat value__))
                                     in
-                                    toInput (props.onInput result) props.value value_
+                                    props.onInput result value__
                                 )
                                 (D.map2 Tuple.pair
                                     (D.at [ "target", "value" ] D.string)
@@ -383,24 +414,25 @@ viewWithValidation attrs_ props =
                        ]
                 )
                 []
-            , W.Internal.Input.mask attrs.mask props.value
+            , W.Internal.Input.mask attrs.mask (toString props.value)
             ]
         )
 
-toInput : (Float -> String -> msg) -> String -> String -> msg
-toInput fn previous value =
+
+toValue : Value -> String -> Value
+toValue previous value =
     case String.toFloat value of
         Just v ->
-            fn v value
+            Value value v
 
         Nothing ->
             if value == "" then
-                fn 0 value
+                Value value 0
 
             else
-                case String.toFloat previous of
+                case String.toFloat (toString previous) of
                     Just v_ ->
-                        fn v_ value
+                        Value value v_
 
                     Nothing ->
-                        fn 0 value
+                        Value value 0

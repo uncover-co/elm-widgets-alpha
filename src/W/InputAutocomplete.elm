@@ -148,7 +148,7 @@ view :
     List (Attribute msg)
     ->
         { id : String
-        , search : String
+        , input : String
         , value : Maybe a
         , options : Maybe (List a)
         , toLabel : a -> String
@@ -184,7 +184,7 @@ view attrs_ props =
                        , HA.class W.Internal.Input.baseClass
                        , HA.class "ew-pr-10"
                        , HA.list (props.id ++ "-list")
-                       , HA.value props.search
+                       , HA.value props.input
                        , WH.maybeAttr HE.onFocus attrs.onFocus
                        , WH.maybeAttr HE.onBlur attrs.onBlur
                        , WH.maybeAttr WH.onEnter attrs.onEnter

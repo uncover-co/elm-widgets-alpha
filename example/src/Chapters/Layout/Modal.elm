@@ -31,18 +31,16 @@ chapter_ =
               , wrapper
                     [ W.Modal.view
                         [ W.Modal.absolute True ]
-                        { onClose = Nothing
-                        , content = content
-                        }
+                        [ content ]
                     ]
               )
             , ( "Modal with onClose"
               , wrapper
                     [ W.Modal.view
-                        [ W.Modal.absolute True ]
-                        { onClose = Just (logAction "onClose")
-                        , content = content
-                        }
+                        [ W.Modal.absolute True 
+                        , W.Modal.onClose (logAction "onClose")
+                        ]
+                        [ content ]
                     ]
               )
             ]

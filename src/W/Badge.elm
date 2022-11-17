@@ -4,9 +4,13 @@ module W.Badge exposing
     , id, class, htmlAttrs
     )
 
-{-|
+{-| Badges are commonly used to display notifications.
 
 @docs view, viewInline
+
+
+## Customization
+
 @docs neutral, primary, secondary, success, warning, color, background
 @docs id, class, htmlAttrs
 

@@ -27,7 +27,7 @@ chapter_ =
             [ ( "Default"
               , W.InputAutocomplete.view [ W.InputAutocomplete.placeholder "Search for a number…" ]
                     { id = "default"
-                    , search = ""
+                    , input = ""
                     , value = Nothing
                     , options = Just (List.range 0 10)
                     , toLabel = String.fromInt
@@ -37,7 +37,7 @@ chapter_ =
             , ( "Loading"
               , W.InputAutocomplete.view [ W.InputAutocomplete.placeholder "Fetching some options…" ]
                     { id = "loading"
-                    , search = ""
+                    , input = ""
                     , value = Nothing
                     , options = Nothing
                     , toLabel = String.fromInt
@@ -50,7 +50,7 @@ chapter_ =
                     , W.InputAutocomplete.placeholder "You can't touch me"
                     ]
                     { id = "loading"
-                    , search = ""
+                    , input = ""
                     , value = Nothing
                     , options = Just (List.range 0 10)
                     , toLabel = String.fromInt

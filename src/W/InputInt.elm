@@ -1,7 +1,7 @@
 module W.InputInt exposing
-    ( view
+    ( view, init, toInt, toString, Value
     , min, max, minLength, maxLength
-    , id, class, placeholder, mask, disabled, required, readOnly
+    , id, class, placeholder, mask, disabled, required, readOnly, validation
     , prefix, suffix
     , viewWithValidation, errorToString, Error(..)
     , onEnter, onFocus, onBlur
@@ -10,9 +10,9 @@ module W.InputInt exposing
 
 {-|
 
-@docs view
+@docs view, init, toInt, toString, Value
 @docs min, max, minLength, maxLength
-@docs id, class, placeholder, mask, disabled, required, readOnly
+@docs id, class, placeholder, mask, disabled, required, readOnly, validation
 @docs prefix, suffix
 @docs viewWithValidation, errorToString, Error
 @docs onEnter, onFocus, onBlur
@@ -26,6 +26,34 @@ import Html.Events as HE
 import Json.Decode as D
 import W.Internal.Helpers as WH
 import W.Internal.Input
+
+
+
+-- Value
+
+
+type Value
+    = Value String Int
+
+
+init : Maybe Int -> Value
+init value =
+    case value of
+        Just v ->
+            Value (String.fromInt v) v
+
+        Nothing ->
+            Value "" 0
+
+
+toInt : Value -> Int
+toInt (Value _ v) =
+    v
+
+
+toString : Value -> String
+toString (Value v _) =
+    v
 
 
 
@@ -92,7 +120,7 @@ type alias Attributes customError msg =
     , onFocus : Maybe msg
     , onBlur : Maybe msg
     , onEnter : Maybe msg
-    , htmlAttributes : List (H.Attribute  msg)
+    , htmlAttributes : List (H.Attribute msg)
     }
 
 
@@ -193,6 +221,7 @@ maxLength : Int -> Attribute customError msg
 maxLength v =
     Attribute <| \attrs -> { attrs | maxLength = Just v }
 
+
 {-| -}
 validation : (Int -> String -> Maybe customError) -> Attribute customError msg
 validation v =
@@ -230,7 +259,7 @@ onEnter v =
 
 
 {-| -}
-htmlAttrs : List (H.Attribute  msg) -> Attribute customError msg
+htmlAttrs : List (H.Attribute msg) -> Attribute customError msg
 htmlAttrs v =
     Attribute <| \attrs -> { attrs | htmlAttributes = v }
 
@@ -240,7 +269,7 @@ htmlAttrs v =
 
 
 {-| -}
-baseAttrs : Attributes customError msg -> List (H.Attribute  msg)
+baseAttrs : Attributes customError msg -> List (H.Attribute msg)
 baseAttrs attrs =
     attrs.htmlAttributes
         ++ [ HA.type_ "number"
@@ -267,8 +296,8 @@ baseAttrs attrs =
 view :
     List (Attribute customError msg)
     ->
-        { value : String
-        , onInput : Int -> String -> msg
+        { value : Value
+        , onInput : Value -> msg
         }
     -> H.Html msg
 view attrs_ props =
@@ -281,15 +310,15 @@ view attrs_ props =
         (H.div [ HA.class "ew-group ew-w-full ew-relative" ]
             [ H.input
                 (baseAttrs attrs
-                    ++ [ HA.value props.value
+                    ++ [ HA.value (toString props.value)
                        , HE.on "input"
                             (D.at [ "target", "value" ] D.string
-                                |> D.map (toInput props.onInput)
+                                |> D.map (props.onInput << toValue)
                             )
                        ]
                 )
                 []
-            , W.Internal.Input.mask attrs.mask props.value
+            , W.Internal.Input.mask attrs.mask (toString props.value)
             ]
         )
 
@@ -299,7 +328,7 @@ viewWithValidation :
     List (Attribute customError msg)
     ->
         { value : String
-        , onInput : Result (Error customError) String -> Int -> String -> msg
+        , onInput : Result (Error customError) Int -> Value -> msg
         }
     -> H.Html msg
 viewWithValidation attrs_ props =
@@ -317,18 +346,20 @@ viewWithValidation attrs_ props =
                             (D.map8
                                 (\value_ valid rangeOverflow rangeUnderflow tooLong tooShort valueMissing validationMessage ->
                                     let
+                                        value__ : Value
+                                        value__ =
+                                            toValue value_
+
                                         customError : Maybe customError
                                         customError =
                                             attrs.validation
-                                                |> Maybe.map (\fn ->
-                                                    toInput fn props.value
-                                                )
+                                                |> Maybe.map (\fn -> fn (toInt value__) value_)
                                                 |> Maybe.withDefault Nothing
 
-                                        result : Result (Error customError) String
+                                        result : Result (Error customError) Int
                                         result =
                                             if valid && customError == Nothing then
-                                                Ok value_
+                                                Ok (toInt value__)
 
                                             else if valueMissing then
                                                 Err (ValueMissing validationMessage)
@@ -344,13 +375,13 @@ viewWithValidation attrs_ props =
 
                                             else if tooLong then
                                                 Err (TooLong (Maybe.withDefault 0 attrs.maxLength) validationMessage)
-                                            
+
                                             else
                                                 customError
                                                     |> Maybe.map (Err << Custom)
-                                                    |> Maybe.withDefault (Ok value_)
+                                                    |> Maybe.withDefault (Ok (toInt value__))
                                     in
-                                    toInput (props.onInput result) value_
+                                    props.onInput result value__
                                 )
                                 (D.at [ "target", "value" ] D.string)
                                 (D.at [ "target", "validity", "valid" ] D.bool)
@@ -369,17 +400,17 @@ viewWithValidation attrs_ props =
         )
 
 
-toInput : (Int -> String -> msg) -> String -> msg
-toInput fn value =
-    case String.toInt value of
+toValue : String -> Value
+toValue value_ =
+    case String.toInt value_ of
         Just v ->
-            fn v value
+            Value value_ v
 
         Nothing ->
             let
                 parsedString : String
                 parsedString =
-                    value
+                    value_
                         |> String.filter Char.isDigit
 
                 parsedValue : Int
@@ -387,4 +418,4 @@ toInput fn value =
                     String.toInt parsedString
                         |> Maybe.withDefault 0
             in
-            fn parsedValue parsedString
+            Value parsedString parsedValue

@@ -38,6 +38,11 @@
     @apply ew-outline-0 ew-ring-offset-0 ew-ring-primary-fg/50;
     @apply focus:ew-ring focus:ew-border-primary-fg;
   }
+  .ew-focusable-inset {
+    @apply ew-transition;
+    @apply ew-outline-0 ew-ring-inset ew-ring-primary-fg/50;
+    @apply focus:ew-ring focus:ew-border-primary-fg;
+  }
   .ew-focusable-outline {
     @apply ew-transition;
     @apply ew-outline-0 ew-ring-offset-0 ew-ring-primary-fg/50;
@@ -155,6 +160,23 @@
 
 .ew-table table {
   table-layout: fixed;
+}
+
+/* 
+ * ======================================================
+ * Animations
+ * ======================================================
+ */
+
+@keyframes ew-animation-fade-slide {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 /* 

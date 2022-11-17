@@ -185,9 +185,12 @@ view attrs_ children_ =
                    , HA.class "ew-m-0 ew-box-border ew-relative ew-text-left"
                    , HA.class "ew-flex ew-gap-6 ew-w-full"
                    , HA.class "ew-font-text ew-text-base ew-font-medium"
-                   , HA.class "ew-py-4 ew-px-6"
+                   , HA.class "ew-pb-4 ew-pt-5 ew-px-6"
                    , HA.class "ew-bg-base-bg ew-rounded ew-shadow-lg"
-                   , HA.class "ew-border ew-border-solid ew-border-base-aux/10 ew-border-px"
+                   , HA.class "ew-border-solid ew-border-base-aux/10 ew-border-px"
+                   , HA.class "after:ew-content-[''] after:ew-block"
+                   , HA.class "after:ew-absolute after:ew-top-0 after:ew-inset-x-0 after:ew-rounded-t"
+                   , HA.class "after:ew-h-1.5 after:ew-bg-current"
                    , HA.style "color" attrs.color
                    ]
 

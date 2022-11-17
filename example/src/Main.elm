@@ -8,14 +8,15 @@ import Chapters.Form.Field
 import Chapters.Form.InputAutocomplete
 import Chapters.Form.InputCheckbox
 import Chapters.Form.InputDate
-import Chapters.Form.InputInt
 import Chapters.Form.InputFloat
+import Chapters.Form.InputInt
 import Chapters.Form.InputRadio
 import Chapters.Form.InputSelect
 import Chapters.Form.InputSlider
 import Chapters.Form.InputText
 import Chapters.Form.InputTextArea
 import Chapters.Form.InputTime
+import Chapters.GettingStarted
 import Chapters.Information.Badge
 import Chapters.Information.DataRow
 import Chapters.Information.Menu
@@ -36,7 +37,8 @@ import W.Styles
 
 
 type alias SharedState =
-    { range :
+    { overview : Chapters.GettingStarted.Model
+    , range :
         { default : Float
         , customColor : Float
         }
@@ -52,7 +54,8 @@ main =
     book "elm-widgets"
         |> withStatefulOptions
             [ ElmBook.StatefulOptions.initialState
-                { range = Chapters.Form.InputSlider.init
+                { overview = Chapters.GettingStarted.init
+                , range = Chapters.Form.InputSlider.init
                 , inputText = Chapters.Form.InputText.init
                 , inputInt = Chapters.Form.InputInt.init
                 , inputFloat = Chapters.Form.InputFloat.init
@@ -60,7 +63,8 @@ main =
                 }
             ]
         |> withThemeOptions
-            [ ElmBook.ThemeOptions.globals
+            [ ElmBook.ThemeOptions.subtitle "Stateless & Tasteful"
+            , ElmBook.ThemeOptions.globals
                 [ Theme.globalProviderWithDarkMode
                     { light = Theme.lightTheme
                     , dark = Theme.darkTheme
@@ -70,7 +74,15 @@ main =
                 ]
             ]
         |> withChapterGroups
-            [ ( "Core"
+            [ ( ""
+              , [ Chapters.GettingStarted.chapter_
+                , ElmBook.Chapter.chapterLink
+                    { title = "Package Docs"
+                    , url = "https://"
+                    }
+                ]
+              )
+            , ( "Core"
               , [ Chapters.Core.Buttons.chapter_
                 , Chapters.Core.ButtonGroup.chapter_
                 , Chapters.Core.Divider.chapter_

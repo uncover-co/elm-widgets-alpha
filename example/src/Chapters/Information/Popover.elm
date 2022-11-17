@@ -21,10 +21,7 @@ children label =
             ]
         ]
     , children =
-        [ W.Button.viewLink []
-            { href = "/logAction/"
-            , label = H.text label
-            }
+        [ W.Button.viewDummy [] [ H.text label ]
         ]
     }
 

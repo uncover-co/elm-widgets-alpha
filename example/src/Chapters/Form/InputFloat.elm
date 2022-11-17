@@ -7,12 +7,12 @@ import W.InputFloat
 
 
 type alias Model =
-    ( Float, String )
+    W.InputFloat.Value
 
 
 init : Model
 init =
-    ( 1.2, "1.2" )
+    W.InputFloat.init (Just 1.2)
 
 
 chapter_ : Chapter { x | inputFloat : Model }
@@ -25,12 +25,12 @@ chapter_ =
                         [ W.InputFloat.view
                             [ W.InputFloat.placeholder "Type something…"
                             ]
-                            { value = Tuple.second inputFloat
+                            { value = inputFloat
                             , onInput =
-                                \v vv ->
+                                \v ->
                                     updateState
                                         (\model ->
-                                            { model | inputFloat = ( v, vv) }
+                                            { model | inputFloat = v }
                                         )
                             }
                         ]
