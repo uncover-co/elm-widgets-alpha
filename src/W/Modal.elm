@@ -1,15 +1,40 @@
 module W.Modal exposing
     ( view
-    , id, absolute
-    , Attribute
-    , isOpen, onClose, toggable, viewToggle, zIndex
+    , viewToggable, viewToggle
+    , absolute, zIndex
+    , noAttr, Attribute
     )
 
 {-|
 
 @docs view
-@docs id, absolute
-@docs Attribute
+
+
+# Togglable
+
+If you don't want to manage your modal open state at all, use the toggable version.
+
+    W.Modal.viewToggable []
+        { id = "toggable-modal"
+        , content = [ text "Hello!" ]
+        }
+
+    W.Modal.viewToggle "toggable-modal"
+        [ W.Button.viewDummy []
+            [ text "Click here to toggle modal" ]
+        ]
+
+@docs viewToggable, viewToggle
+
+
+# Styles
+
+@docs absolute, zIndex
+
+
+# Html
+
+@docs noAttr, Attribute
 
 -}
 
@@ -24,45 +49,31 @@ import Html.Events as HE
 
 {-| -}
 type Attribute msg
-    = Attribute (Attributes msg -> Attributes msg)
+    = Attribute (Attributes -> Attributes)
 
 
-type alias Attributes msg =
-    { id : Maybe String
-    , absolute : Bool
+type alias Attributes =
+    { absolute : Bool
     , zIndex : Int
-    , toggable : Maybe String
-    , isOpen : Maybe Bool
-    , onClose : Maybe msg
     }
 
 
-applyAttrs : List (Attribute msg) -> Attributes msg
+applyAttrs : List (Attribute msg) -> Attributes
 applyAttrs attrs =
     List.foldl (\(Attribute fn) a -> fn a) defaultAttrs attrs
 
 
-defaultAttrs : Attributes msg
+defaultAttrs : Attributes
 defaultAttrs =
-    { id = Nothing
-    , absolute = False
+    { absolute = False
     , zIndex = 1000
-    , toggable = Nothing
-    , isOpen = Nothing
-    , onClose = Nothing
     }
 
 
 {-| -}
-id : String -> Attribute msg
-id v =
-    Attribute <| \attrs -> { attrs | id = Just v }
-
-
-{-| -}
-absolute : Bool -> Attribute msg
-absolute v =
-    Attribute <| \attrs -> { attrs | absolute = v }
+absolute : Attribute msg
+absolute =
+    Attribute <| \attrs -> { attrs | absolute = True }
 
 
 {-| -}
@@ -72,25 +83,18 @@ zIndex v =
 
 
 {-| -}
-toggable : String -> Attribute msg
-toggable v =
-    Attribute <| \attrs -> { attrs | toggable = Just v }
-
-
-{-| -}
-isOpen : Bool -> Attribute msg
-isOpen v =
-    Attribute <| \attrs -> { attrs | isOpen = Just v }
-
-
-{-| -}
-onClose : msg -> Attribute msg
-onClose v =
-    Attribute <| \attrs -> { attrs | onClose = Just v }
+noAttr : Attribute msg
+noAttr =
+    Attribute identity
 
 
 
 -- Main
+
+
+type Modal msg
+    = Stateless { id : String, children : List (H.Html msg) }
+    | Stateful { isOpen : Bool, onClose : Maybe msg, children : List (H.Html msg) }
 
 
 {-| -}
@@ -100,13 +104,35 @@ viewToggle id_ children =
 
 
 {-| -}
+viewToggable :
+    List (Attribute msg)
+    ->
+        { id : String
+        , children : List (H.Html msg)
+        }
+    -> H.Html msg
+viewToggable attrs props =
+    view_ attrs (Stateless props)
+
+
+{-| -}
 view :
     List (Attribute msg)
-    -> List (H.Html msg)
+    ->
+        { isOpen : Bool
+        , onClose : Maybe msg
+        , children : List (H.Html msg)
+        }
     -> H.Html msg
-view attrs_ children =
+view attrs props =
+    view_ attrs (Stateful props)
+
+
+{-| -}
+view_ : List (Attribute msg) -> Modal msg -> H.Html msg
+view_ attrs_ props =
     let
-        attrs : Attributes msg
+        attrs : Attributes
         attrs =
             applyAttrs attrs_
 
@@ -119,17 +145,17 @@ view attrs_ children =
     in
     H.div []
         [ H.node "style" [] [ H.text toggleStyle ]
-        , case attrs.toggable of
-            Just toggleId ->
+        , case props of
+            Stateless { id } ->
                 H.node
                     "input"
-                    [ HA.id toggleId
+                    [ HA.id id
                     , HA.type_ "checkbox"
                     , HA.class "ew-hidden ew-modal-toggle"
                     ]
                     []
 
-            Nothing ->
+            _ ->
                 H.text ""
         , H.div
             [ HA.attribute "role" "dialog"
@@ -137,32 +163,41 @@ view attrs_ children =
             , HA.class "ew-modal ew-inset-0 ew-flex ew-flex-col ew-items-center ew-justify-center ew-box-border ew-p-6"
             , HA.class "invisible ew-pointer-events-none"
             , HA.classList
-                [ ( "ew-modal--is-open", attrs.isOpen == Just True )
+                [ ( "ew-modal--is-open"
+                  , case props of
+                        Stateful { isOpen } ->
+                            isOpen
+
+                        _ ->
+                            False
+                  )
                 , ( "ew-absolute", attrs.absolute )
                 , ( "ew-fixed", not attrs.absolute )
                 ]
             ]
-            [ case ( attrs.toggable, attrs.onClose ) of
-                ( Just toggleId, _ ) ->
+            [ case props of
+                Stateless { id } ->
                     H.label
                         (backgroundAttrs
                             ++ [ HA.class "ew-focusable-inset hover:ew-bg-black/[0.15]"
-                               , HA.for toggleId
+                               , HA.for id
                                ]
                         )
                         []
 
-                ( Nothing, Just onClose_ ) ->
-                    H.div
-                        (backgroundAttrs
-                            ++ [ HA.class "ew-focusable-inset hover:ew-bg-black/[0.15]"
-                               , HE.onClick onClose_
-                               ]
-                        )
-                        []
+                Stateful { onClose } ->
+                    case onClose of
+                        Just onClose_ ->
+                            H.div
+                                (backgroundAttrs
+                                    ++ [ HA.class "ew-focusable-inset hover:ew-bg-black/[0.15]"
+                                       , HE.onClick onClose_
+                                       ]
+                                )
+                                []
 
-                ( Nothing, Nothing ) ->
-                    H.div backgroundAttrs []
+                        Nothing ->
+                            H.div backgroundAttrs []
             , H.div
                 [ HA.class "ew-modal-content ew-relative"
                 , HA.class "ew-bg-base-bg ew-shadow-lg ew-rounded-lg"
@@ -170,7 +205,13 @@ view attrs_ children =
                 , HA.class "ew-opacity-0 ew-pointer-events-none"
                 , HA.class "ew-transition ew-duration-400"
                 ]
-                children
+                (case props of
+                    Stateless { children } ->
+                        children
+
+                    Stateful { children } ->
+                        children
+                )
             ]
         ]
 

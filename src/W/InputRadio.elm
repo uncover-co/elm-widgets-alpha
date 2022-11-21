@@ -1,21 +1,34 @@
 module W.InputRadio exposing
     ( view
-    , color, disabled, readOnly, vertical
-    , Attribute
+    , color
+    , disabled, readOnly, vertical
+    , noAttr, Attribute
     )
 
 {-|
 
 @docs view
-@docs color, disabled, readOnly, vertical
-@docs Attribute
+
+
+# Styles
+
+@docs color
+
+
+# States
+
+@docs disabled, readOnly, vertical
+
+
+# Html
+
+@docs noAttr, Attribute
 
 -}
 
 import Html as H
 import Html.Attributes as HA
 import Html.Events as HE
-import W.Internal.Helpers as WH
 
 
 
@@ -75,6 +88,12 @@ readOnly v =
 vertical : Bool -> Attribute msg
 vertical v =
     Attribute <| \attrs -> { attrs | vertical = v }
+
+
+{-| -}
+noAttr : Attribute msg
+noAttr =
+    Attribute identity
 
 
 

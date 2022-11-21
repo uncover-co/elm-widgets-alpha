@@ -2,6 +2,15 @@ module.exports = {
     content: ["./src/**/*.elm"],
     prefix: "ew-",
     theme: {
+        borderRadius: {
+            none: "0",
+            sm: "2px",
+            DEFAULT: "4px",
+            md: "6px",
+            lg: "8px",
+            xl: "12px",
+            full: "9999px"
+        },
         extend: {
             colors: {
                 transparent: "transparent",

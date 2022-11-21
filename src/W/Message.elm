@@ -2,8 +2,8 @@ module W.Message exposing
     ( view
     , icon, footer
     , href, onClick
-    , primary, secondary, success, warning, danger, color, Attribute
-    , id, class, htmlAttrs
+    , primary, secondary, success, warning, danger, color
+    , htmlAttrs, noAttr, Attribute
     )
 
 {-|
@@ -11,8 +11,8 @@ module W.Message exposing
 @docs view
 @docs icon, footer
 @docs href, onClick
-@docs primary, secondary, success, warning, danger, color, Attribute
-@docs id, class, htmlAttrs
+@docs primary, secondary, success, warning, danger, color
+@docs htmlAttrs, noAttr, Attribute
 
 -}
 
@@ -33,9 +33,7 @@ type Attribute msg
 
 
 type alias Attributes msg =
-    { id : Maybe String
-    , class : String
-    , htmlAttributes : List (H.Attribute msg)
+    { htmlAttributes : List (H.Attribute msg)
     , icon : Maybe (H.Html msg)
     , footer : Maybe (H.Html msg)
     , color : String
@@ -51,9 +49,7 @@ applyAttrs attrs =
 
 defaultAttrs : Attributes msg
 defaultAttrs =
-    { id = Nothing
-    , class = ""
-    , htmlAttributes = []
+    { htmlAttributes = []
     , icon = Nothing
     , footer = Nothing
     , color = Theme.neutralForeground
@@ -67,21 +63,15 @@ defaultAttrs =
 
 
 {-| -}
-id : String -> Attribute msg
-id v =
-    Attribute <| \attrs -> { attrs | id = Just v }
-
-
-{-| -}
-class : String -> Attribute msg
-class v =
-    Attribute <| \attrs -> { attrs | class = v }
-
-
-{-| -}
 htmlAttrs : List (H.Attribute msg) -> Attribute msg
 htmlAttrs v =
     Attribute <| \attrs -> { attrs | htmlAttributes = v }
+
+
+{-| -}
+noAttr : Attribute msg
+noAttr =
+    Attribute identity
 
 
 {-| -}
@@ -172,9 +162,7 @@ view attrs_ children_ =
         baseAttrs : List (H.Attribute msg)
         baseAttrs =
             attrs.htmlAttributes
-                ++ [ WH.maybeAttr HA.id attrs.id
-                   , HA.class attrs.class
-                   , HA.class "ew-m-0 ew-box-border ew-relative"
+                ++ [ HA.class "ew-m-0 ew-box-border ew-relative"
                    , HA.class "ew-flex ew-gap-4 ew-w-full"
                    , HA.class "ew-font-text ew-text-base ew-font-medium"
                    , HA.class "ew-py-2 ew-px-4 ew-pr-6"

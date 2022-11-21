@@ -14,14 +14,14 @@ chapter_ =
             [ ( "Default"
               , UI.vSpacer
                     [ W.Badge.view []
-                        { value = Just [ H.text "!" ]
+                        { content = Just [ H.text "!" ]
                         , children = [ H.text "Hello!" ]
                         }
                     , W.Badge.view
                         [ W.Badge.background "purple"
                         , W.Badge.color "white"
                         ]
-                        { value = Just [ H.text "999" ]
+                        { content = Just [ H.text "999" ]
                         , children = [ H.text "Hello!" ]
                         }
                     ]

@@ -1,12 +1,22 @@
 module W.Divider exposing
     ( view
     , vertical, margins
+    , noAttr, Attribute
     )
 
 {-|
 
 @docs view
+
+
+# Styles
+
 @docs vertical, margins
+
+
+# Html
+
+@docs noAttr, Attribute
 
 -}
 
@@ -37,7 +47,7 @@ applyAttrs attrs =
 defaultAttrs : Attributes
 defaultAttrs =
     { vertical = False
-    , margins = 8
+    , margins = 0
     }
 
 
@@ -57,11 +67,25 @@ margins v =
     Attribute (\attrs -> { attrs | margins = v })
 
 
+{-| -}
+noAttr : Attribute msg
+noAttr =
+    Attribute identity
+
+
 
 -- Main
 
 
-{-| -}
+{-|
+
+    -- horizontal divider
+    W.Divider.view [] []
+
+    -- horizontal divider with a centralized label
+    W.Dividier.view [] [ H.text "divide, not conquer" ]
+
+-}
 view : List (Attribute msg) -> List (H.Html msg) -> H.Html msg
 view attrs_ children =
     let

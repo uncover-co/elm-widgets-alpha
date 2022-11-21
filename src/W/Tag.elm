@@ -1,18 +1,28 @@
 module W.Tag exposing
-    ( view
-    , primary, secondary, success, warning, danger, color
+    ( view, viewButton, viewLink
     , small
-    , onClick, href
-    , id, class, htmlAttrs, Attribute
+    , primary, secondary, success, warning, danger, color
+    , htmlAttrs, noAttr, Attribute
     )
 
 {-|
 
-@docs view
-@docs primary, secondary, success, warning, danger, color
+@docs view, viewButton, viewLink
+
+
+# Styles
+
 @docs small
-@docs onClick, href
-@docs id, class, htmlAttrs, Attribute
+
+
+# Color
+
+@docs primary, secondary, success, warning, danger, color
+
+
+# Html
+
+@docs htmlAttrs, noAttr, Attribute
 
 -}
 
@@ -20,7 +30,6 @@ import Html as H
 import Html.Attributes as HA
 import Html.Events as HE
 import Theme
-import W.Internal.Helpers as WH
 
 
 
@@ -33,9 +42,7 @@ type Attribute msg
 
 
 type alias Attributes msg =
-    { id : Maybe String
-    , class : String
-    , htmlAttributes : List (H.Attribute msg)
+    { htmlAttributes : List (H.Attribute msg)
     , color : String
     , small : Bool
     , href : Maybe String
@@ -50,9 +57,7 @@ applyAttrs attrs =
 
 defaultAttrs : Attributes msg
 defaultAttrs =
-    { id = Nothing
-    , class = ""
-    , htmlAttributes = []
+    { htmlAttributes = []
     , color = Theme.neutralForeground
     , small = False
     , href = Nothing
@@ -65,21 +70,15 @@ defaultAttrs =
 
 
 {-| -}
-id : String -> Attribute msg
-id v =
-    Attribute <| \attrs -> { attrs | id = Just v }
-
-
-{-| -}
-class : String -> Attribute msg
-class v =
-    Attribute <| \attrs -> { attrs | class = v }
-
-
-{-| -}
 htmlAttrs : List (H.Attribute msg) -> Attribute msg
 htmlAttrs v =
     Attribute <| \attrs -> { attrs | htmlAttributes = v }
+
+
+{-| -}
+noAttr : Attribute msg
+noAttr =
+    Attribute identity
 
 
 {-| -}
@@ -161,6 +160,18 @@ danger =
 
 
 {-| -}
+viewButton : List (Attribute msg) -> { onClick : msg, label : List (H.Html msg) } -> H.Html msg
+viewButton attrs_ props =
+    view (onClick props.onClick :: attrs_) props.label
+
+
+{-| -}
+viewLink : List (Attribute msg) -> { href : String, label : List (H.Html msg) } -> H.Html msg
+viewLink attrs_ props =
+    view (href props.href :: attrs_) props.label
+
+
+{-| -}
 view :
     List (Attribute msg)
     -> List (H.Html msg)
@@ -174,9 +185,7 @@ view attrs_ children =
         baseAttrs : List (H.Attribute msg)
         baseAttrs =
             attrs.htmlAttributes
-                ++ [ WH.maybeAttr HA.id attrs.id
-                   , HA.class attrs.class
-                   , HA.class "ew-m-0 ew-box-border ew-relative ew-inline-flex ew-items-center ew-leading-none ew-font-text ew-font-medium ew-tracking-wider"
+                ++ [ HA.class "ew-m-0 ew-box-border ew-relative ew-inline-flex ew-items-center ew-leading-none ew-font-text ew-font-medium ew-tracking-wider"
                    , HA.class "ew-rounded-full ew-border-solid ew-border ew-border-current"
                    , HA.class "before:ew-content-[''] before:ew-absolute before:ew-inset-0 before:ew-rounded-full before:ew-bg-current before:ew-opacity-10"
                    , HA.style "color" attrs.color

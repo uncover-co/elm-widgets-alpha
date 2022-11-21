@@ -14,6 +14,7 @@ chapter_ =
               , W.InputTime.view
                     []
                     { value = Nothing
+                    , timeZone = Time.utc
                     , onInput =
                         \v ->
                             case v of
@@ -29,10 +30,9 @@ chapter_ =
                     timeZone =
                         Time.customZone (-3 * 60) []
                 in
-                W.InputTime.view
-                    [ W.InputTime.timeZone timeZone
-                    ]
+                W.InputTime.view []
                     { value = Just (Time.millisToPosix 1651693959717)
+                    , timeZone = timeZone
                     , onInput =
                         \v ->
                             case v of

@@ -1,8 +1,22 @@
-module W.Pagination exposing (view, separator, onClick)
+module W.Pagination exposing
+    ( view, viewLinks
+    , separator
+    , noAttr, Attribute
+    )
 
 {-|
 
-@docs view, separator, onClick
+@docs view, viewLinks
+
+
+# Styles
+
+@docs separator
+
+
+# Html
+
+@docs noAttr, Attribute
 
 -}
 
@@ -22,8 +36,7 @@ type Attribute msg
 
 
 type alias Attributes msg =
-    { onClick : Maybe (Int -> msg)
-    , separator : H.Html msg
+    { separator : List (H.Html msg)
     }
 
 
@@ -34,8 +47,7 @@ applyAttrs attrs =
 
 defaultAttrs : Attributes msg
 defaultAttrs =
-    { onClick = Nothing
-    , separator = H.span [ HA.class "ew-relative -ew-top-px" ] [ H.text "—" ]
+    { separator = [ H.span [ HA.class "ew-relative -ew-top-px" ] [ H.text "—" ] ]
     }
 
 
@@ -44,19 +56,67 @@ defaultAttrs =
 
 
 {-| -}
-separator : H.Html msg -> Attribute msg
+separator : List (H.Html msg) -> Attribute msg
 separator v =
     Attribute (\attrs -> { attrs | separator = v })
 
 
 {-| -}
-onClick : (Int -> msg) -> Attribute msg
-onClick v =
-    Attribute (\attrs -> { attrs | onClick = Just v })
+noAttr : Attribute msg
+noAttr =
+    Attribute identity
 
 
 
 -- Main
+
+
+{-| -}
+viewLinks :
+    List (Attribute msg)
+    ->
+        { total : Int
+        , active : Int
+        , href : Int -> String
+        }
+    -> H.Html msg
+viewLinks attrs_ props =
+    let
+        attrs : Attributes msg
+        attrs =
+            applyAttrs attrs_
+    in
+    case W.Internal.Pagination.toPages props.active props.total of
+        Ok pages ->
+            H.div
+                [ HA.class "ew-flex ew-items-center ew-font-primary ew-space-x-2 ew-text-base-aux" ]
+                (pages
+                    |> List.map
+                        (\page ->
+                            if page /= -1 then
+                                W.Button.viewLink
+                                    [ W.Button.small
+                                    , W.Button.invisible
+                                    , W.Button.icon
+                                    , if page == props.active then
+                                        W.Button.primary
+
+                                      else
+                                        W.Button.noAttr
+                                    ]
+                                    { href = props.href page
+                                    , label = [ H.text (String.fromInt page) ]
+                                    }
+
+                            else
+                                H.span
+                                    [ HA.class "ew-inline-flex ew-items-center ew-leading-none" ]
+                                    attrs.separator
+                        )
+                )
+
+        Err errorMessage ->
+            H.text errorMessage
 
 
 {-| -}
@@ -93,14 +153,13 @@ view attrs_ props =
                                         W.Button.noAttr
                                     ]
                                     { onClick = props.onClick page
-                                    , label = H.text (String.fromInt page)
+                                    , label = [ H.text (String.fromInt page) ]
                                     }
 
                             else
                                 H.span
                                     [ HA.class "ew-inline-flex ew-items-center ew-leading-none" ]
-                                    [ attrs.separator
-                                    ]
+                                    attrs.separator
                         )
                 )
 

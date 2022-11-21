@@ -1,16 +1,46 @@
 module W.InputAutocomplete exposing
     ( view
-    , class, disabled, readOnly, required, placeholder, onBlur, onEnter, onFocus, htmlAttrs
-    , prefix, suffix
-    , Attribute
+    , init, toString, toValue, Value
+    , disabled, readOnly
+    , placeholder, prefix, suffix
+    , required
+    , onEnter, onBlur, onFocus
+    , htmlAttrs, noAttr, Attribute
     )
 
 {-|
 
 @docs view
-@docs class, disabled, readOnly, required, placeholder, onBlur, onEnter, onFocus, htmlAttrs
-@docs prefix, suffix
-@docs Attribute
+
+
+# Value
+
+@docs init, toString, toValue, Value
+
+
+# States
+
+@docs disabled, readOnly
+
+
+# Styles
+
+@docs placeholder, prefix, suffix
+
+
+# Validation
+
+@docs required
+
+
+# Actions
+
+@docs onEnter, onBlur, onFocus
+
+
+# Html
+
+@docs htmlAttrs, noAttr, Attribute
 
 -}
 
@@ -25,6 +55,49 @@ import W.Loading
 
 
 
+-- Value
+
+
+{-| -}
+type Value a
+    = Value (ValueData a)
+
+
+type alias ValueData a =
+    { input : String
+    , value : Maybe a
+    , toString : a -> String
+    }
+
+
+{-| -}
+init : { value : Maybe a, toString : a -> String } -> Value a
+init props =
+    Value
+        { input = Maybe.map props.toString props.value |> Maybe.withDefault ""
+        , value = props.value
+        , toString = props.toString
+        }
+
+
+update : Value a -> String -> Maybe a -> Value a
+update (Value data) input value =
+    Value { data | input = input, value = value }
+
+
+{-| -}
+toString : Value a -> String
+toString (Value { input }) =
+    input
+
+
+{-| -}
+toValue : Value a -> Maybe a
+toValue (Value { value }) =
+    value
+
+
+
 -- Attributes
 
 
@@ -34,8 +107,7 @@ type Attribute msg
 
 
 type alias Attributes msg =
-    { class : String
-    , disabled : Bool
+    { disabled : Bool
     , required : Bool
     , readOnly : Bool
     , placeholder : Maybe String
@@ -55,8 +127,7 @@ applyAttrs attrs =
 
 defaultAttrs : Attributes msg
 defaultAttrs =
-    { class = ""
-    , disabled = False
+    { disabled = False
     , required = False
     , readOnly = False
     , placeholder = Nothing
@@ -71,12 +142,6 @@ defaultAttrs =
 
 
 -- Attribute : Setters
-
-
-{-| -}
-class : String -> Attribute msg
-class v =
-    Attribute <| \attrs -> { attrs | class = v }
 
 
 {-| -}
@@ -139,6 +204,12 @@ htmlAttrs v =
     Attribute <| \attrs -> { attrs | htmlAttributes = v }
 
 
+{-| -}
+noAttr : Attribute msg
+noAttr =
+    Attribute identity
+
+
 
 -- Main
 
@@ -148,22 +219,28 @@ view :
     List (Attribute msg)
     ->
         { id : String
-        , input : String
-        , value : Maybe a
+        , value : Value a
         , options : Maybe (List a)
-        , toLabel : a -> String
-        , onInput : String -> Maybe a -> msg
+        , onInput : Value a -> msg
         }
     -> H.Html msg
 view attrs_ props =
     let
+        valueData : ValueData a
+        valueData =
+            case props.value of
+                Value v ->
+                    v
+
+        attrs : Attributes msg
         attrs =
             applyAttrs attrs_
 
+        options : List ( String, a )
         options =
             props.options
                 |> Maybe.withDefault []
-                |> List.map (\o -> ( props.toLabel o, o ))
+                |> List.map (\o -> ( valueData.toString o, o ))
 
         optionsDict =
             Dict.fromList options
@@ -180,11 +257,10 @@ view attrs_ props =
                        , HA.required attrs.required
                        , HA.autocomplete False
                        , HA.id props.id
-                       , HA.class attrs.class
                        , HA.class W.Internal.Input.baseClass
                        , HA.class "ew-pr-10"
                        , HA.list (props.id ++ "-list")
-                       , HA.value props.input
+                       , HA.value valueData.input
                        , WH.maybeAttr HE.onFocus attrs.onFocus
                        , WH.maybeAttr HE.onBlur attrs.onBlur
                        , WH.maybeAttr WH.onEnter attrs.onEnter
@@ -193,7 +269,8 @@ view attrs_ props =
                                 |> D.andThen
                                     (\value ->
                                         Dict.get value optionsDict
-                                            |> props.onInput value
+                                            |> update props.value value
+                                            |> props.onInput
                                             |> D.succeed
                                     )
                             )

@@ -1,22 +1,52 @@
 module W.InputText exposing
     ( view
-    , email, password, search, telephone, url, InputType
-    , id, class, unstyled, mask, placeholder, disabled, required, readOnly
-    , prefix, suffix
-    , viewWithValidation, minLength, maxLength, pattern, validation, errorToString, Error(..)
+    , email, password, search, telephone, url
+    , placeholder, mask, prefix, suffix, unstyled
+    , disabled, readOnly
     , onEnter, onFocus, onBlur
-    , htmlAttrs, Attribute
+    , required, minLength, maxLength, pattern, validation
+    , viewWithValidation, errorToString, Error(..)
+    , htmlAttrs, noAttr, Attribute
     )
 
 {-|
 
 @docs view
-@docs email, password, search, telephone, url, InputType
-@docs id, class, unstyled, mask, placeholder, disabled, required, readOnly
-@docs prefix, suffix
-@docs viewWithValidation, minLength, maxLength, pattern, validation, errorToString, Error
+
+
+# Types
+
+@docs email, password, search, telephone, url
+
+
+# Styles
+
+@docs placeholder, mask, prefix, suffix, unstyled
+
+
+# States
+
+@docs disabled, readOnly
+
+
+# Actions
+
 @docs onEnter, onFocus, onBlur
-@docs htmlAttrs, Attribute
+
+
+# Validation
+
+@docs required, minLength, maxLength, pattern, validation
+
+
+# View With Validation
+
+@docs viewWithValidation, errorToString, Error
+
+
+# Html
+
+@docs htmlAttrs, noAttr, Attribute
 
 -}
 
@@ -98,14 +128,12 @@ errorToString error =
 
 
 {-| -}
-type Attribute customError msg
-    = Attribute (Attributes customError msg -> Attributes customError msg)
+type Attribute msg customError
+    = Attribute (Attributes msg customError -> Attributes msg customError)
 
 
-type alias Attributes customError msg =
-    { id : Maybe String
-    , type_ : InputType
-    , class : String
+type alias Attributes msg customError =
+    { type_ : InputType
     , unstyled : Bool
     , disabled : Bool
     , readOnly : Bool
@@ -125,16 +153,14 @@ type alias Attributes customError msg =
     }
 
 
-applyAttrs : List (Attribute customError msg) -> Attributes customError msg
+applyAttrs : List (Attribute msg customError) -> Attributes msg customError
 applyAttrs attrs =
     List.foldl (\(Attribute fn) a -> fn a) defaultAttrs attrs
 
 
-defaultAttrs : Attributes customError msg
+defaultAttrs : Attributes msg customError
 defaultAttrs =
-    { id = Nothing
-    , type_ = Text
-    , class = ""
+    { type_ = Text
     , unstyled = False
     , disabled = False
     , readOnly = False
@@ -159,153 +185,145 @@ defaultAttrs =
 
 
 {-| -}
-id : String -> Attribute customError msg
-id v =
-    Attribute <| \attrs -> { attrs | id = Just v }
-
-
-{-| -}
-password : Attribute customError msg
+password : Attribute msg customError
 password =
     Attribute <| \attrs -> { attrs | type_ = Password }
 
 
 {-| -}
-search : Attribute customError msg
+search : Attribute msg customError
 search =
     Attribute <| \attrs -> { attrs | type_ = Search }
 
 
 {-| -}
-url : Attribute customError msg
+url : Attribute msg customError
 url =
     Attribute <| \attrs -> { attrs | type_ = Url }
 
 
 {-| -}
-email : Attribute customError msg
+email : Attribute msg customError
 email =
     Attribute <| \attrs -> { attrs | type_ = Email }
 
 
 {-| -}
-telephone : Attribute customError msg
+telephone : Attribute msg customError
 telephone =
     Attribute <| \attrs -> { attrs | type_ = Telephone }
 
 
 {-| -}
-class : String -> Attribute customError msg
-class v =
-    Attribute <| \attrs -> { attrs | class = v }
-
-
-{-| -}
-unstyled : Attribute customError msg
+unstyled : Attribute msg customError
 unstyled =
     Attribute <| \attrs -> { attrs | unstyled = True }
 
 
 {-| -}
-placeholder : String -> Attribute customError msg
+placeholder : String -> Attribute msg customError
 placeholder v =
     Attribute <| \attrs -> { attrs | placeholder = Just v }
 
 
 {-| -}
-disabled : Bool -> Attribute customError msg
+disabled : Bool -> Attribute msg customError
 disabled v =
     Attribute <| \attrs -> { attrs | disabled = v }
 
 
 {-| -}
-readOnly : Bool -> Attribute customError msg
+readOnly : Bool -> Attribute msg customError
 readOnly v =
     Attribute <| \attrs -> { attrs | readOnly = v }
 
 
 {-| -}
-required : Bool -> Attribute customError msg
+required : Bool -> Attribute msg customError
 required v =
     Attribute <| \attrs -> { attrs | required = v }
 
 
 {-| -}
-minLength : Int -> Attribute customError msg
+minLength : Int -> Attribute msg customError
 minLength v =
     Attribute <| \attrs -> { attrs | minLength = Just v }
 
 
 {-| -}
-maxLength : Int -> Attribute customError msg
+maxLength : Int -> Attribute msg customError
 maxLength v =
     Attribute <| \attrs -> { attrs | maxLength = Just v }
 
 
 {-| -}
-pattern : String -> Attribute customError msg
+pattern : String -> Attribute msg customError
 pattern v =
     Attribute <| \attrs -> { attrs | pattern = Just v }
 
 
 {-| -}
-validation : (String -> Maybe customError) -> Attribute customError msg
+validation : (String -> Maybe customError) -> Attribute msg customError
 validation v =
     Attribute <| \attrs -> { attrs | validation = Just v }
 
 
 {-| -}
-prefix : H.Html msg -> Attribute customError msg
+prefix : H.Html msg -> Attribute msg customError
 prefix v =
     Attribute <| \attrs -> { attrs | prefix = Just v }
 
 
 {-| -}
-suffix : H.Html msg -> Attribute customError msg
+suffix : H.Html msg -> Attribute msg customError
 suffix v =
     Attribute <| \attrs -> { attrs | suffix = Just v }
 
 
 {-| -}
-mask : (String -> String) -> Attribute customError msg
+mask : (String -> String) -> Attribute msg customError
 mask v =
     Attribute <| \attrs -> { attrs | mask = Just v }
 
 
 {-| -}
-onBlur : msg -> Attribute customError msg
+onBlur : msg -> Attribute msg customError
 onBlur v =
     Attribute <| \attrs -> { attrs | onBlur = Just v }
 
 
 {-| -}
-onFocus : msg -> Attribute customError msg
+onFocus : msg -> Attribute msg customError
 onFocus v =
     Attribute <| \attrs -> { attrs | onFocus = Just v }
 
 
 {-| -}
-onEnter : msg -> Attribute customError msg
+onEnter : msg -> Attribute msg customError
 onEnter v =
     Attribute <| \attrs -> { attrs | onEnter = Just v }
 
 
 {-| -}
-htmlAttrs : List (H.Attribute msg) -> Attribute customError msg
+htmlAttrs : List (H.Attribute msg) -> Attribute msg customError
 htmlAttrs v =
     Attribute <| \attrs -> { attrs | htmlAttributes = v }
+
+
+{-| -}
+noAttr : Attribute msg customError
+noAttr =
+    Attribute identity
 
 
 
 -- Main
 
 
-baseAttrs : Attributes customError msg -> List (H.Attribute msg)
+baseAttrs : Attributes msg customError -> List (H.Attribute msg)
 baseAttrs attrs =
     attrs.htmlAttributes
-        ++ [ WH.maybeAttr HA.id attrs.id
-           , HA.type_ (inputInputTypeToString attrs.type_)
-           , HA.class attrs.class
+        ++ [ HA.type_ (inputInputTypeToString attrs.type_)
            , HA.classList [ ( WI.baseClass, not attrs.unstyled ) ]
            , WI.maskClass attrs.mask
            , WH.attrIf attrs.readOnly HA.tabindex -1
@@ -326,7 +344,7 @@ baseAttrs attrs =
 
 {-| -}
 view :
-    List (Attribute customError msg)
+    List (Attribute msg customError)
     ->
         { onInput : String -> msg
         , value : String
@@ -334,7 +352,7 @@ view :
     -> H.Html msg
 view attrs_ props =
     let
-        attrs : Attributes customError msg
+        attrs : Attributes msg customError
         attrs =
             applyAttrs attrs_
     in
@@ -354,7 +372,7 @@ view attrs_ props =
 
 {-| -}
 viewWithValidation :
-    List (Attribute customError msg)
+    List (Attribute msg customError)
     ->
         { value : String
         , onInput : Result (Error customError) String -> String -> msg
@@ -362,7 +380,7 @@ viewWithValidation :
     -> H.Html msg
 viewWithValidation attrs_ props =
     let
-        attrs : Attributes customError msg
+        attrs : Attributes msg customError
         attrs =
             applyAttrs attrs_
     in

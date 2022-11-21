@@ -1,20 +1,40 @@
 module W.Table exposing
     ( view
-    , groups, highlight, headerHeight, Attribute
-    , onClick, onMouseEnter, onMouseLeave
     , string, int, float, bool, html, Column
     , size, noAutosize, alignRight, alignLeft, alignCenter, columnHtmlAttrs, ColumnAttribute
-    , htmlAttrs
+    , groups, highlight, headerHeight
+    , onClick, onMouseEnter, onMouseLeave
+    , htmlAttrs, noAttr, Attribute
     )
 
 {-|
 
 @docs view
-@docs groups, highlight, headerHeight, Attribute
-@docs onClick, onMouseEnter, onMouseLeave
+
+
+# Columns
+
 @docs string, int, float, bool, html, Column
+
+
+# Column Attributes
+
 @docs size, noAutosize, alignRight, alignLeft, alignCenter, columnHtmlAttrs, ColumnAttribute
-@docs htmlAttrs
+
+
+# Table Attributes
+
+@docs groups, highlight, headerHeight
+
+
+# Actions
+
+@docs onClick, onMouseEnter, onMouseLeave
+
+
+# Html
+
+@docs htmlAttrs, noAttr, Attribute
 
 -}
 
@@ -103,6 +123,12 @@ onClick v =
 htmlAttrs : List (H.Attribute msg) -> Attribute msg a
 htmlAttrs v =
     Attribute <| \attrs -> { attrs | htmlAttributes = v }
+
+
+{-| -}
+noAttr : Attribute msg a
+noAttr =
+    Attribute identity
 
 
 

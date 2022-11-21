@@ -7,7 +7,6 @@ import UI
 import W.ButtonGroup
 
 
-
 chapter_ : Chapter x
 chapter_ =
     chapter "ButtonGroup"
@@ -19,48 +18,49 @@ chapter_ =
                             [ W.ButtonGroup.highlighted ((==) 2)
                             ]
                             { items = List.range 0 2
-                            , toLabel = \i -> H.text (String.fromInt i)
+                            , toLabel = \i -> [ H.text (String.fromInt i) ]
                             , onClick = logActionWith String.fromInt "onClick"
                             }
                         , W.ButtonGroup.view []
                             { items = [ 0, 1 ]
-                            , toLabel = \i -> H.text (String.fromInt i)
+                            , toLabel = \i -> [ H.text (String.fromInt i) ]
                             , onClick = logActionWith String.fromInt "onClick"
                             }
                         , W.ButtonGroup.view []
                             { items = [ 1 ]
-                            , toLabel = \i -> H.text (String.fromInt i)
+                            , toLabel = \i -> [ H.text (String.fromInt i) ]
                             , onClick = logActionWith String.fromInt "onClick"
                             }
                         ]
                     , UI.hSpacer
                         [ W.ButtonGroup.view [ W.ButtonGroup.outlined ]
                             { items = List.range 0 2
-                            , toLabel = \i -> H.text (String.fromInt i)
+                            , toLabel = \i -> [ H.text (String.fromInt i) ]
                             , onClick = logActionWith String.fromInt "onClick"
                             }
                         , W.ButtonGroup.view [ W.ButtonGroup.outlined ]
                             { items = [ 0, 1 ]
-                            , toLabel = \i -> H.text (String.fromInt i)
+                            , toLabel = \i -> [ H.text (String.fromInt i) ]
                             , onClick = logActionWith String.fromInt "onClick"
                             }
                         , W.ButtonGroup.view [ W.ButtonGroup.outlined ]
                             { items = [ 1 ]
-                            , toLabel = \i -> H.text (String.fromInt i)
+                            , toLabel = \i -> [ H.text (String.fromInt i) ]
                             , onClick = logActionWith String.fromInt "onClick"
                             }
                         , W.ButtonGroup.view
-                            [ W.ButtonGroup.disabled (\_ -> True)
+                            [ W.ButtonGroup.outlined
+                            , W.ButtonGroup.disabled (\_ -> True)
                             ]
                             { items = List.range 0 2
-                            , toLabel = \i -> H.text (String.fromInt i)
+                            , toLabel = \i -> [ H.text (String.fromInt i) ]
                             , onClick = logActionWith String.fromInt "onClick"
                             }
                         ]
                     , UI.hSpacer
                         [ W.ButtonGroup.view [ W.ButtonGroup.small ]
                             { items = List.range 0 2
-                            , toLabel = \i -> H.text (String.fromInt i)
+                            , toLabel = \i -> [ H.text (String.fromInt i) ]
                             , onClick = logActionWith String.fromInt "onClick"
                             }
                         , W.ButtonGroup.view
@@ -68,7 +68,7 @@ chapter_ =
                             , W.ButtonGroup.outlined
                             ]
                             { items = List.range 0 2
-                            , toLabel = \i -> H.text (String.fromInt i)
+                            , toLabel = \i -> [ H.text (String.fromInt i) ]
                             , onClick = logActionWith String.fromInt "onClick"
                             }
                         , W.ButtonGroup.view
@@ -76,7 +76,7 @@ chapter_ =
                             , W.ButtonGroup.small
                             ]
                             { items = List.range 0 2
-                            , toLabel = \i -> H.text (String.fromInt i)
+                            , toLabel = \i -> [ H.text (String.fromInt i) ]
                             , onClick = logActionWith String.fromInt "onClick"
                             }
                         ]
@@ -87,7 +87,7 @@ chapter_ =
                     [ UI.hSpacer
                         [ W.ButtonGroup.view [ W.ButtonGroup.rounded ]
                             { items = List.range 0 2
-                            , toLabel = \i -> H.text (String.fromInt i)
+                            , toLabel = \i -> [ H.text (String.fromInt i) ]
                             , onClick = logActionWith String.fromInt "onClick"
                             }
                         , W.ButtonGroup.view
@@ -95,7 +95,7 @@ chapter_ =
                             , W.ButtonGroup.outlined
                             ]
                             { items = List.range 0 2
-                            , toLabel = \i -> H.text (String.fromInt i)
+                            , toLabel = \i -> [ H.text (String.fromInt i) ]
                             , onClick = logActionWith String.fromInt "onClick"
                             }
                         , W.ButtonGroup.view
@@ -103,7 +103,7 @@ chapter_ =
                             , W.ButtonGroup.rounded
                             ]
                             { items = List.range 0 2
-                            , toLabel = \i -> H.text (String.fromInt i)
+                            , toLabel = \i -> [ H.text (String.fromInt i) ]
                             , onClick = logActionWith String.fromInt "onClick"
                             }
                         ]
@@ -113,7 +113,7 @@ chapter_ =
                             , W.ButtonGroup.small
                             ]
                             { items = List.range 0 2
-                            , toLabel = \i -> H.text (String.fromInt i)
+                            , toLabel = \i -> [ H.text (String.fromInt i) ]
                             , onClick = logActionWith String.fromInt "onClick"
                             }
                         , W.ButtonGroup.view
@@ -122,7 +122,7 @@ chapter_ =
                             , W.ButtonGroup.small
                             ]
                             { items = List.range 0 2
-                            , toLabel = \i -> H.text (String.fromInt i)
+                            , toLabel = \i -> [ H.text (String.fromInt i) ]
                             , onClick = logActionWith String.fromInt "onClick"
                             }
                         , W.ButtonGroup.view
@@ -131,18 +131,18 @@ chapter_ =
                             , W.ButtonGroup.small
                             ]
                             { items = List.range 0 2
-                            , toLabel = \i -> H.text (String.fromInt i)
+                            , toLabel = \i -> [ H.text (String.fromInt i) ]
                             , onClick = logActionWith String.fromInt "onClick"
                             }
                         ]
                     ]
               )
-            , ( "Fill"
+            , ( "Full"
               , W.ButtonGroup.view
-                    [ W.ButtonGroup.fill
+                    [ W.ButtonGroup.full
                     ]
                     { items = List.range 0 2
-                    , toLabel = \i -> H.text (String.fromInt i)
+                    , toLabel = \i -> [ H.text (String.fromInt i) ]
                     , onClick = logActionWith String.fromInt "onClick"
                     }
               )

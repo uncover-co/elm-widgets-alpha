@@ -21,6 +21,7 @@ import Html as H
 import Html.Attributes as HA
 import Html.Events as HE
 import Theme
+import W.Button
 import W.Internal.Helpers as WH
 
 
@@ -183,54 +184,60 @@ view attrs_ children_ =
                 ++ [ WH.maybeAttr HA.id attrs.id
                    , HA.class attrs.class
                    , HA.class "ew-m-0 ew-box-border ew-relative ew-text-left"
-                   , HA.class "ew-flex ew-gap-6 ew-w-full"
+                   , HA.class "ew-flex ew-w-full ew-items-center"
                    , HA.class "ew-font-text ew-text-base ew-font-medium"
-                   , HA.class "ew-pb-4 ew-pt-5 ew-px-6"
-                   , HA.class "ew-bg-base-bg ew-rounded ew-shadow-lg"
+                   , HA.class "ew-pb-2 ew-pt-3.5 ew-px-6"
+                   , HA.class "ew-min-h-[60px]"
+                   , HA.class "ew-bg-base-bg ew-rounded-md ew-shadow-lg"
                    , HA.class "ew-border-solid ew-border-base-aux/10 ew-border-px"
+                   , HA.class "before:ew-content-[''] before:ew-block before:ew-rounded"
+                   , HA.class "before:ew-absolute before:ew-inset-0 before:ew-bg-current before:ew-opacity-0"
                    , HA.class "after:ew-content-[''] after:ew-block"
                    , HA.class "after:ew-absolute after:ew-top-0 after:ew-inset-x-0 after:ew-rounded-t"
                    , HA.class "after:ew-h-1.5 after:ew-bg-current"
                    , HA.style "color" attrs.color
                    ]
 
-        children : List (H.Html msg)
+        children : H.Html msg
         children =
-            [ WH.maybeHtml (\i -> H.div [ HA.class "ew-shrink-0 ew-flex ew-items-center" ] [ i ]) attrs.icon
-            , H.div [ HA.class "ew-grow ew-flex ew-flex-col" ]
-                [ H.div [] children_
-                , WH.maybeHtml (\h -> H.div [ HA.class "ew-text-sm ew-font-normal ew-text-base-aux" ] [ h ]) attrs.footer
+            H.div
+                [ HA.class "ew-flex ew-gap-6 ew-items-center ew-w-full ew-relative ew-z-10"
                 ]
-            , WH.maybeHtml
-                (\onClose_ ->
-                    H.div
-                        [ HA.class "ew-shrink-0 ew-flex ew-items-center" ]
-                        [ H.button
-                            [ HA.class "ew-appearance-none ew-bg-transparent ew-border-0"
-                            , HE.onClick onClose_
+                [ WH.maybeHtml (\i -> H.div [ HA.class "ew-shrink-0 ew-flex ew-items-center" ] [ i ]) attrs.icon
+                , H.div
+                    [ HA.class "ew-grow ew-flex ew-flex-col" ]
+                    [ H.div [] children_
+                    , WH.maybeHtml (\h -> H.div [ HA.class "ew-text-sm ew-font-normal ew-text-base-aux" ] [ h ]) attrs.footer
+                    ]
+                , WH.maybeHtml
+                    (\onClose_ ->
+                        H.div
+                            [ HA.class "ew-shrink-0 ew-flex ew-items-center" ]
+                            [ W.Button.view [ W.Button.invisible, W.Button.icon, W.Button.small ]
+                                { label = [ H.text "x" ]
+                                , onClick = onClose_
+                                }
                             ]
-                            [ H.text "X" ]
-                        ]
-                )
-                attrs.onClose
-            ]
+                    )
+                    attrs.onClose
+                ]
     in
     case ( attrs.onClick, attrs.href ) of
         ( Just onClick_, _ ) ->
             H.button
                 (baseAttrs ++ [ interactiveClass, HE.onClick onClick_ ])
-                children
+                [ children ]
 
         ( Nothing, Just href_ ) ->
             H.a
                 (baseAttrs ++ [ interactiveClass, HA.href href_ ])
-                children
+                [ children ]
 
         _ ->
-            H.div baseAttrs children
+            H.div baseAttrs [ children ]
 
 
 interactiveClass : H.Attribute msg
 interactiveClass =
     HA.class
-        "ew-appearance-none ew-bg-transparent ew-no-underline ew-focusable hover:before:ew-opacity-[0.05]"
+        "ew-appearance-none ew-bg-transparent ew-no-underline ew-focusable hover:before:ew-opacity-[0.05] active:before:ew-opacity-10"

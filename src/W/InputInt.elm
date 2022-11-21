@@ -1,22 +1,52 @@
 module W.InputInt exposing
-    ( view, init, toInt, toString, Value
-    , min, max, minLength, maxLength
-    , id, class, placeholder, mask, disabled, required, readOnly, validation
-    , prefix, suffix
+    ( view
+    , init, toInt, toString, Value
+    , placeholder, mask, prefix, suffix
+    , disabled, readOnly
+    , required, min, max, minLength, maxLength, validation
     , viewWithValidation, errorToString, Error(..)
     , onEnter, onFocus, onBlur
-    , htmlAttrs, Attribute
+    , htmlAttrs, noAttr, Attribute
     )
 
 {-|
 
-@docs view, init, toInt, toString, Value
-@docs min, max, minLength, maxLength
-@docs id, class, placeholder, mask, disabled, required, readOnly, validation
-@docs prefix, suffix
+@docs view
+
+
+# Value
+
+@docs init, toInt, toString, Value
+
+
+# Styles
+
+@docs placeholder, mask, prefix, suffix
+
+
+# States
+
+@docs disabled, readOnly
+
+
+# Validation
+
+@docs required, min, max, minLength, maxLength, validation
+
+
+# View With Validation
+
 @docs viewWithValidation, errorToString, Error
+
+
+# Actions
+
 @docs onEnter, onFocus, onBlur
-@docs htmlAttrs, Attribute
+
+
+# Html
+
+@docs htmlAttrs, noAttr, Attribute
 
 -}
 
@@ -32,10 +62,12 @@ import W.Internal.Input
 -- Value
 
 
+{-| -}
 type Value
     = Value String Int
 
 
+{-| -}
 init : Maybe Int -> Value
 init value =
     case value of
@@ -46,11 +78,13 @@ init value =
             Value "" 0
 
 
+{-| -}
 toInt : Value -> Int
 toInt (Value _ v) =
     v
 
 
+{-| -}
 toString : Value -> String
 toString (Value v _) =
     v
@@ -98,14 +132,12 @@ errorToString error =
 
 
 {-| -}
-type Attribute customError msg
-    = Attribute (Attributes customError msg -> Attributes customError msg)
+type Attribute msg customError
+    = Attribute (Attributes msg customError -> Attributes msg customError)
 
 
-type alias Attributes customError msg =
-    { id : Maybe String
-    , class : String
-    , disabled : Bool
+type alias Attributes msg customError =
+    { disabled : Bool
     , readOnly : Bool
     , required : Bool
     , min : Maybe Float
@@ -124,16 +156,14 @@ type alias Attributes customError msg =
     }
 
 
-applyAttrs : List (Attribute customError msg) -> Attributes customError msg
+applyAttrs : List (Attribute msg customError) -> Attributes msg customError
 applyAttrs attrs =
     List.foldl (\(Attribute fn) a -> fn a) defaultAttrs attrs
 
 
-defaultAttrs : Attributes customError msg
+defaultAttrs : Attributes msg customError
 defaultAttrs =
-    { id = Nothing
-    , class = ""
-    , disabled = False
+    { disabled = False
     , readOnly = False
     , required = False
     , min = Nothing
@@ -157,111 +187,105 @@ defaultAttrs =
 
 
 {-| -}
-id : String -> Attribute customError msg
-id v =
-    Attribute <| \attrs -> { attrs | id = Just v }
-
-
-{-| -}
-class : String -> Attribute customError msg
-class v =
-    Attribute <| \attrs -> { attrs | class = v }
-
-
-{-| -}
-placeholder : String -> Attribute customError msg
+placeholder : String -> Attribute msg customError
 placeholder v =
     Attribute <| \attrs -> { attrs | placeholder = Just v }
 
 
 {-| -}
-mask : (String -> String) -> Attribute customError msg
+mask : (String -> String) -> Attribute msg customError
 mask v =
     Attribute <| \attrs -> { attrs | mask = Just v }
 
 
 {-| -}
-disabled : Bool -> Attribute customError msg
+disabled : Bool -> Attribute msg customError
 disabled v =
     Attribute <| \attrs -> { attrs | disabled = v }
 
 
 {-| -}
-readOnly : Bool -> Attribute customError msg
+readOnly : Bool -> Attribute msg customError
 readOnly v =
     Attribute <| \attrs -> { attrs | readOnly = v }
 
 
 {-| -}
-required : Bool -> Attribute customError msg
+required : Bool -> Attribute msg customError
 required v =
     Attribute <| \attrs -> { attrs | required = v }
 
 
 {-| -}
-min : Float -> Attribute customError msg
+min : Float -> Attribute msg customError
 min v =
     Attribute <| \attrs -> { attrs | min = Just v }
 
 
 {-| -}
-max : Float -> Attribute customError msg
+max : Float -> Attribute msg customError
 max v =
     Attribute <| \attrs -> { attrs | min = Just v }
 
 
 {-| -}
-minLength : Int -> Attribute customError msg
+minLength : Int -> Attribute msg customError
 minLength v =
     Attribute <| \attrs -> { attrs | minLength = Just v }
 
 
 {-| -}
-maxLength : Int -> Attribute customError msg
+maxLength : Int -> Attribute msg customError
 maxLength v =
     Attribute <| \attrs -> { attrs | maxLength = Just v }
 
 
 {-| -}
-validation : (Int -> String -> Maybe customError) -> Attribute customError msg
+validation : (Int -> String -> Maybe customError) -> Attribute msg customError
 validation v =
     Attribute <| \attrs -> { attrs | validation = Just v }
 
 
 {-| -}
-prefix : H.Html msg -> Attribute customError msg
+prefix : H.Html msg -> Attribute msg customError
 prefix v =
     Attribute <| \attrs -> { attrs | prefix = Just v }
 
 
 {-| -}
-suffix : H.Html msg -> Attribute customError msg
+suffix : H.Html msg -> Attribute msg customError
 suffix v =
     Attribute <| \attrs -> { attrs | suffix = Just v }
 
 
 {-| -}
-onBlur : msg -> Attribute customError msg
+onBlur : msg -> Attribute msg customError
 onBlur v =
     Attribute <| \attrs -> { attrs | onBlur = Just v }
 
 
 {-| -}
-onFocus : msg -> Attribute customError msg
+onFocus : msg -> Attribute msg customError
 onFocus v =
     Attribute <| \attrs -> { attrs | onFocus = Just v }
 
 
 {-| -}
-onEnter : msg -> Attribute customError msg
+onEnter : msg -> Attribute msg customError
 onEnter v =
     Attribute <| \attrs -> { attrs | onEnter = Just v }
 
 
 {-| -}
-htmlAttrs : List (H.Attribute msg) -> Attribute customError msg
+htmlAttrs : List (H.Attribute msg) -> Attribute msg customError
 htmlAttrs v =
     Attribute <| \attrs -> { attrs | htmlAttributes = v }
+
+
+{-| -}
+noAttr : Attribute msg customError
+noAttr =
+    Attribute identity
 
 
 
@@ -269,14 +293,12 @@ htmlAttrs v =
 
 
 {-| -}
-baseAttrs : Attributes customError msg -> List (H.Attribute msg)
+baseAttrs : Attributes msg customError -> List (H.Attribute msg)
 baseAttrs attrs =
     attrs.htmlAttributes
         ++ [ HA.type_ "number"
            , HA.step "1"
-           , WH.maybeAttr HA.id attrs.id
            , HA.class W.Internal.Input.baseClass
-           , HA.class attrs.class
            , W.Internal.Input.maskClass attrs.mask
            , HA.required attrs.required
            , HA.disabled attrs.disabled
@@ -294,7 +316,7 @@ baseAttrs attrs =
 
 {-| -}
 view :
-    List (Attribute customError msg)
+    List (Attribute msg customError)
     ->
         { value : Value
         , onInput : Value -> msg
@@ -302,7 +324,7 @@ view :
     -> H.Html msg
 view attrs_ props =
     let
-        attrs : Attributes customError msg
+        attrs : Attributes msg customError
         attrs =
             applyAttrs attrs_
     in
@@ -325,7 +347,7 @@ view attrs_ props =
 
 {-| -}
 viewWithValidation :
-    List (Attribute customError msg)
+    List (Attribute msg customError)
     ->
         { value : String
         , onInput : Result (Error customError) Int -> Value -> msg
@@ -333,7 +355,7 @@ viewWithValidation :
     -> H.Html msg
 viewWithValidation attrs_ props =
     let
-        attrs : Attributes customError msg
+        attrs : Attributes msg customError
         attrs =
             applyAttrs attrs_
     in

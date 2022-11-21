@@ -61,16 +61,18 @@ chapter_ =
                                 [ H.text "Toggle Modal"
                                 ]
                             ]
-                        , W.Modal.view
-                            [ W.Modal.toggable "my-modal-toggle" ]
-                            [ H.div
-                                [ HA.style "padding" "40px"
-                                , HA.style "text-align" "center"
-                                , HA.style "font-family" Theme.fontText
+                        , W.Modal.viewToggable []
+                            { id = "my-modal-toggle"
+                            , children =
+                                [ H.div
+                                    [ HA.style "padding" "40px"
+                                    , HA.style "text-align" "center"
+                                    , HA.style "font-family" Theme.fontText
+                                    ]
+                                    [ H.text "Hello!"
+                                    ]
                                 ]
-                                [ H.text "Hello!"
-                                ]
-                            ]
+                            }
                         ]
               )
             , ( "input-int"

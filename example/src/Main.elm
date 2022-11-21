@@ -38,6 +38,7 @@ import W.Styles
 
 type alias SharedState =
     { overview : Chapters.GettingStarted.Model
+    , autocomplete : Chapters.Form.InputAutocomplete.Model
     , range :
         { default : Float
         , customColor : Float
@@ -55,6 +56,7 @@ main =
         |> withStatefulOptions
             [ ElmBook.StatefulOptions.initialState
                 { overview = Chapters.GettingStarted.init
+                , autocomplete = Chapters.Form.InputAutocomplete.init
                 , range = Chapters.Form.InputSlider.init
                 , inputText = Chapters.Form.InputText.init
                 , inputInt = Chapters.Form.InputInt.init

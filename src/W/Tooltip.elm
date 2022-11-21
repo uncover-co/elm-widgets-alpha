@@ -1,14 +1,22 @@
 module W.Tooltip exposing
     ( view
     , slow, alwaysVisible
-    , id, class, htmlAttrs
+    , htmlAttrs, noAttr, Attribute
     )
 
 {-|
 
 @docs view
+
+
+# Styles
+
 @docs slow, alwaysVisible
-@docs id, class, htmlAttrs
+
+
+# Html
+
+@docs htmlAttrs, noAttr, Attribute
 
 -}
 
@@ -26,9 +34,7 @@ type Attribute msg
 
 
 type alias Attributes msg =
-    { id : Maybe String
-    , class : String
-    , htmlAttributes : List (H.Attribute msg)
+    { htmlAttributes : List (H.Attribute msg)
     , slow : Bool
     , alwaysVisible : Bool
     }
@@ -41,9 +47,7 @@ applyAttrs attrs =
 
 defaultAttrs : Attributes msg
 defaultAttrs =
-    { id = Nothing
-    , class = ""
-    , htmlAttributes = []
+    { htmlAttributes = []
     , slow = False
     , alwaysVisible = False
     }
@@ -54,21 +58,15 @@ defaultAttrs =
 
 
 {-| -}
-id : String -> Attribute msg
-id v =
-    Attribute <| \attrs -> { attrs | id = Just v }
-
-
-{-| -}
-class : String -> Attribute msg
-class v =
-    Attribute <| \attrs -> { attrs | class = v }
-
-
-{-| -}
 htmlAttrs : List (H.Attribute msg) -> Attribute msg
 htmlAttrs v =
     Attribute <| \attrs -> { attrs | htmlAttributes = v }
+
+
+{-| -}
+noAttr : Attribute msg
+noAttr =
+    Attribute identity
 
 
 {-| -}
@@ -104,19 +102,21 @@ view attrs_ props =
         tooltip : H.Html msg
         tooltip =
             H.span
-                [ HA.class "ew-tooltip ew-absolute ew-pointer-events-none ew-bottom-full"
-                , HA.class "ew-mb-1"
-                , HA.class "group-hover:ew-translate-y-0"
-                , HA.class "ew-transition"
-                , HA.classList
-                    [ ( "group-hover:ew-delay-500", not attrs.slow )
-                    , ( "group-hover:ew-delay-1000", attrs.slow )
-                    , ( "ew-translate-y-0.5 ew-opacity-0", not attrs.alwaysVisible )
-                    ]
-                , HA.class "ew-px-2 ew-py-1 ew-rounded"
-                , HA.class "ew-font-text ew-text-sm"
-                , HA.class "ew-bg-neutral-bg ew-text-neutral-aux"
-                ]
+                (attrs.htmlAttributes
+                    ++ [ HA.class "ew-tooltip ew-absolute ew-pointer-events-none ew-bottom-full"
+                       , HA.class "ew-mb-1"
+                       , HA.class "ew-px-2 ew-py-1 ew-rounded"
+                       , HA.class "ew-font-text ew-text-sm"
+                       , HA.class "ew-bg-neutral-bg ew-text-neutral-aux"
+                       , HA.class "ew-transition"
+                       , HA.class "group-hover:ew-translate-y-0 group-hover:ew-opacity-100"
+                       , HA.classList
+                            [ ( "group-hover:ew-delay-500", not attrs.slow )
+                            , ( "group-hover:ew-delay-1000", attrs.slow )
+                            , ( "ew-translate-y-0.5 ew-opacity-0", not attrs.alwaysVisible )
+                            ]
+                       ]
+                )
                 props.tooltip
     in
     H.span []

@@ -5,8 +5,11 @@
 @layer components {
   .ew-btn {
     @apply ew-box-border;
-    @apply ew-inline-flex ew-items-center ew-justify-center ew-py-0;
+    @apply ew-relative ew-inline-flex ew-items-center ew-justify-center ew-py-0;
     @apply ew-font-text ew-font-semibold ew-leading-none ew-tracking-wider ew-no-underline;
+    @apply before:ew-block before:ew-content-[''] before:ew-absolute before:ew-inset-0 before:ew-pointer-events-none;
+    @apply before:ew-z-0 before:ew-transition before:ew-bg-transparent;
+    @apply hover:before:ew-bg-black/10;
   }
   .ew-btn-like {
     @apply ew-appearance-none ew-no-underline;
@@ -50,6 +53,7 @@
   }
 }
 
+
 /* 
  * ======================================================
  * Input Reset and Icons
@@ -83,6 +87,8 @@
   width: 24px;
   border-radius: 50%;
   background: currentColor;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.05);
 }
 
 .ew-slider::-moz-range-thumb  {
@@ -91,6 +97,8 @@
   width: 24px;
   border-radius: 50%;
   background: currentColor;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.05);
 }
 
 /* 

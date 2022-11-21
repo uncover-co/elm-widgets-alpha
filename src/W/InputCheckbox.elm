@@ -1,14 +1,28 @@
 module W.InputCheckbox exposing
     ( view, viewReadOnly
-    , id, color, disabled, readOnly
-    , Attribute
+    , color
+    , disabled, readOnly
+    , noAttr, Attribute
     )
 
 {-|
 
 @docs view, viewReadOnly
-@docs id, color, disabled, readOnly
-@docs Attribute
+
+
+# Styles
+
+@docs color
+
+
+# States
+
+@docs disabled, readOnly
+
+
+# Html
+
+@docs noAttr, Attribute
 
 -}
 
@@ -16,7 +30,6 @@ import Html as H
 import Html.Attributes as HA
 import Html.Events as HE
 import Theme
-import W.Internal.Helpers as WH
 
 
 
@@ -29,8 +42,7 @@ type Attribute msg
 
 
 type alias Attributes =
-    { id : Maybe String
-    , color : String
+    { color : String
     , disabled : Bool
     , readOnly : Bool
     }
@@ -43,8 +55,7 @@ applyAttrs attrs =
 
 defaultAttrs : Attributes
 defaultAttrs =
-    { id = Nothing
-    , color = Theme.primaryBackground
+    { color = Theme.primaryBackground
     , disabled = False
     , readOnly = False
     }
@@ -52,12 +63,6 @@ defaultAttrs =
 
 
 -- Attributes : Setters
-
-
-{-| -}
-id : String -> Attribute msg
-id v =
-    Attribute <| \attrs -> { attrs | id = Just v }
 
 
 {-| -}
@@ -78,6 +83,12 @@ readOnly v =
     Attribute <| \attrs -> { attrs | readOnly = v }
 
 
+{-| -}
+noAttr : Attribute msg
+noAttr =
+    Attribute identity
+
+
 
 -- Main
 
@@ -89,8 +100,7 @@ baseAttrs attrs_ value =
         attrs =
             applyAttrs attrs_
     in
-    [ WH.maybeAttr HA.id attrs.id
-    , HA.class "ew-check-radio ew-rounded before:ew-rounded-sm"
+    [ HA.class "ew-check-radio ew-rounded before:ew-rounded-sm"
     , HA.style "color" attrs.color
     , HA.type_ "checkbox"
     , HA.checked value

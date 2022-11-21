@@ -20,8 +20,8 @@ chapter_ =
                , ( "Custom"
                  , [ W.Button.theme
                         { background = "#ef67ef"
-                        , foreground = "#f6e1f6"
-                        , aux = "#ffedff"
+                        , foreground = "#ef67ef"
+                        , aux = "#ffffff"
                         }
                    ]
                  )
@@ -32,82 +32,82 @@ chapter_ =
                         , UI.vSpacer
                             [ UI.hSpacer
                                 [ W.Button.view attrs
-                                    { label = H.text "Button"
+                                    { label = [ H.text "Button" ]
                                     , onClick = logAction ""
                                     }
                                 , W.Button.view
                                     (W.Button.outlined :: attrs)
-                                    { label = H.text "Outlined"
+                                    { label = [ H.text "Outlined" ]
                                     , onClick = logAction ""
                                     }
                                 , W.Button.view
                                     (W.Button.invisible :: attrs)
-                                    { label = H.text "Invisible"
+                                    { label = [ H.text "Invisible" ]
                                     , onClick = logAction ""
                                     }
                                 ]
                             , UI.hSpacer
                                 [ W.Button.view
                                     (W.Button.disabled True :: attrs)
-                                    { label = H.text "Button"
+                                    { label = [ H.text "Button" ]
                                     , onClick = logAction ""
                                     }
                                 , W.Button.view
                                     (W.Button.outlined :: W.Button.disabled True :: attrs)
-                                    { label = H.text "Outlined"
+                                    { label = [ H.text "Outlined" ]
                                     , onClick = logAction ""
                                     }
                                 , W.Button.view
                                     (W.Button.invisible :: W.Button.disabled True :: attrs)
-                                    { label = H.text "Invisible"
+                                    { label = [ H.text "Invisible" ]
                                     , onClick = logAction ""
                                     }
                                 ]
                             , UI.hSpacer
                                 [ W.Button.view (W.Button.rounded :: attrs)
-                                    { label = H.text "Button"
+                                    { label = [ H.text "Button" ]
                                     , onClick = logAction ""
                                     }
                                 , W.Button.view
                                     (W.Button.outlined :: W.Button.rounded :: attrs)
-                                    { label = H.text "Outlined"
+                                    { label = [ H.text "Outlined" ]
                                     , onClick = logAction ""
                                     }
                                 , W.Button.view
                                     (W.Button.invisible :: W.Button.rounded :: attrs)
-                                    { label = H.text "Invisible"
+                                    { label = [ H.text "Invisible" ]
                                     , onClick = logAction ""
                                     }
                                 ]
                             , UI.hSpacer
                                 [ W.Button.view (W.Button.large :: attrs)
-                                    { label = H.text "Button"
+                                    { label = [ H.text "Button" ]
                                     , onClick = logAction ""
                                     }
                                 , W.Button.view
                                     (W.Button.outlined :: W.Button.large :: attrs)
-                                    { label = H.text "Outlined"
+                                    { label = [ H.text "Outlined" ]
                                     , onClick = logAction ""
                                     }
                                 , W.Button.view
                                     (W.Button.invisible :: W.Button.large :: attrs)
-                                    { label = H.text "Invisible"
+                                    { label = [ H.text "Invisible" ]
                                     , onClick = logAction ""
                                     }
                                 ]
                             , UI.hSpacer
                                 [ W.Button.view (W.Button.small :: attrs)
-                                    { label = H.text "Button"
+                                    { label = [ H.text "Button" ]
                                     , onClick = logAction ""
                                     }
                                 , W.Button.view
                                     (W.Button.outlined :: W.Button.small :: attrs)
-                                    { label = H.text "Outlined"
+                                    { label = [ H.text "Outlined" ]
                                     , onClick = logAction ""
                                     }
                                 , W.Button.view
                                     (W.Button.invisible :: W.Button.small :: attrs)
-                                    { label = H.text "Invisible"
+                                    { label = [ H.text "Invisible" ]
                                     , onClick = logAction ""
                                     }
                                 ]
@@ -119,19 +119,19 @@ chapter_ =
                     [ UI.hSpacer
                         [ W.Button.viewLink
                             []
-                            { label = H.text "link"
+                            { label = [ H.text "link" ]
                             , href = "/logAction/#"
                             }
                         , W.Button.viewLink
                             [ W.Button.outlined
                             ]
-                            { label = H.text "link"
+                            { label = [ H.text "link" ]
                             , href = "/logAction/#"
                             }
                         , W.Button.viewLink
                             [ W.Button.invisible
                             ]
-                            { label = H.text "link"
+                            { label = [ H.text "link" ]
                             , href = "/logAction/#"
                             }
                         ]
@@ -139,21 +139,21 @@ chapter_ =
                         [ W.Button.viewLink
                             [ W.Button.disabled True
                             ]
-                            { label = H.text "link"
+                            { label = [ H.text "link" ]
                             , href = "/logAction/#"
                             }
                         , W.Button.viewLink
                             [ W.Button.outlined
                             , W.Button.disabled True
                             ]
-                            { label = H.text "link"
+                            { label = [ H.text "link" ]
                             , href = "/logAction/#"
                             }
                         , W.Button.viewLink
                             [ W.Button.invisible
                             , W.Button.disabled True
                             ]
-                            { label = H.text "link"
+                            { label = [ H.text "link" ]
                             , href = "/logAction/#"
                             }
                         ]
@@ -161,8 +161,8 @@ chapter_ =
                  )
                , ( "Full width"
                  , W.Button.view
-                    [ W.Button.fill ]
-                    { label = H.text "button"
+                    [ W.Button.full ]
+                    { label = [ H.text "button" ]
                     , onClick = logAction ""
                     }
                  )
@@ -170,43 +170,43 @@ chapter_ =
                  , UI.vSpacer
                     [ UI.hSpacer
                         [ W.Button.view [ W.Button.small, W.Button.icon ]
-                            { label = UI.viewIcon
+                            { label = [ UI.viewIcon ]
                             , onClick = logAction ""
                             }
                         , W.Button.view [ W.Button.small, W.Button.rounded, W.Button.icon ]
-                            { label = UI.viewIcon
+                            { label = [ UI.viewIcon ]
                             , onClick = logAction ""
                             }
                         , W.Button.view [ W.Button.small, W.Button.invisible, W.Button.icon ]
-                            { label = UI.viewIcon
+                            { label = [ UI.viewIcon ]
                             , onClick = logAction ""
                             }
                         ]
                     , UI.hSpacer
                         [ W.Button.view [ W.Button.icon ]
-                            { label = UI.viewIcon
+                            { label = [ UI.viewIcon ]
                             , onClick = logAction ""
                             }
                         , W.Button.view [ W.Button.rounded, W.Button.icon ]
-                            { label = UI.viewIcon
+                            { label = [ UI.viewIcon ]
                             , onClick = logAction ""
                             }
                         , W.Button.view [ W.Button.invisible, W.Button.icon ]
-                            { label = UI.viewIcon
+                            { label = [ UI.viewIcon ]
                             , onClick = logAction ""
                             }
                         ]
                     , UI.hSpacer
                         [ W.Button.view [ W.Button.large, W.Button.icon ]
-                            { label = UI.viewIcon
+                            { label = [ UI.viewIcon ]
                             , onClick = logAction ""
                             }
                         , W.Button.view [ W.Button.large, W.Button.rounded, W.Button.icon ]
-                            { label = UI.viewIcon
+                            { label = [ UI.viewIcon ]
                             , onClick = logAction ""
                             }
                         , W.Button.view [ W.Button.large, W.Button.invisible, W.Button.icon ]
-                            { label = UI.viewIcon
+                            { label = [ UI.viewIcon ]
                             , onClick = logAction ""
                             }
                         ]

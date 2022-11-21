@@ -1,12 +1,14 @@
 module W.Menu exposing
     ( view, viewButton, viewLink, viewTitle
-    , id, disabled, selected, left, right, htmlAttrs, Attribute
+    , disabled, selected, left, right
+    , htmlAttrs, noAttr, Attribute
     )
 
 {-|
 
 @docs view, viewButton, viewLink, viewTitle
-@docs id, disabled, selected, left, right, htmlAttrs, Attribute
+@docs disabled, selected, left, right
+@docs htmlAttrs, noAttr, Attribute
 
 -}
 
@@ -26,8 +28,7 @@ type Attribute msg
 
 
 type alias Attributes msg =
-    { id : Maybe String
-    , disabled : Bool
+    { disabled : Bool
     , selected : Bool
     , left : Maybe (H.Html msg)
     , right : Maybe (H.Html msg)
@@ -37,19 +38,12 @@ type alias Attributes msg =
 
 defaultAttrs : Attributes msg
 defaultAttrs =
-    { id = Nothing
-    , disabled = False
+    { disabled = False
     , selected = False
     , left = Nothing
     , right = Nothing
     , htmlAttributes = []
     }
-
-
-{-| -}
-id : String -> Attribute msg
-id v =
-    Attribute <| \attrs -> { attrs | id = Just v }
 
 
 {-| -}
@@ -83,6 +77,16 @@ htmlAttrs v =
 
 
 {-| -}
+noAttr : Attribute msg
+noAttr =
+    Attribute identity
+
+
+
+-- View
+
+
+{-| -}
 view : List (H.Html msg) -> H.Html msg
 view children =
     H.ul [ HA.class "ew-m-0 ew-p-0 ew-list-none ew-bg-base-bg ew-font-text" ]
@@ -99,13 +103,13 @@ applyAttrs attrs =
 baseAttrs : Attributes msg -> List (H.Attribute msg)
 baseAttrs attrs =
     attrs.htmlAttributes
-        ++ [ WH.maybeAttr HA.id attrs.id
-           , HA.disabled attrs.disabled
+        ++ [ HA.disabled attrs.disabled
            , HA.class "ew-m-0 ew-w-full ew-box-border ew-flex ew-items-center ew-content-start"
            , HA.class "ew-px-3 ew-py-2"
            , HA.class "ew-text-left ew-text-base ew-text-fg"
            , HA.class "hover:ew-bg-base-aux/[0.07]"
            , HA.class "active:ew-bg-base-aux/10"
+           , HA.class "ew-focusable ew-relative focus:ew-z-10"
            , HA.classList
                 [ ( "ew-text-primary-fg ew-bg-primary-fg/10 hover:ew-bg-primary-fg/[0.15] active:ew-bg-primary-fg/20", attrs.selected )
                 , ( "ew-text-base-fg ew-bg-base-bg", not attrs.selected )

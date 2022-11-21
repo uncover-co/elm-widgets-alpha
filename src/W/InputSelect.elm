@@ -1,14 +1,28 @@
 module W.InputSelect exposing
     ( view, viewGroups
-    , id, disabled, readOnly, prefix, suffix
-    , Attribute
+    , disabled, readOnly
+    , prefix, suffix
+    , noAttr, Attribute
     )
 
 {-|
 
 @docs view, viewGroups
-@docs id, disabled, readOnly, prefix, suffix
-@docs Attribute
+
+
+# States
+
+@docs disabled, readOnly
+
+
+# Styles
+
+@docs prefix, suffix
+
+
+# Html
+
+@docs noAttr, Attribute
 
 -}
 
@@ -30,8 +44,7 @@ type Attribute msg
 
 
 type alias Attributes msg =
-    { id : Maybe String
-    , disabled : Bool
+    { disabled : Bool
     , readOnly : Bool
     , prefix : Maybe (H.Html msg)
     , suffix : Maybe (H.Html msg)
@@ -45,8 +58,7 @@ applyAttrs attrs =
 
 defaultAttrs : Attributes msg
 defaultAttrs =
-    { id = Nothing
-    , disabled = False
+    { disabled = False
     , readOnly = False
     , prefix = Nothing
     , suffix = Nothing
@@ -55,12 +67,6 @@ defaultAttrs =
 
 
 -- Attributes : Setters
-
-
-{-| -}
-id : String -> Attribute msg
-id v =
-    Attribute <| \attrs -> { attrs | id = Just v }
 
 
 {-| -}
@@ -85,6 +91,16 @@ prefix v =
 suffix : H.Html msg -> Attribute msg
 suffix v =
     Attribute <| \attrs -> { attrs | suffix = Just v }
+
+
+{-| -}
+noAttr : Attribute msg
+noAttr =
+    Attribute identity
+
+
+
+-- View
 
 
 {-| -}
@@ -115,8 +131,7 @@ viewGroups attrs_ props =
         (H.div
             [ HA.class "ew-w-full ew-relative" ]
             [ H.select
-                [ WH.maybeAttr HA.id attrs.id
-                , HA.class W.Internal.Input.baseClass
+                [ HA.class W.Internal.Input.baseClass
                 , HA.disabled attrs.disabled
                 , HA.readonly attrs.readOnly
                 , WH.attrIf attrs.readOnly (HA.attribute "aria-readonly") "true"

@@ -25,7 +25,7 @@ chapter_ =
                     }
               )
             , ( "big number of pages"
-              , W.Pagination.view [ W.Pagination.separator (H.text "...") ]
+              , W.Pagination.view [ W.Pagination.separator [ H.text "..." ] ]
                     { total = 9999
                     , active = 10
                     , onClick = logActionWith String.fromInt "onClick"

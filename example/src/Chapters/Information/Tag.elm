@@ -24,8 +24,8 @@ chapter_ =
                         ( label
                         , UI.hSpacer
                             [ W.Tag.view attrs [ H.text label ]
-                            , W.Tag.view (W.Tag.onClick (logAction "onClick") :: attrs) [ H.text label ]
-                            , W.Tag.view (W.Tag.href "/logAction/#" :: attrs) [ H.text label ]
+                            , W.Tag.viewButton attrs { onClick = logAction "onClick", label = [ H.text label ] }
+                            , W.Tag.viewLink attrs { href = "/logAction/#", label = [ H.text label ] }
                             , W.Tag.view (W.Tag.small True :: attrs) [ H.text label ]
                             ]
                         )

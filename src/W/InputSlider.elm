@@ -1,14 +1,28 @@
 module W.InputSlider exposing
     ( view
-    , id, color, disabled, readOnly
-    , Attribute
+    , disabled, readOnly
+    , color
+    , noAttr, Attribute
     )
 
 {-|
 
 @docs view
-@docs id, color, disabled, readOnly
-@docs Attribute
+
+
+# States
+
+@docs disabled, readOnly
+
+
+# Styles
+
+@docs color
+
+
+# Html
+
+@docs noAttr, Attribute
 
 -}
 
@@ -30,8 +44,7 @@ type Attribute msg
 
 
 type alias Attributes =
-    { id : Maybe String
-    , disabled : Bool
+    { disabled : Bool
     , readOnly : Bool
     , color : String
     , format : Float -> String
@@ -45,8 +58,7 @@ applyAttrs attrs =
 
 defaultAttrs : Attributes
 defaultAttrs =
-    { id = Nothing
-    , disabled = False
+    { disabled = False
     , readOnly = False
     , color = Theme.primaryForeground
     , format = String.fromFloat
@@ -55,12 +67,6 @@ defaultAttrs =
 
 
 -- Attributes : Setters
-
-
-{-| -}
-id : String -> Attribute msg
-id v =
-    Attribute <| \attrs -> { attrs | id = Just v }
 
 
 {-| -}
@@ -79,6 +85,12 @@ disabled v =
 readOnly : Bool -> Attribute msg
 readOnly v =
     Attribute <| \attrs -> { attrs | readOnly = v }
+
+
+{-| -}
+noAttr : Attribute msg
+noAttr =
+    Attribute identity
 
 
 
@@ -158,15 +170,20 @@ view attrs_ props =
                 , HA.class "ew-opacity-20"
                 , HA.class "ew-h-10 ew-w-10 -ew-ml-5 -ew-mt-5"
                 , HA.class "ew-scale-0 ew-transition-transform"
-                , HA.class "group-focus-within:ew-scale-100"
                 , HA.style "left" valueString
+                , HA.classList
+                    [ ( "group-hover:ew-scale-90"
+                            ++ " group-focus-within:ew-scale-100"
+                            ++ " group-hover:group-focus-within:ew-scale-100"
+                      , not attrs.disabled && not attrs.readOnly
+                      )
+                    ]
                 ]
                 []
             ]
         , -- Thumb
           H.input
-            [ WH.maybeAttr HA.id attrs.id
-            , HA.class "ew-relative"
+            [ HA.class "ew-relative"
             , HA.class "ew-slider ew-appearance-none"
             , HA.class "ew-bg-transparent"
             , HA.class "ew-m-0 ew-w-full"
