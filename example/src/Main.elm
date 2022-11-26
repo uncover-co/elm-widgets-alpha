@@ -2,6 +2,8 @@ module Main exposing (main)
 
 import Chapters.Core.ButtonGroup
 import Chapters.Core.Buttons
+import Chapters.Core.Card
+import Chapters.Core.Heading
 import Chapters.Core.Divider
 import Chapters.Core.Loading
 import Chapters.Form.Field
@@ -87,6 +89,8 @@ main =
             , ( "Core"
               , [ Chapters.Core.Buttons.chapter_
                 , Chapters.Core.ButtonGroup.chapter_
+                , Chapters.Core.Heading.chapter_
+                , Chapters.Core.Card.chapter_
                 , Chapters.Core.Divider.chapter_
                 , Chapters.Core.Loading.chapter_
                 ]
