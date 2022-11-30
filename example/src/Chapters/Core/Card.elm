@@ -19,8 +19,7 @@ chapter_ =
               )
             , ( "With Paddings"
               , W.Card.view
-                    [ W.Card.extraRounded
-                    , W.Card.padding { top = 20, left = 10, right = 10, bottom = 40 }]
+                    [ W.Card.extraRounded ]
                     [ H.text "Inside Card" ]
               )
             , ( "With Custom Background"

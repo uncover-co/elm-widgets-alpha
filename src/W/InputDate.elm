@@ -52,6 +52,7 @@ import Json.Decode as D
 import Time
 import Time.Extra
 import W.Internal.Helpers as WH
+import W.Internal.Icons
 import W.Internal.Input
 
 
@@ -274,7 +275,7 @@ view attrs_ props =
             :: baseAttrs attrs props.timeZone props.value
         )
         []
-        |> W.Internal.Input.view attrs
+        |> W.Internal.Input.viewIcon attrs (W.Internal.Icons.calendar { size = 24 })
 
 
 {-| -}
@@ -353,7 +354,7 @@ viewWithValidation attrs_ props =
             :: baseAttrs attrs props.timeZone props.value
         )
         []
-        |> W.Internal.Input.view attrs
+        |> W.Internal.Input.viewIcon attrs (W.Internal.Icons.calendar { size = 24 })
 
 
 

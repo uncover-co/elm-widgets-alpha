@@ -4,7 +4,7 @@ module W.InputText exposing
     , placeholder, mask, prefix, suffix, unstyled
     , disabled, readOnly
     , onEnter, onFocus, onBlur
-    , required, minLength, maxLength, pattern, validation
+    , required, minLength, maxLength, exactLength, pattern, validation
     , viewWithValidation, errorToString, Error(..)
     , htmlAttrs, noAttr, Attribute
     )
@@ -36,7 +36,7 @@ module W.InputText exposing
 
 # Validation
 
-@docs required, minLength, maxLength, pattern, validation
+@docs required, minLength, maxLength, exactLength, pattern, validation
 
 
 # View With Validation
@@ -245,6 +245,12 @@ required v =
 
 
 {-| -}
+exactLength : Int -> Attribute msg customError
+exactLength v =
+    Attribute <| \attrs -> { attrs | minLength = Just v, maxLength = Just v }
+
+
+{-| -}
 minLength : Int -> Attribute msg customError
 minLength v =
     Attribute <| \attrs -> { attrs | minLength = Just v }
@@ -360,8 +366,8 @@ view attrs_ props =
         (H.div [ HA.class "ew-group ew-w-full ew-relative" ]
             [ H.input
                 (baseAttrs attrs
-                    ++ [ HA.value props.value
-                       , HE.onInput props.onInput
+                    ++ [ HA.value (limitString attrs.maxLength props.value)
+                       , HE.onInput (props.onInput << limitString attrs.maxLength)
                        ]
                 )
                 []
@@ -388,11 +394,15 @@ viewWithValidation attrs_ props =
         (H.div [ HA.class "ew-group ew-relative ew-w-full" ]
             [ H.input
                 (baseAttrs attrs
-                    ++ [ HA.value props.value
+                    ++ [ HA.value (limitString attrs.maxLength props.value)
                        , HE.on "input"
                             (D.map8
-                                (\value_ valid patternMismatch typeMismatch tooLong tooShort valueMissing validationMessage ->
+                                (\value__ valid patternMismatch typeMismatch tooLong tooShort valueMissing validationMessage ->
                                     let
+                                        value_ : String
+                                        value_ =
+                                            limitString attrs.maxLength value__
+
                                         customError : Maybe customError
                                         customError =
                                             attrs.validation
@@ -441,3 +451,10 @@ viewWithValidation attrs_ props =
             , WI.mask attrs.mask props.value
             ]
         )
+
+
+limitString : Maybe Int -> String -> String
+limitString limit str =
+    limit
+        |> Maybe.map (\l -> String.left l str)
+        |> Maybe.withDefault str

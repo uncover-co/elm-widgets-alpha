@@ -31,7 +31,6 @@ import Html.Attributes as HA
 import Html.Events as HE
 import Json.Decode as D
 import Theme
-import W.Internal.Helpers as WH
 
 
 
@@ -60,7 +59,7 @@ defaultAttrs : Attributes
 defaultAttrs =
     { disabled = False
     , readOnly = False
-    , color = Theme.primaryForeground
+    , color = Theme.primaryBackground
     , format = String.fromFloat
     }
 
@@ -157,7 +156,7 @@ view attrs_ props =
                 [ HA.class "ew-absolute ew-z-0 ew-rounded"
                 , HA.class "ew-left-0 ew-top-1/2"
                 , HA.class "ew-bg-current"
-                , HA.class "ew-opacity-[0.55]"
+                , HA.class "ew-opacity-[0.60]"
                 , HA.class "ew-h-[6px] -ew-mt-[3px]"
                 , HA.style "width" valueString
                 ]

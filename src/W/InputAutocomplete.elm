@@ -50,6 +50,7 @@ import Html.Attributes as HA
 import Html.Events as HE
 import Json.Decode as D
 import W.Internal.Helpers as WH
+import W.Internal.Icons
 import W.Internal.Input
 import W.Loading
 
@@ -277,6 +278,13 @@ view attrs_ props =
                        ]
                 )
                 []
+            , W.Internal.Input.iconWrapper "ew-text-base-aux"
+                (if props.options == Nothing then
+                    W.Loading.circles [ W.Loading.size 28 ]
+
+                 else
+                    W.Internal.Icons.chevronDown
+                )
             , H.datalist
                 [ HA.id (props.id ++ "-list") ]
                 (options
@@ -284,13 +292,6 @@ view attrs_ props =
                         (\( label, _ ) ->
                             H.option [ HA.value label ] []
                         )
-                )
-            , W.Internal.Input.iconWrapper "ew-text-base-aux"
-                (if props.options == Nothing then
-                    W.Loading.circles [ W.Loading.size 28 ]
-
-                 else
-                    W.Internal.Input.iconChevronDown
                 )
             ]
         )

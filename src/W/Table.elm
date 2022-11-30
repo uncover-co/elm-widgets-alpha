@@ -1,10 +1,11 @@
 module W.Table exposing
     ( view
     , string, int, float, bool, html, Column
-    , size, noAutosize, alignRight, alignLeft, alignCenter, columnHtmlAttrs, ColumnAttribute
-    , groups, highlight, headerHeight
+    , size, alignRight, alignLeft, alignCenter, columnHtmlAttrs, ColumnAttribute
+    , groups, highlight
     , onClick, onMouseEnter, onMouseLeave
     , htmlAttrs, noAttr, Attribute
+    , toGroup
     )
 
 {-|
@@ -19,12 +20,12 @@ module W.Table exposing
 
 # Column Attributes
 
-@docs size, noAutosize, alignRight, alignLeft, alignCenter, columnHtmlAttrs, ColumnAttribute
+@docs size, alignRight, alignLeft, alignCenter, columnHtmlAttrs, ColumnAttribute
 
 
 # Table Attributes
 
-@docs groups, highlight, headerHeight
+@docs groups, highlight
 
 
 # Actions
@@ -38,6 +39,7 @@ module W.Table exposing
 
 -}
 
+import Dict
 import Html as H
 import Html.Attributes as HA
 import Html.Events as HE
@@ -56,8 +58,7 @@ type Attribute msg a
 
 
 type alias Attributes msg a =
-    { headerHeight : Int
-    , groups : List (a -> String)
+    { groups : Maybe (a -> String)
     , highlight : a -> Bool
     , onClick : Maybe (a -> msg)
     , onMouseEnter : Maybe (a -> msg)
@@ -73,8 +74,7 @@ applyAttrs attrs =
 
 defaultAttrs : Attributes msg a
 defaultAttrs =
-    { headerHeight = 40
-    , groups = []
+    { groups = Nothing
     , highlight = \_ -> False
     , onClick = Nothing
     , onMouseEnter = Nothing
@@ -84,15 +84,9 @@ defaultAttrs =
 
 
 {-| -}
-headerHeight : Int -> Attribute msg a
-headerHeight v =
-    Attribute (\attrs -> { attrs | headerHeight = v })
-
-
-{-| -}
-groups : List (a -> String) -> Attribute msg a
+groups : (a -> String) -> Attribute msg a
 groups v =
-    Attribute (\attrs -> { attrs | groups = v })
+    Attribute (\attrs -> { attrs | groups = Just v })
 
 
 {-| -}
@@ -136,78 +130,80 @@ noAttr =
 
 
 {-| -}
-type Column a msg
+type Column msg a
     = Column
         { label : String
         , size : Maybe Float
         , toHtml : a -> H.Html msg
-        , attrs : ColumnAttributes msg
+        , attrs : ColumnAttributes msg a
         }
 
 
 {-| -}
-type ColumnAttribute msg
-    = ColumnAttribute (ColumnAttributes msg -> ColumnAttributes msg)
+type ColumnAttribute msg a
+    = ColumnAttribute (ColumnAttributes msg a -> ColumnAttributes msg a)
 
 
-type alias ColumnAttributes msg =
+type alias ColumnAttributes msg a =
     { size : Maybe String
-    , autosize : Bool
+    , largeScreenOnly : Bool
     , alignment : H.Attribute msg
     , customLabel : Maybe (H.Html msg)
+    , toGroup : Maybe (List a -> H.Html msg)
     , htmlAttributes : List (H.Attribute msg)
     }
 
 
-applyColumnAttrs : ColumnAttributes msg -> List (ColumnAttribute msg) -> ColumnAttributes msg
+applyColumnAttrs : ColumnAttributes msg a -> List (ColumnAttribute msg a) -> ColumnAttributes msg a
 applyColumnAttrs default attrs =
     List.foldl (\(ColumnAttribute fn) a -> fn a) default attrs
 
 
-defaultColumnAttrs : ColumnAttributes msg
+defaultColumnAttrs : ColumnAttributes msg a
 defaultColumnAttrs =
     { size = Nothing
-    , autosize = True
-    , alignment = HA.class "ew-flex-start"
+    , largeScreenOnly = False
+    , toGroup = Nothing
+    , alignment = HA.class "ew-text-left"
     , customLabel = Nothing
     , htmlAttributes = []
     }
 
 
 {-| -}
-columnHtmlAttrs : List (H.Attribute msg) -> ColumnAttribute msg
+columnHtmlAttrs : List (H.Attribute msg) -> ColumnAttribute msg a
 columnHtmlAttrs v =
     ColumnAttribute (\attrs -> { attrs | htmlAttributes = v })
 
 
 {-| -}
-alignLeft : ColumnAttribute msg
+alignLeft : ColumnAttribute msg a
 alignLeft =
-    ColumnAttribute (\attrs -> { attrs | alignment = HA.class "ew-flex-start" })
+    ColumnAttribute (\attrs -> { attrs | alignment = HA.class "ew-text-left" })
 
 
 {-| -}
-alignRight : ColumnAttribute msg
+alignRight : ColumnAttribute msg a
 alignRight =
-    ColumnAttribute (\attrs -> { attrs | alignment = HA.class "ew-flex-end" })
+    ColumnAttribute (\attrs -> { attrs | alignment = HA.class "ew-text-right" })
 
 
 {-| -}
-alignCenter : ColumnAttribute msg
+alignCenter : ColumnAttribute msg a
 alignCenter =
-    ColumnAttribute (\attrs -> { attrs | alignment = HA.class "ew-flex-center" })
+    ColumnAttribute (\attrs -> { attrs | alignment = HA.class "ew-text-center" })
 
 
 {-| -}
-size : Int -> ColumnAttribute msg
+size : Int -> ColumnAttribute msg a
 size v =
     ColumnAttribute (\attrs -> { attrs | size = Just (pxString v) })
 
 
 {-| -}
-noAutosize : ColumnAttribute msg
-noAutosize =
-    ColumnAttribute (\attrs -> { attrs | autosize = False })
+toGroup : (List a -> H.Html msg) -> ColumnAttribute msg a
+toGroup v =
+    ColumnAttribute (\attrs -> { attrs | toGroup = Just v })
 
 
 
@@ -215,156 +211,197 @@ noAutosize =
 
 
 {-| -}
-view : List (Attribute msg a) -> List (Column a msg) -> List a -> H.Html msg
+view : List (Attribute msg a) -> List (Column msg a) -> List a -> H.Html msg
 view attrs_ columns data =
     let
         attrs : Attributes msg a
         attrs =
             applyAttrs attrs_
 
-        columnSize : String
-        columnSize =
-            if List.isEmpty columns then
-                "100%"
+        rows : List (H.Html msg)
+        rows =
+            case attrs.groups of
+                Just groups_ ->
+                    let
+                        groupLabelColSpan : Int
+                        groupLabelColSpan =
+                            countWhile
+                                (\(Column col) -> col.attrs.toGroup == Nothing)
+                                columns
+                    in
+                    data
+                        |> toGroupedRows groups_
+                        |> List.concatMap
+                            (\( k, groupRows ) ->
+                                viewGroupHeader groupLabelColSpan k attrs columns groupRows
+                                    :: List.map (viewTableRow attrs columns) groupRows
+                            )
 
-            else
-                columns
-                    |> List.length
-                    |> toFloat
-                    |> (/) 1
-                    |> pctString
+                Nothing ->
+                    List.map (viewTableRow attrs columns) data
     in
-    if List.isEmpty attrs.groups then
-        viewWrapper
-            attrs.htmlAttributes
-            (viewTableHead columnSize attrs columns)
-            (viewTableBody columnSize attrs columns data)
+    H.table
+        (attrs.htmlAttributes
+            ++ [ HA.class "ew-table ew-table-fixed ew-indent-0"
+               , HA.class "ew-w-full ew-overflow-auto"
+               , HA.class "ew-bg-base-bg ew-font-text ew-text-base-fg"
+               ]
+        )
+        [ -- Table Head
+          H.thead
+            [ HA.class "ew-sticky ew-z-20 ew-top-0 ew-z-10"
+            , HA.class "ew-bg-base-bg"
+            ]
+            [ H.tr [] (List.map viewTableHeaderColumn columns) ]
+        , --  Table Body
+          H.tbody
+            [ WH.maybeAttr HE.onMouseLeave attrs.onMouseLeave ]
+            rows
+        ]
 
-    else
-        viewWrapper
-            attrs.htmlAttributes
-            (viewTableHead columnSize attrs columns)
-            (W.Internal.Table.toTableGroup attrs.groups data
-                |> viewTableGroup columnSize attrs columns
+
+countWhile : (a -> Bool) -> List a -> Int
+countWhile fn xs =
+    xs
+        |> List.foldl
+            (\a ( continue, acc ) ->
+                if continue && fn a then
+                    ( True, acc + 1 )
+
+                else
+                    ( False, acc )
             )
+            ( True, 0 )
+        |> Tuple.second
 
 
-viewWrapper : List (H.Attribute msg) -> H.Html msg -> H.Html msg -> H.Html msg
-viewWrapper htmlAttrs_ header table =
-    H.article
-        (htmlAttrs_ ++ [ HA.class "ew-bg-base-bg ew-text-base-fg ew-font-text ew-overflow-auto" ])
-        [ header
-        , table
-        ]
+toGroupedRows : (a -> String) -> List a -> List ( String, List a )
+toGroupedRows groupBy_ data =
+    data
+        |> List.foldl
+            (\row acc ->
+                let
+                    key : String
+                    key =
+                        groupBy_ row
+                in
+                Dict.update key
+                    (\items ->
+                        case items of
+                            Just items_ ->
+                                Just (items_ ++ [ row ])
+
+                            Nothing ->
+                                Just [ row ]
+                    )
+                    acc
+            )
+            Dict.empty
+        |> Dict.toList
 
 
-viewTable : List (H.Html msg) -> H.Html msg
-viewTable =
-    H.section
-        []
+viewGroupHeader : Int -> String -> Attributes msg a -> List (Column msg a) -> List a -> H.Html msg
+viewGroupHeader labelColSpan label attrs columns data =
+    H.tr
+        [ HA.class "ew-p-0" ]
+        ((if labelColSpan > 0 then
+            H.td
+                [ HA.colspan labelColSpan, HA.class "ew-text-left" ]
+                [ H.text label ]
+
+          else
+            H.text ""
+         )
+            :: (columns
+                    |> List.filterMap
+                        (\(Column col) ->
+                            col.attrs.toGroup
+                                |> Maybe.map (\fn -> fn data)
+                                |> Maybe.map
+                                    (\x ->
+                                        H.td
+                                            [ col.attrs.alignment ]
+                                            [ x ]
+                                    )
+                        )
+               )
+        )
 
 
-viewTableHead : String -> Attributes msg a -> List (Column a msg) -> H.Html msg
-viewTableHead columnSize attrs columns =
-    H.header
-        [ HA.class "ew-flex ew-sticky ew-z-20 ew-top-0 ew-z-10 ew-bg-base-bg ew-box-border"
-        , HA.class "ew-border-0 ew-border-b ew-border-solid ew-border-base-aux/10"
-        , HA.style "height" (pxString attrs.headerHeight)
-        ]
-        (List.map (viewTableHeaderCell columnSize) columns)
+
+-- (columns
+--     |> List.map
+--         (\(Column column) ->
+--             H.td
+--                 (column.attrs.htmlAttributes
+--                     ++ [ HA.class "ew-shrink-0 ew-box-border ew-m-0 ew-p-2 ew-break-words"
+--                        , column.attrs.alignment
+--                        , HA.style "min-width" "48px"
+--                        , WH.stylesList
+--                             [ ( "min-width", "48px", True )
+--                             , ( "width"
+--                               , Maybe.withDefault "auto" column.attrs.size
+--                               , column.attrs.size /= Nothing
+--                               )
+--                             ]
+--                        ]
+--                 )
+--                 [ column.toHtml datum ]
+--         )
 
 
-viewTableHeaderCell : String -> Column a msg -> H.Html msg
-viewTableHeaderCell columnSize (Column column) =
-    H.p
+viewTableHeaderColumn : Column msg a -> H.Html msg
+viewTableHeaderColumn (Column column) =
+    H.th
         [ HA.class "ew-m-0 ew-p-2 ew-box-border ew-font-semibold ew-text-sm ew-text-base-aux"
-        , HA.class "ew-flex ew-items-center"
-        , HA.style "min-width" "48px"
         , column.attrs.alignment
-        , WH.attrIf
-            column.attrs.autosize
-            (HA.style "width")
-            (Maybe.withDefault columnSize column.attrs.size)
+        , WH.stylesList
+            [ ( "min-width", "48px", True )
+            , ( "width"
+              , Maybe.withDefault "auto" column.attrs.size
+              , column.attrs.size /= Nothing
+              )
+            ]
         ]
         [ H.text column.label
         ]
 
 
-viewTableGroupHeader : Attributes msg a -> String -> H.Html msg
-viewTableGroupHeader attrs label =
-    H.p
-        [ HA.class "ew-m-0 ew-p-2"
-        , HA.class "ew-bg-base-bg"
-        , HA.class "ew-border-0 ew-border-b ew-border-solid ew-border-base-aux/10"
-        , HA.class "ew-font-text ew-text-sm ew-font-medium ew-text-base-aux"
-        , HA.class "ew-sticky ew-z-10"
-        , HA.style "top" (pxString attrs.headerHeight)
-        ]
-        [ H.text label ]
-
-
-viewTableGroup : String -> Attributes msg a -> List (Column a msg) -> TableGroup a -> H.Html msg
-viewTableGroup columnSize attrs columns tableGroup =
-    case tableGroup of
-        TableGroups gs ->
-            gs
-                |> List.map
-                    (\( groupLabel, subGroup ) ->
-                        H.div []
-                            [ viewTableGroupHeader attrs groupLabel
-                            , viewTableGroup columnSize attrs columns subGroup
-                            ]
-                    )
-                |> H.div []
-
-        TableRows rows ->
-            viewTable
-                [ viewTableBody columnSize attrs columns rows
+viewTableRow : Attributes msg a -> List (Column msg a) -> a -> H.Html msg
+viewTableRow attrs columns datum =
+    H.tr
+        [ HA.class "ew-p-0"
+        , if attrs.highlight datum then
+            HA.classList
+                [ ( "ew-bg-base-aux/[0.07]", True )
+                , ( "hover:ew-bg-base-aux/10", attrs.onClick /= Nothing )
                 ]
 
-
-viewTableBody : String -> Attributes msg a -> List (Column a msg) -> List a -> H.Html msg
-viewTableBody columnSize attrs columns data =
-    H.ol
-        [ HA.class "ew-list-none ew-m-0 ew-p-0"
-        , WH.maybeAttr HE.onMouseLeave attrs.onMouseLeave
+          else
+            HA.classList
+                [ ( "hover:ew-bg-base-aux/[0.07]", attrs.onClick /= Nothing )
+                ]
+        , WH.maybeAttr (\onClick_ -> HE.onClick (onClick_ datum)) attrs.onClick
+        , WH.maybeAttr (\onMouseEnter_ -> HE.onMouseEnter (onMouseEnter_ datum)) attrs.onMouseEnter
         ]
-        (data
+        (columns
             |> List.map
-                (\datum ->
-                    H.li
-                        [ HA.class "ew-flex ew-p-0 ew-items-stretch"
-                        , if attrs.highlight datum then
-                            HA.classList
-                                [ ( "ew-bg-base-aux/[0.07]", True )
-                                , ( "hover:ew-bg-base-aux/10", attrs.onClick /= Nothing )
-                                ]
-
-                          else
-                            HA.classList
-                                [ ( "hover:ew-bg-base-aux/[0.07]", attrs.onClick /= Nothing )
-                                ]
-                        , WH.maybeAttr (\onClick_ -> HE.onClick (onClick_ datum)) attrs.onClick
-                        , WH.maybeAttr (\onMouseEnter_ -> HE.onMouseEnter (onMouseEnter_ datum)) attrs.onMouseEnter
-                        ]
-                        (columns
-                            |> List.map
-                                (\(Column column) ->
-                                    H.p
-                                        (column.attrs.htmlAttributes
-                                            ++ [ HA.class "ew-shrink-0 ew-box-border ew-m-0 ew-p-2 ew-break-words"
-                                               , HA.class "ew-flex ew-items-center"
-                                               , column.attrs.alignment
-                                               , HA.style "min-width" "48px"
-                                               , WH.attrIf
-                                                    column.attrs.autosize
-                                                    (HA.style "width")
-                                                    (Maybe.withDefault columnSize column.attrs.size)
-                                               ]
-                                        )
-                                        [ column.toHtml datum ]
-                                )
+                (\(Column column) ->
+                    H.td
+                        (column.attrs.htmlAttributes
+                            ++ [ HA.class "ew-shrink-0 ew-box-border ew-m-0 ew-p-2 ew-break-words"
+                               , column.attrs.alignment
+                               , HA.style "min-width" "48px"
+                               , WH.stylesList
+                                    [ ( "min-width", "48px", True )
+                                    , ( "width"
+                                      , Maybe.withDefault "auto" column.attrs.size
+                                      , column.attrs.size /= Nothing
+                                      )
+                                    ]
+                               ]
                         )
+                        [ column.toHtml datum ]
                 )
         )
 
@@ -374,10 +411,10 @@ viewTableBody columnSize attrs columns data =
 
 
 {-| -}
-string : String -> (a -> String) -> List (ColumnAttribute msg) -> Column a msg
+string : String -> (a -> String) -> List (ColumnAttribute msg a) -> Column msg a
 string label fn attrs_ =
     let
-        attrs : ColumnAttributes msg
+        attrs : ColumnAttributes msg a
         attrs =
             applyColumnAttrs
                 defaultColumnAttrs
@@ -392,13 +429,13 @@ string label fn attrs_ =
 
 
 {-| -}
-int : String -> (a -> Int) -> List (ColumnAttribute msg) -> Column a msg
+int : String -> (a -> Int) -> List (ColumnAttribute msg a) -> Column msg a
 int label fn attrs_ =
     let
-        attrs : ColumnAttributes msg
+        attrs : ColumnAttributes msg a
         attrs =
             applyColumnAttrs
-                { defaultColumnAttrs | alignment = HA.class "ew-justify-end" }
+                { defaultColumnAttrs | alignment = HA.class "ew-text-right" }
                 attrs_
     in
     Column
@@ -410,13 +447,13 @@ int label fn attrs_ =
 
 
 {-| -}
-float : String -> (a -> Float) -> List (ColumnAttribute msg) -> Column a msg
+float : String -> (a -> Float) -> List (ColumnAttribute msg a) -> Column msg a
 float label fn attrs_ =
     let
-        attrs : ColumnAttributes msg
+        attrs : ColumnAttributes msg a
         attrs =
             applyColumnAttrs
-                { defaultColumnAttrs | alignment = HA.class "ew-justify-end" }
+                { defaultColumnAttrs | alignment = HA.class "ew-text-right" }
                 attrs_
     in
     Column
@@ -428,13 +465,13 @@ float label fn attrs_ =
 
 
 {-| -}
-bool : String -> (a -> Bool) -> List (ColumnAttribute msg) -> Column a msg
+bool : String -> (a -> Bool) -> List (ColumnAttribute msg a) -> Column msg a
 bool label fn attrs_ =
     let
-        attrs : ColumnAttributes msg
+        attrs : ColumnAttributes msg a
         attrs =
             applyColumnAttrs
-                { defaultColumnAttrs | alignment = HA.class "ew-justify-center" }
+                { defaultColumnAttrs | alignment = HA.class "ew-text-right" }
                 attrs_
     in
     Column
@@ -448,10 +485,10 @@ bool label fn attrs_ =
 
 
 {-| -}
-html : String -> (a -> field) -> List (ColumnAttribute msg) -> (field -> H.Html msg) -> Column a msg
+html : String -> (a -> field) -> List (ColumnAttribute msg a) -> (field -> H.Html msg) -> Column msg a
 html label field attrs_ fn =
     let
-        attrs : ColumnAttributes msg
+        attrs : ColumnAttributes msg a
         attrs =
             applyColumnAttrs
                 defaultColumnAttrs

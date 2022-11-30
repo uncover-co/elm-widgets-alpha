@@ -93,14 +93,14 @@ noAttr =
 
 
 type Modal msg
-    = Stateless { id : String, children : List (H.Html msg) }
-    | Stateful { isOpen : Bool, onClose : Maybe msg, children : List (H.Html msg) }
+    = Stateless { id : String, content : List (H.Html msg) }
+    | Stateful { isOpen : Bool, onClose : Maybe msg, content : List (H.Html msg) }
 
 
 {-| -}
 viewToggle : String -> List (H.Html msg) -> H.Html msg
-viewToggle id_ children =
-    H.label [ HA.for id_ ] children
+viewToggle id_ content =
+    H.label [ HA.for id_ ] content
 
 
 {-| -}
@@ -108,7 +108,7 @@ viewToggable :
     List (Attribute msg)
     ->
         { id : String
-        , children : List (H.Html msg)
+        , content : List (H.Html msg)
         }
     -> H.Html msg
 viewToggable attrs props =
@@ -121,7 +121,7 @@ view :
     ->
         { isOpen : Bool
         , onClose : Maybe msg
-        , children : List (H.Html msg)
+        , content : List (H.Html msg)
         }
     -> H.Html msg
 view attrs props =
@@ -138,9 +138,9 @@ view_ attrs_ props =
 
         backgroundAttrs : List (H.Attribute msg)
         backgroundAttrs =
-            [ HA.class "ew-modal-background ew-block ew-absolute ew-inset-0"
+            [ HA.class "ew-modal-background ew-block ew-absolute ew-inset-0 ew-backdrop-blur-sm"
             , HA.class "ew-transition ew-duration-300"
-            , HA.class "ew-opacity-0 ew-bg-black/20 ew-pointer-events-none"
+            , HA.class "ew-opacity-0 ew-bg-black/30 ew-pointer-events-none"
             ]
     in
     H.div []
@@ -179,7 +179,7 @@ view_ attrs_ props =
                 Stateless { id } ->
                     H.label
                         (backgroundAttrs
-                            ++ [ HA.class "ew-focusable-inset hover:ew-bg-black/[0.15]"
+                            ++ [ HA.class "ew-focusable-inset hover:ew-bg-black/20"
                                , HA.for id
                                ]
                         )
@@ -190,7 +190,7 @@ view_ attrs_ props =
                         Just onClose_ ->
                             H.div
                                 (backgroundAttrs
-                                    ++ [ HA.class "ew-focusable-inset hover:ew-bg-black/[0.15]"
+                                    ++ [ HA.class "ew-focusable-inset hover:ew-bg-black/20"
                                        , HE.onClick onClose_
                                        ]
                                 )
@@ -206,11 +206,11 @@ view_ attrs_ props =
                 , HA.class "ew-transition ew-duration-400"
                 ]
                 (case props of
-                    Stateless { children } ->
-                        children
+                    Stateless { content } ->
+                        content
 
-                    Stateful { children } ->
-                        children
+                    Stateful { content } ->
+                        content
                 )
             ]
         ]

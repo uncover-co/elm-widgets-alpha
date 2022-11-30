@@ -1,4 +1,25 @@
-module W.Text exposing (color, extraLarge, inline, large, light, noAttr, small, view)
+module W.Text exposing
+    ( view
+    , inline, light, color, small, large, extraLarge
+    , noAttr, Attribute
+    , alignCenter, alignLeft, alignRight
+    )
+
+{-|
+
+@docs view
+
+
+# Styles
+
+@docs inline, light, color, small, large, extraLarge
+
+
+# Html
+
+@docs noAttr, Attribute
+
+-}
 
 import Html as H
 import Html.Attributes as HA
@@ -18,6 +39,7 @@ type Attribute msg
 type alias Attributes =
     { element : String
     , fontSize : String
+    , textAlign : String
     , color : String
     }
 
@@ -31,6 +53,7 @@ defaultAttrs : Attributes
 defaultAttrs =
     { element = "p"
     , fontSize = "ew-text-base"
+    , textAlign = "ew-text-left"
     , color = Theme.baseForeground
     }
 
@@ -39,29 +62,52 @@ defaultAttrs =
 -- Attributes : Setters
 
 
+{-| -}
 inline : Attribute msg
 inline =
     Attribute (\attrs -> { attrs | element = "span" })
 
 
+{-| -}
 light : Attribute msg
 light =
     Attribute (\attrs -> { attrs | color = Theme.baseAux })
 
 
+{-| -}
 small : Attribute msg
 small =
     Attribute (\attrs -> { attrs | fontSize = "ew-text-sm" })
 
 
+{-| -}
 large : Attribute msg
 large =
     Attribute (\attrs -> { attrs | fontSize = "ew-text-xl" })
 
 
+{-| -}
 extraLarge : Attribute msg
 extraLarge =
     Attribute (\attrs -> { attrs | fontSize = "ew-text-2xl" })
+
+
+{-| -}
+alignLeft : Attribute msg
+alignLeft =
+    Attribute (\attrs -> { attrs | textAlign = "ew-text-left" })
+
+
+{-| -}
+alignCenter : Attribute msg
+alignCenter =
+    Attribute (\attrs -> { attrs | textAlign = "ew-text-center" })
+
+
+{-| -}
+alignRight : Attribute msg
+alignRight =
+    Attribute (\attrs -> { attrs | textAlign = "ew-text-right" })
 
 
 {-| -}
@@ -91,6 +137,7 @@ view attrs_ children =
     H.node attrs.element
         [ HA.class "ew-font-text ew-m-0"
         , HA.class attrs.fontSize
+        , HA.class attrs.textAlign
         , WH.styles
             [ ( "color", attrs.color )
             ]

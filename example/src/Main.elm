@@ -3,8 +3,10 @@ module Main exposing (main)
 import Chapters.Core.ButtonGroup
 import Chapters.Core.Buttons
 import Chapters.Core.Card
-import Chapters.Core.Heading
+import Chapters.Core.Container
 import Chapters.Core.Divider
+import Chapters.Core.Heading
+import Chapters.Core.Layout
 import Chapters.Core.Loading
 import Chapters.Form.Field
 import Chapters.Form.InputAutocomplete
@@ -34,6 +36,7 @@ import ElmBook exposing (Book, book, withChapterGroups, withStatefulOptions, wit
 import ElmBook.Chapter
 import ElmBook.StatefulOptions
 import ElmBook.ThemeOptions
+import Html as H
 import Theme
 import W.Styles
 
@@ -75,6 +78,7 @@ main =
                     , strategy = Theme.classStrategy "elm-book-dark-mode"
                     }
                 , W.Styles.globalStyles
+                , H.node "style" [] [ H.text "@import url('https://fonts.googleapis.com/css2?family=Leckerli+One&family=Patrick+Hand&family=Press+Start+2P&family=Raleway&display=swap')" ]
                 ]
             ]
         |> withChapterGroups
@@ -91,6 +95,8 @@ main =
                 , Chapters.Core.ButtonGroup.chapter_
                 , Chapters.Core.Heading.chapter_
                 , Chapters.Core.Card.chapter_
+                , Chapters.Core.Container.chapter_
+                , Chapters.Core.Layout.chapter_
                 , Chapters.Core.Divider.chapter_
                 , Chapters.Core.Loading.chapter_
                 ]

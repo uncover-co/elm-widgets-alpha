@@ -33,7 +33,7 @@ chapter_ =
                     [ W.Modal.view [ W.Modal.absolute ]
                         { isOpen = True
                         , onClose = Nothing
-                        , children = [ content ]
+                        , content = [ content ]
                         }
                     ]
               )
@@ -42,7 +42,7 @@ chapter_ =
                     [ W.Modal.view [ W.Modal.absolute ]
                         { isOpen = True
                         , onClose = Just (logAction "onClose")
-                        , children = [ content ]
+                        , content = [ content ]
                         }
                     ]
               )
@@ -50,7 +50,7 @@ chapter_ =
               , wrapper
                     [ W.Modal.viewToggable [ W.Modal.absolute ]
                         { id = "my-modal"
-                        , children = [ content ]
+                        , content = [ content ]
                         }
                     , W.Modal.viewToggle "my-modal"
                         [ W.Button.viewDummy [] [ H.text "Toggle Modal" ] ]

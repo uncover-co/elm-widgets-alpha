@@ -31,6 +31,7 @@ import Html as H
 import Html.Attributes as HA
 import Html.Events as HE
 import W.Internal.Helpers as WH
+import W.Internal.Icons
 import W.Internal.Input
 
 
@@ -127,54 +128,48 @@ viewGroups attrs_ props =
                 |> List.map (\a -> ( props.toLabel a, a ))
                 |> Dict.fromList
     in
-    W.Internal.Input.view attrs
-        (H.div
-            [ HA.class "ew-w-full ew-relative" ]
-            [ H.select
-                [ HA.class W.Internal.Input.baseClass
-                , HA.disabled attrs.disabled
-                , HA.readonly attrs.readOnly
-                , WH.attrIf attrs.readOnly (HA.attribute "aria-readonly") "true"
-                , WH.attrIf attrs.disabled (HA.attribute "aria-disabled") "true"
-                , HA.placeholder "Select"
-                , HE.onInput
-                    (\s ->
-                        Dict.get s values
-                            |> Maybe.withDefault props.value
-                            |> props.onInput
+    H.select
+        [ HA.class W.Internal.Input.baseClass
+        , HA.disabled attrs.disabled
+        , HA.readonly attrs.readOnly
+        , WH.attrIf attrs.readOnly (HA.attribute "aria-readonly") "true"
+        , WH.attrIf attrs.disabled (HA.attribute "aria-disabled") "true"
+        , HA.placeholder "Select"
+        , HE.onInput
+            (\s ->
+                Dict.get s values
+                    |> Maybe.withDefault props.value
+                    |> props.onInput
+            )
+        ]
+        (List.concat
+            [ props.options
+                |> List.map
+                    (\a ->
+                        H.option
+                            [ HA.selected (a == props.value)
+                            , HA.value (props.toLabel a)
+                            ]
+                            [ H.text (props.toLabel a) ]
                     )
-                ]
-                (List.concat
-                    [ props.options
-                        |> List.map
-                            (\a ->
-                                H.option
-                                    [ HA.selected (a == props.value)
-                                    , HA.value (props.toLabel a)
-                                    ]
-                                    [ H.text (props.toLabel a) ]
-                            )
-                    , props.optionGroups
-                        |> List.map
-                            (\( l, options_ ) ->
-                                H.optgroup [ HA.attribute "label" l ]
-                                    (options_
-                                        |> List.map
-                                            (\a ->
-                                                H.option
-                                                    [ HA.selected (a == props.value)
-                                                    , HA.value (props.toLabel a)
-                                                    ]
-                                                    [ H.text (props.toLabel a) ]
-                                            )
+            , props.optionGroups
+                |> List.map
+                    (\( l, options_ ) ->
+                        H.optgroup [ HA.attribute "label" l ]
+                            (options_
+                                |> List.map
+                                    (\a ->
+                                        H.option
+                                            [ HA.selected (a == props.value)
+                                            , HA.value (props.toLabel a)
+                                            ]
+                                            [ H.text (props.toLabel a) ]
                                     )
                             )
-                    ]
-                )
-            , W.Internal.Input.iconWrapper "ew-text-base-aux"
-                W.Internal.Input.iconChevronDown
+                    )
             ]
         )
+        |> W.Internal.Input.viewIcon attrs W.Internal.Icons.chevronDown
 
 
 {-| -}

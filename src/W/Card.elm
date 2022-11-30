@@ -1,18 +1,28 @@
 module W.Card exposing
-    ( background
-    , extraRounded
-    , largeShadow
-    , noAttr
-    , noShadow
-    , notRounded
-    , padding
-    , view
+    ( view
+    , background, notRounded, extraRounded, noShadow, largeShadow
+    , htmlAttrs, noAttr, Attribute
     )
+
+{-|
+
+@docs view
+
+
+# Styles
+
+@docs background, notRounded, extraRounded, noShadow, largeShadow
+
+
+# Html
+
+@docs htmlAttrs, noAttr, Attribute
+
+-}
 
 import Html as H
 import Html.Attributes as HA
 import Theme
-import W.Internal.Helpers as WH
 
 
 
@@ -21,49 +31,33 @@ import W.Internal.Helpers as WH
 
 {-| -}
 type Attribute msg
-    = Attribute (Attributes -> Attributes)
+    = Attribute (Attributes msg -> Attributes msg)
 
 
-type alias Attributes =
+type alias Attributes msg =
     { background : String
     , borderRadiusClass : String
     , shadowClass : String
-    , padding :
-        { top : Int
-        , left : Int
-        , right : Int
-        , bottom : Int
-        }
+    , htmlAttributes : List (H.Attribute msg)
     }
 
 
-applyAttrs : List (Attribute msg) -> Attributes
+applyAttrs : List (Attribute msg) -> Attributes msg
 applyAttrs attrs =
     List.foldl (\(Attribute fn) a -> fn a) defaultAttrs attrs
 
 
-defaultAttrs : Attributes
+defaultAttrs : Attributes msg
 defaultAttrs =
     { background = Theme.baseBackground
     , borderRadiusClass = "ew-rounded"
     , shadowClass = "ew-shadow-md"
-    , padding =
-        { top = 0
-        , left = 0
-        , right = 0
-        , bottom = 0
-        }
+    , htmlAttributes = []
     }
 
 
 
 -- Attributes : Setters
-
-
-{-| -}
-padding : { top : Int, left : Int, right : Int, bottom : Int } -> Attribute msg
-padding v =
-    Attribute (\attrs -> { attrs | padding = v })
 
 
 {-| -}
@@ -97,6 +91,12 @@ extraRounded =
 
 
 {-| -}
+htmlAttrs : List (H.Attribute msg) -> Attribute msg
+htmlAttrs v =
+    Attribute (\attrs -> { attrs | htmlAttributes = v })
+
+
+{-| -}
 noAttr : Attribute msg
 noAttr =
     Attribute identity
@@ -110,20 +110,16 @@ noAttr =
 view : List (Attribute msg) -> List (H.Html msg) -> H.Html msg
 view attrs_ children =
     let
-        attrs : Attributes
+        attrs : Attributes msg
         attrs =
             applyAttrs attrs_
     in
     H.div
-        [ HA.class "ew-border ew-border-solid ew-border-white/[0.03]"
-        , HA.class attrs.shadowClass
-        , HA.class attrs.borderRadiusClass
-        , WH.styles
-            [ ( "padding-top", String.fromInt attrs.padding.top ++ "px" )
-            , ( "padding-left", String.fromInt attrs.padding.left ++ "px" )
-            , ( "padding-right", String.fromInt attrs.padding.right ++ "px" )
-            , ( "padding-bottom", String.fromInt attrs.padding.bottom ++ "px" )
-            , ( "background", attrs.background )
-            ]
-        ]
+        (attrs.htmlAttributes
+            ++ [ HA.class "ew-border ew-border-solid ew-border-white/[0.03]"
+               , HA.class attrs.shadowClass
+               , HA.class attrs.borderRadiusClass
+               , HA.attribute "style" ("background:" ++ attrs.background)
+               ]
+        )
         children

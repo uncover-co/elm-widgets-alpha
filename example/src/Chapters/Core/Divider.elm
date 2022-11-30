@@ -12,8 +12,8 @@ chapter_ =
         |> renderComponentList
             [ ( "Horizontal"
               , H.div []
-                    [ W.Divider.view [] []
-                    , W.Divider.view [] [ H.text "or" ]
+                    [ W.Divider.view [ W.Divider.margins 16 ] []
+                    , W.Divider.view [ W.Divider.margins 16 ] [ H.text "or" ]
                     ]
               )
             , ( "Vertical"

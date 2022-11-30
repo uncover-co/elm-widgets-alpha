@@ -1,11 +1,11 @@
 module W.Internal.Input exposing
     ( areaClass
     , baseClass
-    , iconChevronDown
     , iconWrapper
     , mask
     , maskClass
     , view
+    , viewIcon
     )
 
 import Html as H
@@ -56,6 +56,24 @@ view attrs input =
         ]
 
 
+viewIcon :
+    { x
+        | prefix : Maybe (H.Html msg)
+        , suffix : Maybe (H.Html msg)
+        , readOnly : Bool
+    }
+    -> H.Html msg
+    -> H.Html msg
+    -> H.Html msg
+viewIcon attrs icon input =
+    view attrs
+        (H.div [ HA.class "ew-w-full ew-relative" ]
+            [ input
+            , iconWrapper "ew-text-base-aux" icon
+            ]
+        )
+
+
 prefixSuffixClass : H.Attribute msg
 prefixSuffixClass =
     HA.class <|
@@ -76,8 +94,8 @@ maskClass fn =
 
 mask : Maybe (a -> String) -> a -> H.Html msg
 mask fn value =
-    case fn of
-        Just fn_ ->
+    case Maybe.map (\f -> f value) fn of
+        Just value_ ->
             H.p
                 [ HA.class "ew-absolute ew-inset-y-0 ew-inset-x-3"
                 , HA.class "ew-flex ew-items-center"
@@ -89,7 +107,7 @@ mask fn value =
                 , HA.style "transition" "position 0.2s"
                 , HA.attribute "aria-hidden" "true"
                 ]
-                [ H.text (fn_ value) ]
+                [ H.text value_ ]
 
         Nothing ->
             H.text ""
@@ -127,17 +145,11 @@ areaClass =
 iconWrapper : String -> H.Html msg -> H.Html msg
 iconWrapper class child =
     H.div
-        [ HA.class "ew-absolute ew-inset-y-1 ew-right-1 ew-pointer-events-none ew-w-8 ew-flex ew-items-center ew-justify-center"
+        [ HA.class "ew-input-icon ew-absolute ew-w-10 ew-inset-y-1 ew-right-1"
+        , HA.class "ew-pointer-events-none ew-flex ew-items-center ew-justify-center"
+        , HA.class "ew-bg-base-bg"
+        , HA.class "before:ew-block before:ew-content-['']"
+        , HA.class "before:ew-inset-0 before:ew-absolute"
         , HA.class class
         ]
-        [ child ]
-
-
-iconChevronDown : H.Html msg
-iconChevronDown =
-    H.div
-        [ HA.class "ew-block ew-h-1.5 ew-w-1.5 ew-border-2 ew-border-current ew-border-solid ew-rotate-[45deg]"
-        , HA.style "border-left" "none"
-        , HA.style "border-top" "none"
-        ]
-        []
+        [ H.div [ HA.class "ew-relative" ] [ child ] ]

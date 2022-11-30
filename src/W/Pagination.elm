@@ -144,13 +144,12 @@ view attrs_ props =
                             if page /= -1 then
                                 W.Button.view
                                     [ W.Button.small
-                                    , W.Button.invisible
                                     , W.Button.icon
                                     , if page == props.active then
                                         W.Button.primary
 
                                       else
-                                        W.Button.noAttr
+                                        W.Button.invisible
                                     ]
                                     { onClick = props.onClick page
                                     , label = [ H.text (String.fromInt page) ]

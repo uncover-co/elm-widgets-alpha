@@ -108,15 +108,17 @@ view attrs_ props =
             [ HA.classList [ ( "ew-flex ew-items-start ew-justify-between", attrs.alignRight ) ]
             ]
             [ H.div
-                [ HA.classList [ ( "ew-w-[40%] ew-pr-4 ew-pt-1", attrs.alignRight ) ]
+                [ HA.classList
+                    [ ( "ew-w-[40%] ew-pr-4 ew-pt-1", attrs.alignRight )
+                    , ( "ew-pb-2", not attrs.alignRight )
+                    ]
                 ]
                 [ H.h1
-                    [ HA.class "ew-m-0 ew-font-normal ew-text-sm ew-pb-2 ew-font-text ew-text-base-fg"
-                    , HA.classList [ ( "ew-pb-0", attrs.alignRight ) ]
+                    [ HA.class "ew-m-0 ew-font-normal ew-text-sm ew-font-text ew-text-base-fg"
                     ]
                     props.label
                 , attrs.hint
-                    |> Maybe.map (\f -> H.p [ HA.class "ew-m-0 ew-pt-1 ew-text-base-aux ew-text-xs ew-font-text ew-text-aux" ] f)
+                    |> Maybe.map (\f -> H.p [ HA.class "ew-m-0 ew-text-base-aux ew-text-xs ew-font-text ew-text-aux" ] f)
                     |> Maybe.withDefault (H.text "")
                 ]
             , H.div
