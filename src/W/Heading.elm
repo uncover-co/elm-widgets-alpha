@@ -3,8 +3,8 @@ module W.Heading exposing
     , primary, secondary, neutral, color
     , small, large, extraLarge
     , h2, h3, h4, h5, h6
+    , alignLeft, alignRight, alignCenter
     , noAttr, Attribute
-    , alignCenter, alignLeft, alignRight
     )
 
 {-|
@@ -25,6 +25,11 @@ module W.Heading exposing
 # Semantic
 
 @docs h2, h3, h4, h5, h6
+
+
+# Alignment
+
+@docs alignLeft, alignRight, alignCenter
 
 
 # Html

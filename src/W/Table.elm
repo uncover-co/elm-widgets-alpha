@@ -1,11 +1,10 @@
 module W.Table exposing
     ( view
     , string, int, float, bool, html, Column
-    , size, alignRight, alignLeft, alignCenter, columnHtmlAttrs, ColumnAttribute
+    , toGroup, size, alignRight, alignLeft, alignCenter, columnHtmlAttrs, ColumnAttribute
     , groups, highlight
     , onClick, onMouseEnter, onMouseLeave
     , htmlAttrs, noAttr, Attribute
-    , toGroup
     )
 
 {-|
@@ -20,7 +19,7 @@ module W.Table exposing
 
 # Column Attributes
 
-@docs size, alignRight, alignLeft, alignCenter, columnHtmlAttrs, ColumnAttribute
+@docs toGroup, size, alignRight, alignLeft, alignCenter, columnHtmlAttrs, ColumnAttribute
 
 
 # Table Attributes

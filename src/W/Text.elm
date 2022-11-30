@@ -1,8 +1,8 @@
 module W.Text exposing
     ( view
     , inline, light, color, small, large, extraLarge
+    , alignLeft, alignRight, alignCenter
     , noAttr, Attribute
-    , alignCenter, alignLeft, alignRight
     )
 
 {-|
@@ -13,6 +13,11 @@ module W.Text exposing
 # Styles
 
 @docs inline, light, color, small, large, extraLarge
+
+
+# Alignment
+
+@docs alignLeft, alignRight, alignCenter
 
 
 # Html
