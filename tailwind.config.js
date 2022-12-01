@@ -13,6 +13,7 @@ module.exports = {
         },
         extend: {
             colors: {
+                inherit: "inherit",
                 transparent: "transparent",
                 current: "currentColor"
             },

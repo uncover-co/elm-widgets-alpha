@@ -221,7 +221,7 @@ noAttr =
 -- Main
 
 
-baseAttrs : Attributes msg -> Time.Zone -> Maybe Time.Posix -> List (H.Attribute msg)
+baseAttrs : Attributes msg -> Time.Zone -> String -> List (H.Attribute msg)
 baseAttrs attrs timeZone value =
     attrs.htmlAttributes
         ++ [ HA.type_ "time"
@@ -237,11 +237,7 @@ baseAttrs attrs timeZone value =
            , WH.maybeAttr HE.onFocus attrs.onFocus
            , WH.maybeAttr HE.onBlur attrs.onBlur
            , WH.maybeAttr WH.onEnter attrs.onEnter
-           , HA.value
-                (value
-                    |> Maybe.map (valueFromTime timeZone)
-                    |> Maybe.withDefault ""
-                )
+           , HA.value value
            ]
 
 
@@ -259,13 +255,27 @@ view attrs_ props =
         attrs : Attributes msg
         attrs =
             applyAttrs attrs_
+
+        value : String
+        value =
+            props.value
+                |> Maybe.map (valueFromTime props.timeZone)
+                |> Maybe.withDefault ""
     in
     H.input
         (HE.onInput (props.onInput << timeFromValue props.timeZone props.value)
-            :: baseAttrs attrs props.timeZone props.value
+            :: baseAttrs attrs props.timeZone value
         )
         []
-        |> W.Internal.Input.viewIcon attrs (W.Internal.Icons.clock { size = 24 })
+        |> W.Internal.Input.viewWithIcon
+            { prefix = attrs.prefix
+            , suffix = attrs.suffix
+            , readOnly = attrs.readOnly
+            , disabled = attrs.disabled
+            , mask = Nothing
+            , maskInput = value
+            }
+            (W.Internal.Icons.clock { size = 24 })
 
 
 {-| -}
@@ -282,6 +292,12 @@ viewWithValidation attrs_ props =
         attrs : Attributes msg
         attrs =
             applyAttrs attrs_
+
+        value : String
+        value =
+            props.value
+                |> Maybe.map (valueFromTime props.timeZone)
+                |> Maybe.withDefault ""
     in
     H.input
         (HE.on "input"
@@ -339,10 +355,18 @@ viewWithValidation attrs_ props =
                 (D.at [ "target", "validity", "valueMissing" ] D.bool)
                 (D.at [ "target", "validationMessage" ] D.string)
             )
-            :: baseAttrs attrs props.timeZone props.value
+            :: baseAttrs attrs props.timeZone value
         )
         []
-        |> W.Internal.Input.viewIcon attrs (W.Internal.Icons.clock { size = 24 })
+        |> W.Internal.Input.viewWithIcon
+            { prefix = attrs.prefix
+            , suffix = attrs.suffix
+            , readOnly = attrs.readOnly
+            , disabled = attrs.disabled
+            , mask = Nothing
+            , maskInput = value
+            }
+            (W.Internal.Icons.clock { size = 24 })
 
 
 

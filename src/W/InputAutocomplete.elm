@@ -243,55 +243,64 @@ view attrs_ props =
                 |> Maybe.withDefault []
                 |> List.map (\o -> ( valueData.toString o, o ))
 
+        optionsDict : Dict.Dict String a
         optionsDict =
             Dict.fromList options
     in
-    W.Internal.Input.view attrs
-        (H.div [ HA.class "ew-w-full ew-flex ew-relative" ]
-            [ H.input
-                (attrs.htmlAttributes
-                    ++ [ WH.maybeAttr HA.placeholder attrs.placeholder
-                       , HA.disabled (attrs.disabled || attrs.readOnly)
-                       , HA.readonly attrs.readOnly
-                       , WH.attrIf attrs.readOnly (HA.attribute "aria-readonly") "true"
-                       , WH.attrIf attrs.disabled (HA.attribute "aria-disabled") "true"
-                       , HA.required attrs.required
-                       , HA.autocomplete False
-                       , HA.id props.id
-                       , HA.class W.Internal.Input.baseClass
-                       , HA.class "ew-pr-10"
-                       , HA.list (props.id ++ "-list")
-                       , HA.value valueData.input
-                       , WH.maybeAttr HE.onFocus attrs.onFocus
-                       , WH.maybeAttr HE.onBlur attrs.onBlur
-                       , WH.maybeAttr WH.onEnter attrs.onEnter
-                       , HE.on "input"
-                            (D.at [ "target", "value" ] D.string
-                                |> D.andThen
-                                    (\value ->
-                                        Dict.get value optionsDict
-                                            |> update props.value value
-                                            |> props.onInput
-                                            |> D.succeed
-                                    )
+    H.input
+        (attrs.htmlAttributes
+            ++ [ WH.maybeAttr HA.placeholder attrs.placeholder
+               , HA.disabled (attrs.disabled || attrs.readOnly)
+               , HA.readonly attrs.readOnly
+               , WH.attrIf attrs.readOnly (HA.attribute "aria-readonly") "true"
+               , WH.attrIf attrs.disabled (HA.attribute "aria-disabled") "true"
+               , HA.required attrs.required
+               , HA.autocomplete False
+               , HA.id props.id
+               , HA.class W.Internal.Input.baseClass
+               , HA.class "ew-pr-10"
+               , HA.list (props.id ++ "-list")
+               , HA.value valueData.input
+               , WH.maybeAttr HE.onFocus attrs.onFocus
+               , WH.maybeAttr HE.onBlur attrs.onBlur
+               , WH.maybeAttr WH.onEnter attrs.onEnter
+               , HE.on "input"
+                    (D.at [ "target", "value" ] D.string
+                        |> D.andThen
+                            (\value ->
+                                Dict.get value optionsDict
+                                    |> update props.value value
+                                    |> props.onInput
+                                    |> D.succeed
                             )
-                       ]
-                )
-                []
-            , W.Internal.Input.iconWrapper "ew-text-base-aux"
-                (if props.options == Nothing then
-                    W.Loading.circles [ W.Loading.size 28 ]
-
-                 else
-                    W.Internal.Icons.chevronDown
-                )
-            , H.datalist
-                [ HA.id (props.id ++ "-list") ]
-                (options
-                    |> List.map
-                        (\( label, _ ) ->
-                            H.option [ HA.value label ] []
-                        )
-                )
-            ]
+                    )
+               ]
         )
+        []
+        |> W.Internal.Input.viewWithIcon
+            { prefix = attrs.prefix
+            , suffix = attrs.suffix
+            , disabled = attrs.disabled
+            , readOnly = attrs.readOnly
+            , mask = Nothing
+            , maskInput = ""
+            }
+            (if props.options == Nothing then
+                W.Loading.circles [ W.Loading.size 28 ]
+
+             else
+                W.Internal.Icons.chevronDown
+            )
+        |> (\x ->
+                H.div []
+                    [ x
+                    , H.datalist
+                        [ HA.id (props.id ++ "-list") ]
+                        (options
+                            |> List.map
+                                (\( label, _ ) ->
+                                    H.option [ HA.value label ] []
+                                )
+                        )
+                    ]
+           )

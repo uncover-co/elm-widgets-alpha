@@ -224,7 +224,7 @@ noAttr =
 -- Main
 
 
-baseAttrs : Attributes msg -> Time.Zone -> Maybe Time.Posix -> List (H.Attribute msg)
+baseAttrs : Attributes msg -> Time.Zone -> String -> List (H.Attribute msg)
 baseAttrs attrs timeZone value =
     attrs.htmlAttributes
         ++ [ HA.type_ "date"
@@ -240,10 +240,7 @@ baseAttrs attrs timeZone value =
            , WH.maybeAttr HE.onFocus attrs.onFocus
            , WH.maybeAttr HE.onBlur attrs.onBlur
            , WH.maybeAttr WH.onEnter attrs.onEnter
-           , value
-                |> Maybe.map (valueFromDate timeZone)
-                |> Maybe.withDefault ""
-                |> HA.value
+           , HA.value value
            ]
 
 
@@ -261,6 +258,12 @@ view attrs_ props =
         attrs : Attributes msg
         attrs =
             applyAttrs attrs_
+
+        value : String
+        value =
+            props.value
+                |> Maybe.map (valueFromDate props.timeZone)
+                |> Maybe.withDefault ""
     in
     H.input
         (HE.on "input"
@@ -272,10 +275,18 @@ view attrs_ props =
                             |> D.succeed
                     )
             )
-            :: baseAttrs attrs props.timeZone props.value
+            :: baseAttrs attrs props.timeZone value
         )
         []
-        |> W.Internal.Input.viewIcon attrs (W.Internal.Icons.calendar { size = 24 })
+        |> W.Internal.Input.viewWithIcon
+            { prefix = attrs.prefix
+            , suffix = attrs.suffix
+            , disabled = attrs.disabled
+            , readOnly = attrs.readOnly
+            , mask = Nothing
+            , maskInput = value
+            }
+            (W.Internal.Icons.calendar { size = 24 })
 
 
 {-| -}
@@ -292,6 +303,12 @@ viewWithValidation attrs_ props =
         attrs : Attributes msg
         attrs =
             applyAttrs attrs_
+
+        value : String
+        value =
+            props.value
+                |> Maybe.map (valueFromDate props.timeZone)
+                |> Maybe.withDefault ""
     in
     H.input
         (HE.on "input"
@@ -351,10 +368,18 @@ viewWithValidation attrs_ props =
                 (D.at [ "target", "validity", "valueMissing" ] D.bool)
                 (D.at [ "target", "validationMessage" ] D.string)
             )
-            :: baseAttrs attrs props.timeZone props.value
+            :: baseAttrs attrs props.timeZone value
         )
         []
-        |> W.Internal.Input.viewIcon attrs (W.Internal.Icons.calendar { size = 24 })
+        |> W.Internal.Input.viewWithIcon
+            { prefix = attrs.prefix
+            , suffix = attrs.suffix
+            , disabled = attrs.disabled
+            , readOnly = attrs.readOnly
+            , mask = Nothing
+            , maskInput = value
+            }
+            (W.Internal.Icons.calendar { size = 24 })
 
 
 

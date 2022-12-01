@@ -169,7 +169,15 @@ viewGroups attrs_ props =
                     )
             ]
         )
-        |> W.Internal.Input.viewIcon attrs W.Internal.Icons.chevronDown
+        |> W.Internal.Input.viewWithIcon
+            { prefix = attrs.prefix
+            , suffix = attrs.suffix
+            , disabled = attrs.disabled
+            , readOnly = attrs.readOnly
+            , mask = Nothing
+            , maskInput = ""
+            }
+            W.Internal.Icons.chevronDown
 
 
 {-| -}

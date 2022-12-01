@@ -331,7 +331,6 @@ baseAttrs attrs =
     attrs.htmlAttributes
         ++ [ HA.type_ (inputInputTypeToString attrs.type_)
            , HA.classList [ ( WI.baseClass, not attrs.unstyled ) ]
-           , WI.maskClass attrs.mask
            , WH.attrIf attrs.readOnly HA.tabindex -1
            , HA.required attrs.required
            , HA.disabled attrs.disabled
@@ -361,18 +360,26 @@ view attrs_ props =
         attrs : Attributes msg customError
         attrs =
             applyAttrs attrs_
+
+        value : String
+        value =
+            limitString attrs.maxLength props.value
     in
-    WI.view attrs
-        (H.div [ HA.class "ew-group ew-w-full ew-relative" ]
-            [ H.input
-                (baseAttrs attrs
-                    ++ [ HA.value (limitString attrs.maxLength props.value)
-                       , HE.onInput (props.onInput << limitString attrs.maxLength)
-                       ]
-                )
-                []
-            , WI.mask attrs.mask props.value
-            ]
+    WI.view
+        { disabled = attrs.disabled
+        , readOnly = attrs.readOnly
+        , prefix = attrs.prefix
+        , suffix = attrs.suffix
+        , mask = attrs.mask
+        , maskInput = value
+        }
+        (H.input
+            (baseAttrs attrs
+                ++ [ HA.value value
+                   , HE.onInput (props.onInput << limitString attrs.maxLength)
+                   ]
+            )
+            []
         )
 
 
@@ -389,67 +396,75 @@ viewWithValidation attrs_ props =
         attrs : Attributes msg customError
         attrs =
             applyAttrs attrs_
+
+        value : String
+        value =
+            limitString attrs.maxLength props.value
     in
-    WI.view attrs
-        (H.div [ HA.class "ew-group ew-relative ew-w-full" ]
-            [ H.input
-                (baseAttrs attrs
-                    ++ [ HA.value (limitString attrs.maxLength props.value)
-                       , HE.on "input"
-                            (D.map8
-                                (\value__ valid patternMismatch typeMismatch tooLong tooShort valueMissing validationMessage ->
-                                    let
-                                        value_ : String
-                                        value_ =
-                                            limitString attrs.maxLength value__
+    WI.view
+        { disabled = attrs.disabled
+        , readOnly = attrs.readOnly
+        , prefix = attrs.prefix
+        , suffix = attrs.suffix
+        , mask = attrs.mask
+        , maskInput = value
+        }
+        (H.input
+            (baseAttrs attrs
+                ++ [ HA.value value
+                   , HE.on "input"
+                        (D.map8
+                            (\value__ valid patternMismatch typeMismatch tooLong tooShort valueMissing validationMessage ->
+                                let
+                                    value_ : String
+                                    value_ =
+                                        limitString attrs.maxLength value__
 
-                                        customError : Maybe customError
-                                        customError =
-                                            attrs.validation
-                                                |> Maybe.map (\fn -> fn value_)
-                                                |> Maybe.withDefault Nothing
+                                    customError : Maybe customError
+                                    customError =
+                                        attrs.validation
+                                            |> Maybe.map (\fn -> fn value_)
+                                            |> Maybe.withDefault Nothing
 
-                                        result : Result (Error customError) String
-                                        result =
-                                            if valid && customError == Nothing then
-                                                Ok value_
+                                    result : Result (Error customError) String
+                                    result =
+                                        if valid && customError == Nothing then
+                                            Ok value_
 
-                                            else if valueMissing then
-                                                Err (ValueMissing validationMessage)
+                                        else if valueMissing then
+                                            Err (ValueMissing validationMessage)
 
-                                            else if tooShort then
-                                                Err (TooShort (Maybe.withDefault 0 attrs.minLength) validationMessage)
+                                        else if tooShort then
+                                            Err (TooShort (Maybe.withDefault 0 attrs.minLength) validationMessage)
 
-                                            else if typeMismatch then
-                                                Err (InputTypeMismatch attrs.type_ validationMessage)
+                                        else if typeMismatch then
+                                            Err (InputTypeMismatch attrs.type_ validationMessage)
 
-                                            else if tooLong then
-                                                Err (TooLong (Maybe.withDefault 0 attrs.maxLength) validationMessage)
+                                        else if tooLong then
+                                            Err (TooLong (Maybe.withDefault 0 attrs.maxLength) validationMessage)
 
-                                            else if patternMismatch then
-                                                Err (PatternMismatch validationMessage)
+                                        else if patternMismatch then
+                                            Err (PatternMismatch validationMessage)
 
-                                            else
-                                                customError
-                                                    |> Maybe.map (Err << Custom)
-                                                    |> Maybe.withDefault (Ok value_)
-                                    in
-                                    props.onInput result value_
-                                )
-                                (D.at [ "target", "value" ] D.string)
-                                (D.at [ "target", "validity", "valid" ] D.bool)
-                                (D.at [ "target", "validity", "patternMismatch" ] D.bool)
-                                (D.at [ "target", "validity", "typeMismatch" ] D.bool)
-                                (D.at [ "target", "validity", "tooLong" ] D.bool)
-                                (D.at [ "target", "validity", "tooShort" ] D.bool)
-                                (D.at [ "target", "validity", "valueMissing" ] D.bool)
-                                (D.at [ "target", "validationMessage" ] D.string)
+                                        else
+                                            customError
+                                                |> Maybe.map (Err << Custom)
+                                                |> Maybe.withDefault (Ok value_)
+                                in
+                                props.onInput result value_
                             )
-                       ]
-                )
-                []
-            , WI.mask attrs.mask props.value
-            ]
+                            (D.at [ "target", "value" ] D.string)
+                            (D.at [ "target", "validity", "valid" ] D.bool)
+                            (D.at [ "target", "validity", "patternMismatch" ] D.bool)
+                            (D.at [ "target", "validity", "typeMismatch" ] D.bool)
+                            (D.at [ "target", "validity", "tooLong" ] D.bool)
+                            (D.at [ "target", "validity", "tooShort" ] D.bool)
+                            (D.at [ "target", "validity", "valueMissing" ] D.bool)
+                            (D.at [ "target", "validationMessage" ] D.string)
+                        )
+                   ]
+            )
+            []
         )
 
 

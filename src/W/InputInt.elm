@@ -299,7 +299,6 @@ baseAttrs attrs =
         ++ [ HA.type_ "number"
            , HA.step "1"
            , HA.class W.Internal.Input.baseClass
-           , W.Internal.Input.maskClass attrs.mask
            , HA.required attrs.required
            , HA.disabled attrs.disabled
            , HA.readonly attrs.readOnly
@@ -327,21 +326,29 @@ view attrs_ props =
         attrs : Attributes msg customError
         attrs =
             applyAttrs attrs_
+
+        value : String
+        value =
+            toString props.value
     in
-    W.Internal.Input.view attrs
-        (H.div [ HA.class "ew-group ew-w-full ew-relative" ]
-            [ H.input
-                (baseAttrs attrs
-                    ++ [ HA.value (toString props.value)
-                       , HE.on "input"
-                            (D.at [ "target", "value" ] D.string
-                                |> D.map (props.onInput << toValue)
-                            )
-                       ]
-                )
-                []
-            , W.Internal.Input.mask attrs.mask (toString props.value)
-            ]
+    W.Internal.Input.view
+        { disabled = attrs.disabled
+        , readOnly = attrs.readOnly
+        , prefix = attrs.prefix
+        , suffix = attrs.suffix
+        , mask = attrs.mask
+        , maskInput = value
+        }
+        (H.input
+            (baseAttrs attrs
+                ++ [ HA.value value
+                   , HE.on "input"
+                        (D.at [ "target", "value" ] D.string
+                            |> D.map (props.onInput << toValue)
+                        )
+                   ]
+            )
+            []
         )
 
 
@@ -349,7 +356,7 @@ view attrs_ props =
 viewWithValidation :
     List (Attribute msg customError)
     ->
-        { value : String
+        { value : Value
         , onInput : Result (Error customError) Int -> Value -> msg
         }
     -> H.Html msg
@@ -358,67 +365,75 @@ viewWithValidation attrs_ props =
         attrs : Attributes msg customError
         attrs =
             applyAttrs attrs_
+
+        value : String
+        value =
+            toString props.value
     in
-    W.Internal.Input.view attrs
-        (H.div [ HA.class "ew-group ew-w-full ew-relative" ]
-            [ H.input
-                (baseAttrs attrs
-                    ++ [ HA.value props.value
-                       , HE.on "input"
-                            (D.map8
-                                (\value_ valid rangeOverflow rangeUnderflow tooLong tooShort valueMissing validationMessage ->
-                                    let
-                                        value__ : Value
-                                        value__ =
-                                            toValue value_
+    W.Internal.Input.view
+        { disabled = attrs.disabled
+        , readOnly = attrs.readOnly
+        , prefix = attrs.prefix
+        , suffix = attrs.suffix
+        , mask = attrs.mask
+        , maskInput = value
+        }
+        (H.input
+            (baseAttrs attrs
+                ++ [ HA.value value
+                   , HE.on "input"
+                        (D.map8
+                            (\value_ valid rangeOverflow rangeUnderflow tooLong tooShort valueMissing validationMessage ->
+                                let
+                                    value__ : Value
+                                    value__ =
+                                        toValue value_
 
-                                        customError : Maybe customError
-                                        customError =
-                                            attrs.validation
-                                                |> Maybe.map (\fn -> fn (toInt value__) value_)
-                                                |> Maybe.withDefault Nothing
+                                    customError : Maybe customError
+                                    customError =
+                                        attrs.validation
+                                            |> Maybe.map (\fn -> fn (toInt value__) value_)
+                                            |> Maybe.withDefault Nothing
 
-                                        result : Result (Error customError) Int
-                                        result =
-                                            if valid && customError == Nothing then
-                                                Ok (toInt value__)
+                                    result : Result (Error customError) Int
+                                    result =
+                                        if valid && customError == Nothing then
+                                            Ok (toInt value__)
 
-                                            else if valueMissing then
-                                                Err (ValueMissing validationMessage)
+                                        else if valueMissing then
+                                            Err (ValueMissing validationMessage)
 
-                                            else if rangeUnderflow then
-                                                Err (TooLow (Maybe.withDefault 0 attrs.min) validationMessage)
+                                        else if rangeUnderflow then
+                                            Err (TooLow (Maybe.withDefault 0 attrs.min) validationMessage)
 
-                                            else if rangeOverflow then
-                                                Err (TooHigh (Maybe.withDefault 0 attrs.max) validationMessage)
+                                        else if rangeOverflow then
+                                            Err (TooHigh (Maybe.withDefault 0 attrs.max) validationMessage)
 
-                                            else if tooShort then
-                                                Err (TooShort (Maybe.withDefault 0 attrs.minLength) validationMessage)
+                                        else if tooShort then
+                                            Err (TooShort (Maybe.withDefault 0 attrs.minLength) validationMessage)
 
-                                            else if tooLong then
-                                                Err (TooLong (Maybe.withDefault 0 attrs.maxLength) validationMessage)
+                                        else if tooLong then
+                                            Err (TooLong (Maybe.withDefault 0 attrs.maxLength) validationMessage)
 
-                                            else
-                                                customError
-                                                    |> Maybe.map (Err << Custom)
-                                                    |> Maybe.withDefault (Ok (toInt value__))
-                                    in
-                                    props.onInput result value__
-                                )
-                                (D.at [ "target", "value" ] D.string)
-                                (D.at [ "target", "validity", "valid" ] D.bool)
-                                (D.at [ "target", "validity", "rangeOverflow" ] D.bool)
-                                (D.at [ "target", "validity", "rangeUnderflow" ] D.bool)
-                                (D.at [ "target", "validity", "tooLong" ] D.bool)
-                                (D.at [ "target", "validity", "tooShort" ] D.bool)
-                                (D.at [ "target", "validity", "valueMissing" ] D.bool)
-                                (D.at [ "target", "validationMessage" ] D.string)
+                                        else
+                                            customError
+                                                |> Maybe.map (Err << Custom)
+                                                |> Maybe.withDefault (Ok (toInt value__))
+                                in
+                                props.onInput result value__
                             )
-                       ]
-                )
-                []
-            , W.Internal.Input.mask attrs.mask props.value
-            ]
+                            (D.at [ "target", "value" ] D.string)
+                            (D.at [ "target", "validity", "valid" ] D.bool)
+                            (D.at [ "target", "validity", "rangeOverflow" ] D.bool)
+                            (D.at [ "target", "validity", "rangeUnderflow" ] D.bool)
+                            (D.at [ "target", "validity", "tooLong" ] D.bool)
+                            (D.at [ "target", "validity", "tooShort" ] D.bool)
+                            (D.at [ "target", "validity", "valueMissing" ] D.bool)
+                            (D.at [ "target", "validationMessage" ] D.string)
+                        )
+                   ]
+            )
+            []
         )
 
 

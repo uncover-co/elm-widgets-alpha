@@ -3,6 +3,7 @@ module Chapters.Form.InputText exposing (Model, chapter_, init)
 import ElmBook.Actions exposing (logAction, logActionWithString, updateState, updateStateWith)
 import ElmBook.Chapter exposing (Chapter, chapter, renderStatefulComponentList)
 import Html as H
+import Html.Attributes as HA
 import W.Button
 import W.InputText
 
@@ -47,7 +48,7 @@ chapter_ =
               , \_ ->
                     W.InputText.view
                         [ W.InputText.placeholder "Type something…"
-                        , W.InputText.suffix (H.text "Email")
+                        , W.InputText.suffix (H.div [ HA.style "height" "60px" ] [ H.text "Email" ])
                         , W.InputText.disabled True
                         ]
                         { value = ""
