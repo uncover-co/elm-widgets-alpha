@@ -1,17 +1,33 @@
 module W.Message exposing
     ( view
     , icon, footer
-    , href, onClick
     , primary, secondary, success, warning, danger, color
+    , href, onClick
     , htmlAttrs, noAttr, Attribute
     )
 
 {-|
 
 @docs view
+
+
+# Content
+
 @docs icon, footer
-@docs href, onClick
+
+
+# Styles
+
 @docs primary, secondary, success, warning, danger, color
+
+
+# Actions
+
+@docs href, onClick
+
+
+# Html
+
 @docs htmlAttrs, noAttr, Attribute
 
 -}

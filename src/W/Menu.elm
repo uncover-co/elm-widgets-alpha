@@ -7,7 +7,15 @@ module W.Menu exposing
 {-|
 
 @docs view, viewButton, viewLink, viewTitle
+
+
+# Styles
+
 @docs disabled, selected, left, right
+
+
+# Html
+
 @docs htmlAttrs, noAttr, Attribute
 
 -}

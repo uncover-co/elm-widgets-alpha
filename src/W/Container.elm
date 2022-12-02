@@ -1,9 +1,7 @@
 module W.Container exposing
     ( view
-    , node, inline, background
+    , inline, background
     , largeScreen
-    , spaceX_0, spaceX_1, spaceX_2, spaceX_4, spaceX_6, spaceX_8, spaceX_12, spaceX_16
-    , spaceY_0, spaceY_1, spaceY_2, spaceY_4, spaceY_6, spaceY_8, spaceY_12, spaceY_16
     , pad_0, pad_1, pad_2, pad_4, pad_6, pad_8, pad_12, pad_16
     , padX_0, padX_1, padX_2, padX_4, padX_6, padX_8, padX_12, padX_16
     , padY_0, padY_1, padY_2, padY_4, padY_6, padY_8, padY_12, padY_16
@@ -11,16 +9,28 @@ module W.Container exposing
     , padRight_0, padRight_1, padRight_2, padRight_4, padRight_6, padRight_8, padRight_12, padRight_16
     , padTop_0, padTop_1, padTop_2, padTop_4, padTop_6, padTop_8, padTop_12, padTop_16
     , padBottom_0, padBottom_1, padBottom_2, padBottom_4, padBottom_6, padBottom_8, padBottom_12, padBottom_16
-    , noAttr, htmlAttrs
+    , spaceX_0, spaceX_1, spaceX_2, spaceX_4, spaceX_6, spaceX_8, spaceX_12, spaceX_16
+    , spaceY_0, spaceY_1, spaceY_2, spaceY_4, spaceY_6, spaceY_8, spaceY_12, spaceY_16
+    , node, noAttr, htmlAttrs, Attribute
     )
 
 {-|
 
 @docs view
-@docs node, inline, background
+
+
+# Styles
+
+@docs inline, background
+
+
+# Responsive
+
 @docs largeScreen
-@docs spaceX_0, spaceX_1, spaceX_2, spaceX_4, spaceX_6, spaceX_8, spaceX_12, spaceX_16
-@docs spaceY_0, spaceY_1, spaceY_2, spaceY_4, spaceY_6, spaceY_8, spaceY_12, spaceY_16
+
+
+# Padding
+
 @docs pad_0, pad_1, pad_2, pad_4, pad_6, pad_8, pad_12, pad_16
 @docs padX_0, padX_1, padX_2, padX_4, padX_6, padX_8, padX_12, padX_16
 @docs padY_0, padY_1, padY_2, padY_4, padY_6, padY_8, padY_12, padY_16
@@ -28,7 +38,17 @@ module W.Container exposing
 @docs padRight_0, padRight_1, padRight_2, padRight_4, padRight_6, padRight_8, padRight_12, padRight_16
 @docs padTop_0, padTop_1, padTop_2, padTop_4, padTop_6, padTop_8, padTop_12, padTop_16
 @docs padBottom_0, padBottom_1, padBottom_2, padBottom_4, padBottom_6, padBottom_8, padBottom_12, padBottom_16
-@docs noAttr, htmlAttrs
+
+
+# Spacing
+
+@docs spaceX_0, spaceX_1, spaceX_2, spaceX_4, spaceX_6, spaceX_8, spaceX_12, spaceX_16
+@docs spaceY_0, spaceY_1, spaceY_2, spaceY_4, spaceY_6, spaceY_8, spaceY_12, spaceY_16
+
+
+# Html
+
+@docs node, noAttr, htmlAttrs, Attribute
 
 -}
 

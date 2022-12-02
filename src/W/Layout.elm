@@ -1,10 +1,9 @@
 module W.Layout exposing
     ( view
-    , node, vertical, horizontal, inline, background
+    , vertical, horizontal, inline, background
     , alignTop, alignBottom, alignLeft, alignRight, alignCenterX, alignCenterY
     , spaceBetween, spaceAround, fillSpace
     , largeScreen
-    , gap_0, gap_1, gap_2, gap_4, gap_6, gap_8, gap_12, gap_16
     , pad_0, pad_1, pad_2, pad_4, pad_6, pad_8, pad_12, pad_16
     , padX_0, padX_1, padX_2, padX_4, padX_6, padX_8, padX_12, padX_16
     , padY_0, padY_1, padY_2, padY_4, padY_6, padY_8, padY_12, padY_16
@@ -12,17 +11,29 @@ module W.Layout exposing
     , padRight_0, padRight_1, padRight_2, padRight_4, padRight_6, padRight_8, padRight_12, padRight_16
     , padTop_0, padTop_1, padTop_2, padTop_4, padTop_6, padTop_8, padTop_12, padTop_16
     , padBottom_0, padBottom_1, padBottom_2, padBottom_4, padBottom_6, padBottom_8, padBottom_12, padBottom_16
-    , noAttr, htmlAttrs
+    , gap_0, gap_1, gap_2, gap_4, gap_6, gap_8, gap_12, gap_16
+    , node, noAttr, htmlAttrs, Attribute
     )
 
 {-|
 
 @docs view
-@docs node, vertical, horizontal, inline, background
+
+
+# Styles
+
+@docs vertical, horizontal, inline, background
 @docs alignTop, alignBottom, alignLeft, alignRight, alignCenterX, alignCenterY
 @docs spaceBetween, spaceAround, fillSpace
+
+
+# Responsiveness
+
 @docs largeScreen
-@docs gap_0, gap_1, gap_2, gap_4, gap_6, gap_8, gap_12, gap_16
+
+
+# Padding
+
 @docs pad_0, pad_1, pad_2, pad_4, pad_6, pad_8, pad_12, pad_16
 @docs padX_0, padX_1, padX_2, padX_4, padX_6, padX_8, padX_12, padX_16
 @docs padY_0, padY_1, padY_2, padY_4, padY_6, padY_8, padY_12, padY_16
@@ -30,7 +41,16 @@ module W.Layout exposing
 @docs padRight_0, padRight_1, padRight_2, padRight_4, padRight_6, padRight_8, padRight_12, padRight_16
 @docs padTop_0, padTop_1, padTop_2, padTop_4, padTop_6, padTop_8, padTop_12, padTop_16
 @docs padBottom_0, padBottom_1, padBottom_2, padBottom_4, padBottom_6, padBottom_8, padBottom_12, padBottom_16
-@docs noAttr, htmlAttrs
+
+
+# Gaps
+
+@docs gap_0, gap_1, gap_2, gap_4, gap_6, gap_8, gap_12, gap_16
+
+
+# Html
+
+@docs node, noAttr, htmlAttrs, Attribute
 
 -}
 
