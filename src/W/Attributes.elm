@@ -1,8 +1,8 @@
 module W.Attributes exposing (noAttr)
 
-import W.Internal.Attributes exposing (Attribute(..))
+import W.Internal.Attributes as WA
 
 
-noAttr : Attribute a
+noAttr : WA.Attr msg a
 noAttr =
-    Attribute identity
+    WA.attr identity

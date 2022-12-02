@@ -1,10 +1,19 @@
-module W.Internal.Attributes exposing (Attribute(..), applyAttrs)
+module W.Internal.Attributes exposing
+    ( Attr
+    , applyAttrs
+    , attr
+    )
 
 
-type Attribute msg a
-    = Attribute (a -> a)
+type Attr a msg
+    = Attr (a -> a)
 
 
-applyAttrs : a -> List (Attribute msg a) -> a
+attr : (a -> a) -> Attr a msg
+attr fn =
+    Attr fn
+
+
+applyAttrs : a -> List (Attr a msg) -> a
 applyAttrs defaultAttrs attrs =
-    List.foldl (\(Attribute fn) a -> fn a) defaultAttrs attrs
+    List.foldl (\(Attr fn) a -> fn a) defaultAttrs attrs

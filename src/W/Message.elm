@@ -3,7 +3,7 @@ module W.Message exposing
     , icon, footer
     , href, onClick
     , primary, secondary, success, warning, danger, color
-    , htmlAttrs, noAttr, Attribute
+    , htmlAttrs, Attribute
     )
 
 {-|
@@ -12,7 +12,7 @@ module W.Message exposing
 @docs icon, footer
 @docs href, onClick
 @docs primary, secondary, success, warning, danger, color
-@docs htmlAttrs, noAttr, Attribute
+@docs htmlAttrs, Attribute
 
 -}
 
@@ -20,6 +20,7 @@ import Html as H
 import Html.Attributes as HA
 import Html.Events as HE
 import Theme
+import W.Internal.Attributes as WA
 import W.Internal.Helpers as WH
 
 
@@ -28,8 +29,8 @@ import W.Internal.Helpers as WH
 
 
 {-| -}
-type Attribute msg
-    = Attribute (Attributes msg -> Attributes msg)
+type alias Attribute msg =
+    WA.Attr (Attributes msg) msg
 
 
 type alias Attributes msg =
@@ -40,11 +41,6 @@ type alias Attributes msg =
     , href : Maybe String
     , onClick : Maybe msg
     }
-
-
-applyAttrs : List (Attribute msg) -> Attributes msg
-applyAttrs attrs =
-    List.foldl (\(Attribute fn) a -> fn a) defaultAttrs attrs
 
 
 defaultAttrs : Attributes msg
@@ -65,49 +61,43 @@ defaultAttrs =
 {-| -}
 htmlAttrs : List (H.Attribute msg) -> Attribute msg
 htmlAttrs v =
-    Attribute <| \attrs -> { attrs | htmlAttributes = v }
-
-
-{-| -}
-noAttr : Attribute msg
-noAttr =
-    Attribute identity
+    WA.attr <| \attrs -> { attrs | htmlAttributes = v }
 
 
 {-| -}
 onClick : msg -> Attribute msg
 onClick v =
-    Attribute <| \attrs -> { attrs | onClick = Just v }
+    WA.attr <| \attrs -> { attrs | onClick = Just v }
 
 
 {-| -}
 href : String -> Attribute msg
 href v =
-    Attribute <| \attrs -> { attrs | href = Just v }
+    WA.attr <| \attrs -> { attrs | href = Just v }
 
 
 {-| -}
 icon : H.Html msg -> Attribute msg
 icon v =
-    Attribute <| \attrs -> { attrs | icon = Just v }
+    WA.attr <| \attrs -> { attrs | icon = Just v }
 
 
 {-| -}
 footer : H.Html msg -> Attribute msg
 footer v =
-    Attribute <| \attrs -> { attrs | footer = Just v }
+    WA.attr <| \attrs -> { attrs | footer = Just v }
 
 
 {-| -}
 color : String -> Attribute msg
 color v =
-    Attribute <| \attrs -> { attrs | color = v }
+    WA.attr <| \attrs -> { attrs | color = v }
 
 
 {-| -}
 primary : Attribute msg
 primary =
-    Attribute <|
+    WA.attr <|
         \attrs ->
             { attrs | color = Theme.primaryForeground }
 
@@ -115,7 +105,7 @@ primary =
 {-| -}
 secondary : Attribute msg
 secondary =
-    Attribute <|
+    WA.attr <|
         \attrs ->
             { attrs | color = Theme.secondaryForeground }
 
@@ -123,7 +113,7 @@ secondary =
 {-| -}
 success : Attribute msg
 success =
-    Attribute <|
+    WA.attr <|
         \attrs ->
             { attrs | color = Theme.successForeground }
 
@@ -131,7 +121,7 @@ success =
 {-| -}
 warning : Attribute msg
 warning =
-    Attribute <|
+    WA.attr <|
         \attrs ->
             { attrs | color = Theme.warningForeground }
 
@@ -139,7 +129,7 @@ warning =
 {-| -}
 danger : Attribute msg
 danger =
-    Attribute <|
+    WA.attr <|
         \attrs ->
             { attrs | color = Theme.dangerForeground }
 
@@ -157,7 +147,7 @@ view attrs_ children_ =
     let
         attrs : Attributes msg
         attrs =
-            applyAttrs attrs_
+            WA.applyAttrs defaultAttrs attrs_
 
         baseAttrs : List (H.Attribute msg)
         baseAttrs =

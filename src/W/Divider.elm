@@ -25,7 +25,7 @@ import W.Internal.Attributes as WA
 
 {-| -}
 type alias Attribute msg =
-    WA.Attribute msg Attributes
+    WA.Attr Attributes msg
 
 
 type alias Attributes =
@@ -48,13 +48,13 @@ defaultAttrs =
 {-| -}
 vertical : Attribute msg
 vertical =
-    WA.Attribute (\attrs -> { attrs | vertical = True })
+    WA.attr (\attrs -> { attrs | vertical = True })
 
 
 {-| -}
 margins : Int -> Attribute msg
 margins v =
-    WA.Attribute (\attrs -> { attrs | margins = v })
+    WA.attr (\attrs -> { attrs | margins = v })
 
 
 
