@@ -1,7 +1,6 @@
 module W.Divider exposing
     ( view
-    , vertical, margins
-    , noAttr, Attribute
+    , vertical, margins, Attribute
     )
 
 {-|
@@ -11,17 +10,13 @@ module W.Divider exposing
 
 # Styles
 
-@docs vertical, margins
-
-
-# Html
-
-@docs noAttr, Attribute
+@docs vertical, margins, Attribute
 
 -}
 
 import Html as H
 import Html.Attributes as HA
+import W.Internal.Attributes as WA
 
 
 
@@ -29,19 +24,14 @@ import Html.Attributes as HA
 
 
 {-| -}
-type Attribute msg
-    = Attribute (Attributes -> Attributes)
+type alias Attribute msg =
+    WA.Attribute msg Attributes
 
 
 type alias Attributes =
     { vertical : Bool
     , margins : Int
     }
-
-
-applyAttrs : List (Attribute msg) -> Attributes
-applyAttrs attrs =
-    List.foldl (\(Attribute fn) a -> fn a) defaultAttrs attrs
 
 
 defaultAttrs : Attributes
@@ -58,19 +48,13 @@ defaultAttrs =
 {-| -}
 vertical : Attribute msg
 vertical =
-    Attribute (\attrs -> { attrs | vertical = True })
+    WA.Attribute (\attrs -> { attrs | vertical = True })
 
 
 {-| -}
 margins : Int -> Attribute msg
 margins v =
-    Attribute (\attrs -> { attrs | margins = v })
-
-
-{-| -}
-noAttr : Attribute msg
-noAttr =
-    Attribute identity
+    WA.Attribute (\attrs -> { attrs | margins = v })
 
 
 
@@ -91,7 +75,7 @@ view attrs_ children =
     let
         attrs : Attributes
         attrs =
-            applyAttrs attrs_
+            WA.applyAttrs defaultAttrs attrs_
     in
     if List.isEmpty children then
         H.hr
