@@ -1,8 +1,6 @@
 module W.Internal.Input exposing
     ( areaClass
     , baseClass
-    , mask
-    , maskClass
     , view
     , viewWithIcon
     )
@@ -45,8 +43,8 @@ view attrs input =
                 H.text ""
         , H.div
             [ HA.class "ew-grow ew-relative"
-            , HA.class "ew-flex ew-items-center ew-group"
-            , HA.class "ew-min-h-[48px] ew-py-2 ew-px-3 ew-box-border"
+            , HA.class "ew-flex ew-items-stretch ew-group"
+            , HA.class "ew-min-h-[48px]"
             , HA.classList
                 [ ( "ew-text-transparent focus-within:ew-text-base-fg", attrs.mask /= Nothing )
                 , ( "ew-text-base-fg", attrs.mask == Nothing )
@@ -108,7 +106,7 @@ viewWithIcon :
     -> H.Html msg
 viewWithIcon attrs icon input =
     view attrs
-        (H.div [ HA.class "ew-w-full ew-relative" ]
+        (H.div [ HA.class "ew-flex ew-items-stretch ew-w-full ew-relative" ]
             [ input
             , iconWrapper "ew-text-base-aux" icon
             ]
@@ -124,40 +122,11 @@ prefixSuffixClass =
             ++ " ew-text-sm ew-text-base ew-text-base-aux"
 
 
-maskClass : Maybe (a -> String) -> H.Attribute msg
-maskClass fn =
-    HA.classList
-        [ ( "ew-text-transparent focus:ew-text-base-fg focus:ew-pb-[18px] focus:ew-pt-0"
-          , fn /= Nothing
-          )
-        ]
-
-
-mask : Maybe (a -> String) -> a -> H.Html msg
-mask fn value =
-    case Maybe.map (\f -> f value) fn of
-        Just value_ ->
-            H.p
-                [ HA.class "ew-absolute ew-inset-y-0 ew-inset-x-3"
-                , HA.class "ew-flex ew-items-center"
-                , HA.class "ew-leading-0 ew-text-base ew-text-base-fg"
-                , HA.class "ew-m-0 ew-p-0 ew-box-border"
-                , HA.class "ew-transition ew-cursor-text"
-                , HA.class "group-focus-within:ew-top-[22px]"
-                , HA.class "group-focus-within:ew-text-sm group-focus-within:ew-text-base-aux"
-                , HA.style "transition" "position 0.2s"
-                , HA.attribute "aria-hidden" "true"
-                ]
-                [ H.text value_ ]
-
-        Nothing ->
-            H.text ""
-
-
 baseClass : String
 baseClass =
     "ew-appearance-none"
-        ++ " ew-p-0 ew-box-border"
+        ++ " ew-w-full"
+        ++ " ew-py-2 ew-px-3 ew-box-border"
         ++ " ew-border-0 ew-outline-0"
         ++ " ew-font-text ew-text-base ew-text-inherit ew-leading-none"
         ++ " ew-placeholder-base-aux/80"

@@ -189,7 +189,17 @@
 
 .ew-table th,
 .ew-table td {
-  padding: 12px;
+  padding: 12px 6px;
+}
+
+.ew-table th:first-child,
+.ew-table td:first-child {
+  padding-left: 12px;
+}
+
+.ew-table th:last-child,
+.ew-table td:last-child {
+  padding-right: 12px;
 }
 
 /* 

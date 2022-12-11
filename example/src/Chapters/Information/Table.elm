@@ -44,39 +44,68 @@ chapter_ =
                     , W.Table.onMouseLeave (logAction "onMouseLeave")
                     , W.Table.highlight (.age >> (==) 35)
                     ]
-                    [ W.Table.html "Image"
-                        .picture
-                        [ W.Table.size 72 ]
-                        (\s -> H.img [ HA.src s, HA.height 60 ] [])
-                    , W.Table.string "Name" .name []
-                    , W.Table.int "Age" .age []
-                    , W.Table.float "Score" .score []
-                    , W.Table.bool "Ready" .ready []
+                    [ W.Table.column
+                        [ W.Table.width 60, W.Table.largeScreenOnly ]
+                        { label = "Image"
+                        , content =
+                            (\{ picture } -> H.img [ HA.src picture, HA.height 60 ] [])
+                        }
+                    , W.Table.string []
+                        { label = "Name"
+                        , value = .name
+                        }
+                    , W.Table.int [ W.Table.width 80 ]
+                        { label = "Age"
+                        , value = .age
+                        }
+                    , W.Table.float [ W.Table.width 80 ]
+                        { label = "Score"
+                        , value = .score
+                        }
+                    , W.Table.bool [ W.Table.width 80 ]
+                        { label = "Ready?"
+                        , value = .ready
+                        }
                     ]
                     data
               )
             , ( "Groups"
               , W.Table.view
                     [ W.Table.onClick (logActionWithString "onClick" << .name)
-                    , W.Table.groups .name
+                    , W.Table.groupBy .name
                     , W.Table.htmlAttrs [ HA.style "max-height" "400px" ]
                     ]
-                    [ W.Table.html "Image"
-                        .picture
-                        [ W.Table.size 72 ]
-                        (\s -> H.img [ HA.src s, HA.height 60 ] [])
-                    , W.Table.string "Name" .name [  ]
-                    , W.Table.int "Age" .age  
-                        [ W.Table.toGroup
-                            (\xs ->
+                    [ W.Table.column
+                        [ W.Table.width 60, W.Table.largeScreenOnly ]
+                        { label = "Image"
+                        , content =
+                            (\{ picture } -> H.img [ HA.src picture, HA.height 60 ] [])
+                        }
+                    , W.Table.string [ W.Table.groupLabel ]
+                        { label = "Name"
+                        , value = .name
+                        }
+                    , W.Table.int
+                        [ W.Table.width 80
+                        , W.Table.groupValue
+                            (\_ xs ->
                                 xs
-                                |> List.foldl (\x acc -> x.age + acc) 0
-                                |> String.fromInt
-                                |> H.text
+                                    |> List.foldl (\x acc -> x.age + acc) 0
+                                    |> String.fromInt
+                                    |> H.text
                             )
                         ]
-                    , W.Table.float "Score" .score []
-                    , W.Table.bool "Ready" .ready []
+                        { label = "Age"
+                        , value = .age
+                        }
+                    , W.Table.float [ W.Table.width 80 ]
+                        { label = "Score"
+                        , value = .score
+                        }
+                    , W.Table.bool [ W.Table.width 80 ]
+                        { label = "Ready?"
+                        , value = .ready
+                        }
                     ]
                     data
               )

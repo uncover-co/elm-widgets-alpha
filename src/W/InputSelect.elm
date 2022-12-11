@@ -1,5 +1,5 @@
 module W.InputSelect exposing
-    ( view, viewGroups
+    ( view, viewGroups, viewOptional, viewGroupsOptional
     , disabled, readOnly
     , prefix, suffix
     , noAttr, Attribute
@@ -7,7 +7,7 @@ module W.InputSelect exposing
 
 {-|
 
-@docs view, viewGroups
+@docs view, viewGroups, viewOptional, viewGroupsOptional
 
 
 # States
@@ -128,56 +128,57 @@ viewGroups attrs_ props =
                 |> List.map (\a -> ( props.toLabel a, a ))
                 |> Dict.fromList
     in
-    H.select
-        [ HA.class W.Internal.Input.baseClass
-        , HA.disabled attrs.disabled
-        , HA.readonly attrs.readOnly
-        , WH.attrIf attrs.readOnly (HA.attribute "aria-readonly") "true"
-        , WH.attrIf attrs.disabled (HA.attribute "aria-disabled") "true"
-        , HA.placeholder "Select"
-        , HE.onInput
-            (\s ->
-                Dict.get s values
-                    |> Maybe.withDefault props.value
-                    |> props.onInput
-            )
-        ]
-        (List.concat
-            [ props.options
-                |> List.map
-                    (\a ->
-                        H.option
-                            [ HA.selected (a == props.value)
-                            , HA.value (props.toLabel a)
-                            ]
-                            [ H.text (props.toLabel a) ]
-                    )
-            , props.optionGroups
-                |> List.map
-                    (\( l, options_ ) ->
-                        H.optgroup [ HA.attribute "label" l ]
-                            (options_
-                                |> List.map
-                                    (\a ->
-                                        H.option
-                                            [ HA.selected (a == props.value)
-                                            , HA.value (props.toLabel a)
-                                            ]
-                                            [ H.text (props.toLabel a) ]
-                                    )
-                            )
-                    )
+    W.Internal.Input.viewWithIcon
+        { prefix = attrs.prefix
+        , suffix = attrs.suffix
+        , disabled = attrs.disabled
+        , readOnly = attrs.readOnly
+        , mask = Nothing
+        , maskInput = ""
+        }
+        W.Internal.Icons.chevronDown
+        (H.select
+            [ HA.class W.Internal.Input.baseClass
+            , HA.disabled attrs.disabled
+            , HA.readonly attrs.readOnly
+            , WH.attrIf attrs.readOnly (HA.attribute "aria-readonly") "true"
+            , WH.attrIf attrs.disabled (HA.attribute "aria-disabled") "true"
+            , HA.placeholder "Select"
+            , HE.onInput
+                (\s ->
+                    Dict.get s values
+                        |> Maybe.withDefault props.value
+                        |> props.onInput
+                )
             ]
+            (List.concat
+                [ props.options
+                    |> List.map
+                        (\a ->
+                            H.option
+                                [ HA.selected (a == props.value)
+                                , HA.value (props.toLabel a)
+                                ]
+                                [ H.text (props.toLabel a) ]
+                        )
+                , props.optionGroups
+                    |> List.map
+                        (\( l, options_ ) ->
+                            H.optgroup [ HA.attribute "label" l ]
+                                (options_
+                                    |> List.map
+                                        (\a ->
+                                            H.option
+                                                [ HA.selected (a == props.value)
+                                                , HA.value (props.toLabel a)
+                                                ]
+                                                [ H.text (props.toLabel a) ]
+                                        )
+                                )
+                        )
+                ]
+            )
         )
-        |> W.Internal.Input.viewWithIcon
-            { prefix = attrs.prefix
-            , suffix = attrs.suffix
-            , disabled = attrs.disabled
-            , readOnly = attrs.readOnly
-            , mask = Nothing
-            , maskInput = ""
-            }
-            W.Internal.Icons.chevronDown
 
 
 {-| -}
@@ -196,5 +197,49 @@ view attrs_ props =
         , options = props.options
         , optionGroups = []
         , toLabel = props.toLabel
+        , onInput = props.onInput
+        }
+
+
+{-| -}
+viewOptional :
+    List (Attribute msg)
+    ->
+        { value : Maybe a
+        , options : List a
+        , toLabel : a -> String
+        , placeholder : String
+        , onInput : Maybe a -> msg
+        }
+    -> H.Html msg
+viewOptional attrs_ props =
+    viewGroupsOptional attrs_
+        { value = props.value
+        , options = props.options
+        , optionGroups = []
+        , placeholder = props.placeholder
+        , toLabel = props.toLabel
+        , onInput = props.onInput
+        }
+
+
+{-| -}
+viewGroupsOptional :
+    List (Attribute msg)
+    ->
+        { value : Maybe a
+        , options : List a
+        , optionGroups : List ( String, List a )
+        , toLabel : a -> String
+        , placeholder : String
+        , onInput : Maybe a -> msg
+        }
+    -> H.Html msg
+viewGroupsOptional attrs_ props =
+    viewGroups attrs_
+        { value = props.value
+        , options = Nothing :: List.map Just props.options
+        , optionGroups = []
+        , toLabel = Maybe.map props.toLabel >> Maybe.withDefault props.placeholder
         , onInput = props.onInput
         }
