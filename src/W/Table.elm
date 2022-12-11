@@ -50,7 +50,6 @@ import Html.Attributes as HA
 import Html.Events as HE
 import W.InputCheckbox
 import W.Internal.Helpers as WH
-import W.Internal.Table exposing (TableGroup(..))
 
 
 
@@ -276,21 +275,6 @@ view attrs_ columns data =
             [ WH.maybeAttr HE.onMouseLeave attrs.onMouseLeave ]
             rows
         ]
-
-
-countWhile : (a -> Bool) -> List a -> Int
-countWhile fn xs =
-    xs
-        |> List.foldl
-            (\a ( continue, acc ) ->
-                if continue && fn a then
-                    ( True, acc + 1 )
-
-                else
-                    ( False, acc )
-            )
-            ( True, 0 )
-        |> Tuple.second
 
 
 toGroupedRows : (a -> String) -> List a -> List ( String, List a )

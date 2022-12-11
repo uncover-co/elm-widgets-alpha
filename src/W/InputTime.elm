@@ -23,7 +23,7 @@ module W.InputTime exposing
 @docs disabled, readOnly
 
 
-# Validation
+# Validation Attributes
 
 @docs required, min, max, step
 

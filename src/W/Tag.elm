@@ -1,7 +1,6 @@
 module W.Tag exposing
     ( view, viewButton, viewLink
-    , small
-    , primary, secondary, success, warning, danger, color
+    , small, primary, secondary, success, warning, danger, color
     , htmlAttrs, noAttr, Attribute
     )
 
@@ -12,12 +11,7 @@ module W.Tag exposing
 
 # Styles
 
-@docs small
-
-
-# Color
-
-@docs primary, secondary, success, warning, danger, color
+@docs small, primary, secondary, success, warning, danger, color
 
 
 # Html

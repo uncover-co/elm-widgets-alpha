@@ -1,6 +1,6 @@
 module W.InputText exposing
     ( view
-    , email, password, search, telephone, url
+    , email, password, search, telephone, url, InputType(..)
     , placeholder, mask, prefix, suffix, unstyled
     , disabled, readOnly
     , onEnter, onFocus, onBlur
@@ -16,7 +16,7 @@ module W.InputText exposing
 
 # Types
 
-@docs email, password, search, telephone, url
+@docs email, password, search, telephone, url, InputType
 
 
 # Styles
@@ -34,7 +34,7 @@ module W.InputText exposing
 @docs onEnter, onFocus, onBlur
 
 
-# Validation
+# Validation Attributes
 
 @docs required, minLength, maxLength, exactLength, pattern, validation
 

@@ -30,6 +30,7 @@
         "W.Modal",
         "W.Menu",
         "W.Message",
+        "W.Notification",
         "W.Pagination",
         "W.Popover",
         "W.Styles",

@@ -28,7 +28,7 @@ module W.InputAutocomplete exposing
 @docs placeholder, prefix, suffix
 
 
-# Validation
+# Validation Attributes
 
 @docs required
 

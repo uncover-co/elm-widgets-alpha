@@ -29,7 +29,7 @@ module W.InputFloat exposing
 @docs disabled, readOnly
 
 
-# Validation
+# Validation Attributes
 
 @docs required, min, max, step, minLength, maxLength, validation
 

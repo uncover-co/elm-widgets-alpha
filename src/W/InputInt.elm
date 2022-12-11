@@ -29,7 +29,7 @@ module W.InputInt exposing
 @docs disabled, readOnly
 
 
-# Validation
+# Validation Attributes
 
 @docs required, min, max, minLength, maxLength, validation
 

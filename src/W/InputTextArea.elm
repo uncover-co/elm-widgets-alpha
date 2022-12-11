@@ -22,7 +22,7 @@ module W.InputTextArea exposing
 @docs disabled, readOnly
 
 
-# Validation
+# Validation Attributes
 
 @docs required
 

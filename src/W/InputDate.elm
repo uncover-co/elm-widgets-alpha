@@ -23,7 +23,7 @@ module W.InputDate exposing
 @docs prefix, suffix
 
 
-# Validation
+# Validation Attributes
 
 @docs min, max, step, required
 

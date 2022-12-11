@@ -1,21 +1,36 @@
 module W.Notification exposing
-    ( Attribute
-    , class
-    , color
-    , danger
-    , footer
-    , href
-    , htmlAttrs
-    , icon
-    , id
-    , onClick
-    , onClose
-    , primary
-    , secondary
-    , success
-    , view
-    , warning
+    ( view
+    , icon, footer
+    , primary, secondary, success, warning, danger, color
+    , href, onClick, onClose
+    , htmlAttrs, noAttr, Attribute
     )
+
+{-|
+
+@docs view
+
+
+# Content
+
+@docs icon, footer
+
+
+# Styles
+
+@docs primary, secondary, success, warning, danger, color
+
+
+# Actions
+
+@docs href, onClick, onClose
+
+
+# Html
+
+@docs htmlAttrs, noAttr, Attribute
+
+-}
 
 import Html as H
 import Html.Attributes as HA
@@ -35,9 +50,7 @@ type Attribute msg
 
 
 type alias Attributes msg =
-    { id : Maybe String
-    , class : String
-    , htmlAttributes : List (H.Attribute msg)
+    { htmlAttributes : List (H.Attribute msg)
     , icon : Maybe (H.Html msg)
     , footer : Maybe (H.Html msg)
     , color : String
@@ -54,9 +67,7 @@ applyAttrs attrs =
 
 defaultAttrs : Attributes msg
 defaultAttrs =
-    { id = Nothing
-    , class = ""
-    , htmlAttributes = []
+    { htmlAttributes = []
     , icon = Nothing
     , footer = Nothing
     , color = Theme.neutralForeground
@@ -71,21 +82,15 @@ defaultAttrs =
 
 
 {-| -}
-id : String -> Attribute msg
-id v =
-    Attribute <| \attrs -> { attrs | id = Just v }
-
-
-{-| -}
-class : String -> Attribute msg
-class v =
-    Attribute <| \attrs -> { attrs | class = v }
-
-
-{-| -}
 htmlAttrs : List (H.Attribute msg) -> Attribute msg
 htmlAttrs v =
     Attribute <| \attrs -> { attrs | htmlAttributes = v }
+
+
+{-| -}
+noAttr : Attribute msg
+noAttr =
+    Attribute identity
 
 
 {-| -}
@@ -181,9 +186,7 @@ view attrs_ children_ =
         baseAttrs : List (H.Attribute msg)
         baseAttrs =
             attrs.htmlAttributes
-                ++ [ WH.maybeAttr HA.id attrs.id
-                   , HA.class attrs.class
-                   , HA.class "ew-m-0 ew-box-border ew-relative ew-text-left"
+                ++ [ HA.class "ew-m-0 ew-box-border ew-relative ew-text-left"
                    , HA.class "ew-flex ew-w-full ew-items-center"
                    , HA.class "ew-font-text ew-text-base ew-font-medium"
                    , HA.class "ew-pb-2 ew-pt-3.5 ew-px-6"

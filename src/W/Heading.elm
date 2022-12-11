@@ -12,7 +12,7 @@ module W.Heading exposing
 @docs view
 
 
-# Color
+# Colors
 
 @docs primary, secondary, neutral, color
 

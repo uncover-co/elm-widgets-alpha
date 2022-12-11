@@ -81,13 +81,13 @@ viewLinks :
         }
     -> H.Html msg
 viewLinks attrs_ props =
-    let
-        attrs : Attributes msg
-        attrs =
-            applyAttrs attrs_
-    in
     case W.Internal.Pagination.toPages props.active props.total of
         Ok pages ->
+            let
+                attrs : Attributes msg
+                attrs =
+                    applyAttrs attrs_
+            in
             H.div
                 [ HA.class "ew-flex ew-items-center ew-font-primary ew-space-x-2 ew-text-base-aux" ]
                 (pages
@@ -129,13 +129,13 @@ view :
         }
     -> H.Html msg
 view attrs_ props =
-    let
-        attrs : Attributes msg
-        attrs =
-            applyAttrs attrs_
-    in
     case W.Internal.Pagination.toPages props.active props.total of
         Ok pages ->
+            let
+                attrs : Attributes msg
+                attrs =
+                    applyAttrs attrs_
+            in
             H.div
                 [ HA.class "ew-flex ew-items-center ew-font-primary ew-space-x-2 ew-text-base-aux" ]
                 (pages

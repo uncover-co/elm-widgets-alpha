@@ -2,7 +2,7 @@ module W.Popover exposing
     ( view
     , top, topRight, bottomRight, left, leftBottom, right, rightBottom
     , over, offset, full
-    , noAttr, Attribute
+    , htmlAttrs, noAttr, Attribute
     )
 
 {-|
@@ -22,7 +22,7 @@ module W.Popover exposing
 
 # Html
 
-@docs noAttr, Attribute
+@docs htmlAttrs, noAttr, Attribute
 
 -}
 
@@ -239,6 +239,7 @@ view attrs_ props =
         [ H.div [ HA.class "ew-focusable ew-inline-flex" ] props.children
         , H.div
             (positionAttrs
+                ++ attrs.htmlAttributes
                 ++ [ HA.class "ew-hidden ew-absolute ew-z-[9999] group-focus-within:ew-block hover:ew-block"
                    , HA.classList
                         [ ( "ew-min-w-full", attrs.over )

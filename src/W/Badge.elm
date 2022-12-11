@@ -167,14 +167,15 @@ view :
     -> H.Html msg
 view attrs_ props =
     let
-        attrs : Attributes msg
-        attrs =
-            applyAttrs attrs_
-
         badge : H.Html msg
         badge =
             case props.content of
                 Just content ->
+                    let
+                        attrs : Attributes msg
+                        attrs =
+                            applyAttrs attrs_
+                    in
                     H.span
                         (baseAttrs attrs
                             ++ [ HA.class "ew-absolute ew-bottom-full ew-left-full"
