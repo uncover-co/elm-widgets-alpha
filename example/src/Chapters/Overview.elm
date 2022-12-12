@@ -1,4 +1,4 @@
-module Chapters.GettingStarted exposing (Model, chapter_, init)
+module Chapters.Overview exposing (Model, chapter_, init)
 
 import Color
 import ElmBook
@@ -17,6 +17,7 @@ import W.Heading
 import W.InputField
 import W.InputSelect
 import W.InputText
+import W.InputInt
 import W.InputTime
 import W.Internal.Helpers as WH
 import W.Layout
@@ -27,8 +28,8 @@ import W.Text
 
 
 type alias Model =
-    { inputMask : String
-    , inputMaskResult : Maybe (Result (W.InputText.Error ()) String)
+    { inputMask : W.InputInt.Value
+    , inputMaskResult : Maybe (Result (W.InputInt.Error ()) Int)
     , select : Role
     , time : Maybe Time.Posix
     }
@@ -55,7 +56,7 @@ roleToString role =
 
 init : Model
 init =
-    { inputMask = ""
+    { inputMask = W.InputInt.init Nothing
     , inputMaskResult = Nothing
     , select = Viewer
     , time = Nothing
@@ -63,7 +64,7 @@ init =
 
 
 type Msg
-    = OnInputMask (Result (W.InputText.Error ()) String) String
+    = OnInputMask (Result (W.InputInt.Error ()) Int) W.InputInt.Value
     | OnSelect Role
     | OnSelectTime (Maybe Time.Posix)
 
@@ -131,11 +132,11 @@ chapter_ =
                         { label =
                             [ H.text "Pattern Language" ]
                         , input =
-                            [ W.InputText.viewWithValidation
-                                [ W.InputText.mask (Mask.string "##.###.###.##")
-                                , W.InputText.required True
-                                , W.InputText.exactLength 10
-                                , W.InputText.pattern "[A-Z]{2}[a-z]{6}[A-Z]{2}"
+                            [ W.InputInt.viewWithValidation
+                                [ W.InputInt.mask (Mask.string "(##) ####-####")
+                                , W.InputInt.required True
+                                , W.InputInt.exactLength 10
+                                , W.InputInt.placeholder "(55) 9999-9999"
                                 ]
                                 { onInput = OnInputMask
                                 , value = state.overview.inputMask
@@ -149,14 +150,14 @@ chapter_ =
                                                 W.Message.view
                                                     [ W.Message.success ]
                                                     [ H.text "You got it! \""
-                                                    , H.text value
+                                                    , H.text (String.fromInt value)
                                                     , H.text "\" is a valid value!"
                                                     ]
 
                                             Err error ->
                                                 W.Message.view
                                                     [ W.Message.danger ]
-                                                    [ W.InputText.errorToString error
+                                                    [ W.InputInt.errorToString error
                                                         |> H.text
                                                     ]
                                         ]
@@ -323,11 +324,10 @@ We're trying to push the boundaries of what is currently possible by the use of 
 <component with-label="input-mask" />
 
 ```elm
-W.InputText.viewWithValidation
-    [ W.InputText.mask (Mask.string "##.###.###.##")
-    , W.InputText.required True
-    , W.InputText.exactLength 10
-    , W.InputText.pattern "[A-Z]{2}[a-z]{6}[A-Z]{2}"
+W.InputInt.viewWithValidation
+    [ W.InputInt.mask (Mask.string "(##) ####-####")
+    , W.InputInt.required True
+    , W.InputInt.exactLength 10
     ]
     { onInput = GotInput
     , value = model.input

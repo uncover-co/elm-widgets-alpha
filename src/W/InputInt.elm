@@ -3,7 +3,7 @@ module W.InputInt exposing
     , init, toInt, toString, Value
     , placeholder, mask, prefix, suffix
     , disabled, readOnly
-    , required, min, max, minLength, maxLength, validation
+    , required, min, max, exactLength, minLength, maxLength, validation
     , viewWithValidation, errorToString, Error(..)
     , onEnter, onFocus, onBlur
     , htmlAttrs, noAttr, Attribute
@@ -31,7 +31,7 @@ module W.InputInt exposing
 
 # Validation Attributes
 
-@docs required, min, max, minLength, maxLength, validation
+@docs required, min, max, exactLength, minLength, maxLength, validation
 
 
 # View With Validation
@@ -229,6 +229,12 @@ max v =
 
 
 {-| -}
+exactLength : Int -> Attribute msg customError
+exactLength v =
+    Attribute <| \attrs -> { attrs | minLength = Just v, maxLength = Just v }
+
+
+{-| -}
 minLength : Int -> Attribute msg customError
 minLength v =
     Attribute <| \attrs -> { attrs | minLength = Just v }
@@ -304,9 +310,11 @@ baseAttrs attrs =
            , HA.readonly attrs.readOnly
            , WH.attrIf attrs.readOnly (HA.attribute "aria-readonly") "true"
            , WH.attrIf attrs.disabled (HA.attribute "aria-disabled") "true"
+           , WH.maybeAttr HA.placeholder attrs.placeholder
+           , WH.maybeAttr HA.minlength attrs.minLength
+           , WH.maybeAttr HA.maxlength attrs.maxLength
            , WH.maybeAttr HA.min (Maybe.map String.fromFloat attrs.min)
            , WH.maybeAttr HA.max (Maybe.map String.fromFloat attrs.max)
-           , WH.maybeAttr HA.placeholder attrs.placeholder
            , WH.maybeAttr HE.onFocus attrs.onFocus
            , WH.maybeAttr HE.onBlur attrs.onBlur
            , WH.maybeAttr WH.onEnter attrs.onEnter
@@ -330,6 +338,7 @@ view attrs_ props =
         value : String
         value =
             toString props.value
+                |> WH.limitString attrs.maxLength
     in
     W.Internal.Input.view
         { disabled = attrs.disabled
@@ -344,7 +353,7 @@ view attrs_ props =
                 ++ [ HA.value value
                    , HE.on "input"
                         (D.at [ "target", "value" ] D.string
-                            |> D.map (props.onInput << toValue)
+                            |> D.map (props.onInput << toValue << WH.limitString attrs.maxLength)
                         )
                    ]
             )
@@ -369,6 +378,7 @@ viewWithValidation attrs_ props =
         value : String
         value =
             toString props.value
+                |> WH.limitString attrs.maxLength
     in
     W.Internal.Input.view
         { disabled = attrs.disabled
@@ -382,12 +392,16 @@ viewWithValidation attrs_ props =
             (baseAttrs attrs
                 ++ [ HA.value value
                    , HE.on "input"
-                        (D.map8
-                            (\value_ valid rangeOverflow rangeUnderflow tooLong tooShort valueMissing validationMessage ->
+                        (D.map6
+                            (\value_ valid rangeOverflow rangeUnderflow valueMissing validationMessage ->
                                 let
+                                    valueString : String
+                                    valueString =
+                                        WH.limitString attrs.maxLength value_
+
                                     value__ : Value
                                     value__ =
-                                        toValue value_
+                                        toValue valueString
 
                                     customError : Maybe customError
                                     customError =
@@ -398,7 +412,23 @@ viewWithValidation attrs_ props =
                                     result : Result (Error customError) Int
                                     result =
                                         if valid && customError == Nothing then
-                                            Ok (toInt value__)
+                                            if
+                                                attrs.minLength
+                                                    |> Maybe.map (\l -> String.length valueString < l)
+                                                    |> Maybe.withDefault False
+                                                    |> Debug.log "minlength"
+                                            then
+                                                Err (TooShort (Maybe.withDefault 0 attrs.minLength) "Input too short")
+
+                                            else if
+                                                attrs.maxLength
+                                                    |> Maybe.map (\l -> String.length valueString > l)
+                                                    |> Maybe.withDefault False
+                                            then
+                                                Err (TooLong (Maybe.withDefault 0 attrs.maxLength) "Input too long")
+
+                                            else
+                                                Ok (toInt value__)
 
                                         else if valueMissing then
                                             Err (ValueMissing validationMessage)
@@ -408,12 +438,6 @@ viewWithValidation attrs_ props =
 
                                         else if rangeOverflow then
                                             Err (TooHigh (Maybe.withDefault 0 attrs.max) validationMessage)
-
-                                        else if tooShort then
-                                            Err (TooShort (Maybe.withDefault 0 attrs.minLength) validationMessage)
-
-                                        else if tooLong then
-                                            Err (TooLong (Maybe.withDefault 0 attrs.maxLength) validationMessage)
 
                                         else
                                             customError
@@ -426,8 +450,6 @@ viewWithValidation attrs_ props =
                             (D.at [ "target", "validity", "valid" ] D.bool)
                             (D.at [ "target", "validity", "rangeOverflow" ] D.bool)
                             (D.at [ "target", "validity", "rangeUnderflow" ] D.bool)
-                            (D.at [ "target", "validity", "tooLong" ] D.bool)
-                            (D.at [ "target", "validity", "tooShort" ] D.bool)
                             (D.at [ "target", "validity", "valueMissing" ] D.bool)
                             (D.at [ "target", "validationMessage" ] D.string)
                         )

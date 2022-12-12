@@ -1,5 +1,6 @@
 module W.Internal.Helpers exposing
     ( attrIf
+    , limitString
     , maybeAttr
     , maybeHtml
     , onEnter
@@ -79,7 +80,6 @@ onEnter msg =
 
 
 
--- Elements
 -- Basics
 
 
@@ -90,3 +90,10 @@ stringIf v a b =
 
     else
         b
+
+
+limitString : Maybe Int -> String -> String
+limitString limit str =
+    limit
+        |> Maybe.map (\l -> String.left l str)
+        |> Maybe.withDefault str

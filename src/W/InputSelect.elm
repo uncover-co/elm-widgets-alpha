@@ -117,7 +117,7 @@ viewGroups :
     -> H.Html msg
 viewGroups attrs_ props =
     let
-        attrs : Attributes msg a
+        attrs : Attributes msg
         attrs =
             applyAttrs attrs_
 

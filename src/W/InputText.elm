@@ -363,7 +363,7 @@ view attrs_ props =
 
         value : String
         value =
-            limitString attrs.maxLength props.value
+            WH.limitString attrs.maxLength props.value
     in
     WI.view
         { disabled = attrs.disabled
@@ -376,7 +376,7 @@ view attrs_ props =
         (H.input
             (baseAttrs attrs
                 ++ [ HA.value value
-                   , HE.onInput (props.onInput << limitString attrs.maxLength)
+                   , HE.onInput (props.onInput << WH.limitString attrs.maxLength)
                    ]
             )
             []
@@ -399,7 +399,7 @@ viewWithValidation attrs_ props =
 
         value : String
         value =
-            limitString attrs.maxLength props.value
+            WH.limitString attrs.maxLength props.value
     in
     WI.view
         { disabled = attrs.disabled
@@ -418,7 +418,7 @@ viewWithValidation attrs_ props =
                                 let
                                     value_ : String
                                     value_ =
-                                        limitString attrs.maxLength value__
+                                        WH.limitString attrs.maxLength value__
 
                                     customError : Maybe customError
                                     customError =
@@ -466,10 +466,3 @@ viewWithValidation attrs_ props =
             )
             []
         )
-
-
-limitString : Maybe Int -> String -> String
-limitString limit str =
-    limit
-        |> Maybe.map (\l -> String.left l str)
-        |> Maybe.withDefault str

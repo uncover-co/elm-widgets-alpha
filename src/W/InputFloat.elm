@@ -3,7 +3,7 @@ module W.InputFloat exposing
     , init, toFloat, toString, Value
     , placeholder, mask, prefix, suffix
     , disabled, readOnly
-    , required, min, max, step, minLength, maxLength, validation
+    , required, min, max, step, exactLength, minLength, maxLength, validation
     , viewWithValidation, errorToString, Error(..)
     , onEnter, onFocus, onBlur
     , htmlAttrs, noAttr, Attribute
@@ -31,7 +31,7 @@ module W.InputFloat exposing
 
 # Validation Attributes
 
-@docs required, min, max, step, minLength, maxLength, validation
+@docs required, min, max, step, exactLength, minLength, maxLength, validation
 
 
 # View With Validation
@@ -235,6 +235,12 @@ max v =
 
 
 {-| -}
+exactLength : Int -> Attribute msg customError
+exactLength v =
+    Attribute <| \attrs -> { attrs | minLength = Just v, maxLength = Just v }
+
+
+{-| -}
 minLength : Int -> Attribute msg customError
 minLength v =
     Attribute <| \attrs -> { attrs | minLength = Just v }
@@ -342,6 +348,7 @@ view attrs_ props =
         value : String
         value =
             toString props.value
+                |> WH.limitString attrs.maxLength
     in
     W.Internal.Input.view
         { disabled = attrs.disabled
@@ -356,7 +363,7 @@ view attrs_ props =
                 ++ [ HA.value value
                    , HE.on "input"
                         (D.at [ "target", "value" ] D.string
-                            |> D.map (props.onInput << toValue props.value)
+                            |> D.map (props.onInput << toValue props.value << WH.limitString attrs.maxLength)
                         )
                    ]
             )
@@ -381,6 +388,7 @@ viewWithValidation attrs_ props =
         value : String
         value =
             toString props.value
+                |> WH.limitString attrs.maxLength
     in
     W.Internal.Input.view
         { disabled = attrs.disabled
@@ -397,9 +405,13 @@ viewWithValidation attrs_ props =
                         (D.map8
                             (\( value_, valid ) rangeOverflow rangeUnderflow tooLong tooShort stepMismatch valueMissing validationMessage ->
                                 let
+                                    valueString : String
+                                    valueString =
+                                        WH.limitString attrs.maxLength value_
+
                                     value__ : Value
                                     value__ =
-                                        toValue props.value value_
+                                        toValue props.value valueString
 
                                     customError : Maybe customError
                                     customError =
@@ -410,7 +422,23 @@ viewWithValidation attrs_ props =
                                     result : Result (Error customError) Float
                                     result =
                                         if valid && customError == Nothing then
-                                            Ok (toFloat value__)
+                                            if
+                                                attrs.minLength
+                                                    |> Maybe.map (\l -> String.length valueString < l)
+                                                    |> Maybe.withDefault False
+                                                    |> Debug.log "minlength"
+                                            then
+                                                Err (TooShort (Maybe.withDefault 0 attrs.minLength) "Input too short")
+
+                                            else if
+                                                attrs.maxLength
+                                                    |> Maybe.map (\l -> String.length valueString > l)
+                                                    |> Maybe.withDefault False
+                                            then
+                                                Err (TooLong (Maybe.withDefault 0 attrs.maxLength) "Input too long")
+
+                                            else
+                                                Ok (toFloat value__)
 
                                         else if valueMissing then
                                             Err (ValueMissing validationMessage)

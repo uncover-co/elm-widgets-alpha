@@ -20,7 +20,7 @@ import Chapters.Form.InputSlider
 import Chapters.Form.InputText
 import Chapters.Form.InputTextArea
 import Chapters.Form.InputTime
-import Chapters.GettingStarted
+import Chapters.Overview
 import Chapters.Information.Badge
 import Chapters.Information.DataRow
 import Chapters.Information.Menu
@@ -42,7 +42,7 @@ import W.Styles
 
 
 type alias SharedState =
-    { overview : Chapters.GettingStarted.Model
+    { overview : Chapters.Overview.Model
     , autocomplete : Chapters.Form.InputAutocomplete.Model
     , range :
         { default : Float
@@ -60,7 +60,7 @@ main =
     book "elm-widgets"
         |> withStatefulOptions
             [ ElmBook.StatefulOptions.initialState
-                { overview = Chapters.GettingStarted.init
+                { overview = Chapters.Overview.init
                 , autocomplete = Chapters.Form.InputAutocomplete.init
                 , range = Chapters.Form.InputSlider.init
                 , inputText = Chapters.Form.InputText.init
@@ -83,7 +83,7 @@ main =
             ]
         |> withChapterGroups
             [ ( ""
-              , [ Chapters.GettingStarted.chapter_
+              , [ Chapters.Overview.chapter_
                 , ElmBook.Chapter.chapterLink
                     { title = "Package Docs"
                     , url = "https://"
