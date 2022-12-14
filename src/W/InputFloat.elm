@@ -3,7 +3,7 @@ module W.InputFloat exposing
     , init, toFloat, toString, Value
     , placeholder, mask, prefix, suffix
     , disabled, readOnly
-    , required, min, max, step, exactLength, minLength, maxLength, validation
+    , required, min, max, step, validation
     , viewWithValidation, errorToString, Error(..)
     , onEnter, onFocus, onBlur
     , htmlAttrs, noAttr, Attribute
@@ -31,7 +31,7 @@ module W.InputFloat exposing
 
 # Validation Attributes
 
-@docs required, min, max, step, exactLength, minLength, maxLength, validation
+@docs required, min, max, step, validation
 
 
 # View With Validation
@@ -95,18 +95,18 @@ toString (Value v _) =
 
 
 {-| -}
-type Error customError
+type Error
     = TooLow Float String
     | TooHigh Float String
     | TooLong Int String
     | TooShort Int String
     | StepMismatch Float String
     | ValueMissing String
-    | Custom customError
+    | Custom String
 
 
 {-| -}
-errorToString : Error customError -> String
+errorToString : Error -> String
 errorToString error =
     case error of
         TooLow _ message ->
@@ -127,8 +127,8 @@ errorToString error =
         ValueMissing message ->
             message
 
-        Custom _ ->
-            "Value must follow the expected format."
+        Custom message ->
+            message
 
 
 
@@ -136,20 +136,18 @@ errorToString error =
 
 
 {-| -}
-type Attribute msg customError
-    = Attribute (Attributes msg customError -> Attributes msg customError)
+type Attribute msg
+    = Attribute (Attributes msg -> Attributes msg)
 
 
-type alias Attributes msg customError =
+type alias Attributes msg =
     { disabled : Bool
     , readOnly : Bool
     , required : Bool
     , min : Maybe Float
     , max : Maybe Float
-    , minLength : Maybe Int
-    , maxLength : Maybe Int
-    , validation : Maybe (Float -> String -> Maybe customError)
-    , step : Maybe Float
+    , validation : Maybe (Float -> String -> Maybe String)
+    , step : Float
     , placeholder : Maybe String
     , mask : Maybe (String -> String)
     , prefix : Maybe (H.Html msg)
@@ -161,22 +159,20 @@ type alias Attributes msg customError =
     }
 
 
-applyAttrs : List (Attribute msg customError) -> Attributes msg customError
+applyAttrs : List (Attribute msg) -> Attributes msg
 applyAttrs attrs =
     List.foldl (\(Attribute fn) a -> fn a) defaultAttrs attrs
 
 
-defaultAttrs : Attributes msg customError
+defaultAttrs : Attributes msg
 defaultAttrs =
     { disabled = False
     , readOnly = False
     , required = False
     , min = Nothing
     , max = Nothing
-    , minLength = Nothing
-    , maxLength = Nothing
     , validation = Nothing
-    , step = Nothing
+    , step = 0.01
     , placeholder = Nothing
     , mask = Nothing
     , prefix = Nothing
@@ -193,115 +189,97 @@ defaultAttrs =
 
 
 {-| -}
-placeholder : String -> Attribute msg customError
+placeholder : String -> Attribute msg
 placeholder v =
     Attribute <| \attrs -> { attrs | placeholder = Just v }
 
 
 {-| -}
-mask : (String -> String) -> Attribute msg customError
+mask : (String -> String) -> Attribute msg
 mask v =
     Attribute <| \attrs -> { attrs | mask = Just v }
 
 
 {-| -}
-disabled : Bool -> Attribute msg customError
+disabled : Bool -> Attribute msg
 disabled v =
     Attribute <| \attrs -> { attrs | disabled = v }
 
 
 {-| -}
-readOnly : Bool -> Attribute msg customError
+readOnly : Bool -> Attribute msg
 readOnly v =
     Attribute <| \attrs -> { attrs | readOnly = v }
 
 
 {-| -}
-required : Bool -> Attribute msg customError
+required : Bool -> Attribute msg
 required v =
     Attribute <| \attrs -> { attrs | required = v }
 
 
 {-| -}
-min : Float -> Attribute msg customError
+min : Float -> Attribute msg
 min v =
     Attribute <| \attrs -> { attrs | min = Just v }
 
 
 {-| -}
-max : Float -> Attribute msg customError
+max : Float -> Attribute msg
 max v =
-    Attribute <| \attrs -> { attrs | min = Just v }
+    Attribute <| \attrs -> { attrs | max = Just v }
 
 
 {-| -}
-exactLength : Int -> Attribute msg customError
-exactLength v =
-    Attribute <| \attrs -> { attrs | minLength = Just v, maxLength = Just v }
-
-
-{-| -}
-minLength : Int -> Attribute msg customError
-minLength v =
-    Attribute <| \attrs -> { attrs | minLength = Just v }
-
-
-{-| -}
-maxLength : Int -> Attribute msg customError
-maxLength v =
-    Attribute <| \attrs -> { attrs | maxLength = Just v }
-
-
-{-| -}
-validation : (Float -> String -> Maybe customError) -> Attribute msg customError
+validation : (Float -> String -> Maybe String) -> Attribute msg
 validation v =
     Attribute <| \attrs -> { attrs | validation = Just v }
 
 
 {-| -}
-step : Float -> Attribute msg customError
+step : Float -> Attribute msg
 step v =
-    Attribute <| \attrs -> { attrs | step = Just v }
+    Attribute <| \attrs -> { attrs | step = v }
 
 
 {-| -}
-prefix : H.Html msg -> Attribute msg customError
+prefix : H.Html msg -> Attribute msg
 prefix v =
     Attribute <| \attrs -> { attrs | prefix = Just v }
 
 
 {-| -}
-suffix : H.Html msg -> Attribute msg customError
+suffix : H.Html msg -> Attribute msg
 suffix v =
     Attribute <| \attrs -> { attrs | suffix = Just v }
 
 
 {-| -}
-onBlur : msg -> Attribute msg customError
+onBlur : msg -> Attribute msg
 onBlur v =
     Attribute <| \attrs -> { attrs | onBlur = Just v }
 
 
 {-| -}
-onFocus : msg -> Attribute msg customError
+onFocus : msg -> Attribute msg
 onFocus v =
     Attribute <| \attrs -> { attrs | onFocus = Just v }
 
 
 {-| -}
-onEnter : msg -> Attribute msg customError
+onEnter : msg -> Attribute msg
 onEnter v =
     Attribute <| \attrs -> { attrs | onEnter = Just v }
 
 
 {-| -}
-htmlAttrs : List (H.Attribute msg) -> Attribute msg customError
+htmlAttrs : List (H.Attribute msg) -> Attribute msg
 htmlAttrs v =
     Attribute <| \attrs -> { attrs | htmlAttributes = v }
 
 
 {-| -}
-noAttr : Attribute msg customError
+noAttr : Attribute msg
 noAttr =
     Attribute identity
 
@@ -311,7 +289,7 @@ noAttr =
 
 
 {-| -}
-baseAttrs : Attributes msg customError -> List (H.Attribute msg)
+baseAttrs : Attributes msg -> List (H.Attribute msg)
 baseAttrs attrs =
     attrs.htmlAttributes
         ++ [ HA.type_ "number"
@@ -323,7 +301,7 @@ baseAttrs attrs =
            , WH.attrIf attrs.disabled (HA.attribute "aria-disabled") "true"
            , WH.maybeAttr HA.min (Maybe.map String.fromFloat attrs.min)
            , WH.maybeAttr HA.max (Maybe.map String.fromFloat attrs.max)
-           , WH.maybeAttr HA.step (Maybe.map String.fromFloat attrs.step)
+           , HA.step (String.fromFloat attrs.step)
            , WH.maybeAttr HA.placeholder attrs.placeholder
            , WH.maybeAttr HE.onFocus attrs.onFocus
            , WH.maybeAttr HE.onBlur attrs.onBlur
@@ -333,7 +311,7 @@ baseAttrs attrs =
 
 {-| -}
 view :
-    List (Attribute msg customError)
+    List (Attribute msg)
     ->
         { value : Value
         , onInput : Value -> msg
@@ -341,14 +319,13 @@ view :
     -> H.Html msg
 view attrs_ props =
     let
-        attrs : Attributes msg customError
+        attrs : Attributes msg
         attrs =
             applyAttrs attrs_
 
         value : String
         value =
             toString props.value
-                |> WH.limitString attrs.maxLength
     in
     W.Internal.Input.view
         { disabled = attrs.disabled
@@ -363,7 +340,7 @@ view attrs_ props =
                 ++ [ HA.value value
                    , HE.on "input"
                         (D.at [ "target", "value" ] D.string
-                            |> D.map (props.onInput << toValue props.value << WH.limitString attrs.maxLength)
+                            |> D.map (props.onInput << toValue props.value)
                         )
                    ]
             )
@@ -373,22 +350,21 @@ view attrs_ props =
 
 {-| -}
 viewWithValidation :
-    List (Attribute msg customError)
+    List (Attribute msg)
     ->
         { value : Value
-        , onInput : Result (Error customError) Float -> Value -> msg
+        , onInput : Result (List Error) Float -> Value -> msg
         }
     -> H.Html msg
 viewWithValidation attrs_ props =
     let
-        attrs : Attributes msg customError
+        attrs : Attributes msg
         attrs =
             applyAttrs attrs_
 
         value : String
         value =
             toString props.value
-                |> WH.limitString attrs.maxLength
     in
     W.Internal.Input.view
         { disabled = attrs.disabled
@@ -402,66 +378,55 @@ viewWithValidation attrs_ props =
             (baseAttrs attrs
                 ++ [ HA.value value
                    , HE.on "input"
-                        (D.map8
-                            (\( value_, valid ) rangeOverflow rangeUnderflow tooLong tooShort stepMismatch valueMissing validationMessage ->
+                        (D.map5
+                            (\( value_, valid ) rangeOverflow rangeUnderflow stepMismatch valueMissing ->
                                 let
-                                    valueString : String
-                                    valueString =
-                                        WH.limitString attrs.maxLength value_
-
                                     value__ : Value
                                     value__ =
-                                        toValue props.value valueString
+                                        toValue props.value value_
 
-                                    customError : Maybe customError
+                                    customError : Maybe Error
                                     customError =
                                         attrs.validation
-                                            |> Maybe.map (\fn -> fn (toFloat value__) value_)
-                                            |> Maybe.withDefault Nothing
+                                            |> Maybe.andThen (\fn -> fn (toFloat value__) value_)
+                                            |> Maybe.map Custom
 
-                                    result : Result (Error customError) Float
+                                    result : Result (List Error) Float
                                     result =
                                         if valid && customError == Nothing then
-                                            if
-                                                attrs.minLength
-                                                    |> Maybe.map (\l -> String.length valueString < l)
-                                                    |> Maybe.withDefault False
-                                                    |> Debug.log "minlength"
-                                            then
-                                                Err (TooShort (Maybe.withDefault 0 attrs.minLength) "Input too short")
-
-                                            else if
-                                                attrs.maxLength
-                                                    |> Maybe.map (\l -> String.length valueString > l)
-                                                    |> Maybe.withDefault False
-                                            then
-                                                Err (TooLong (Maybe.withDefault 0 attrs.maxLength) "Input too long")
-
-                                            else
-                                                Ok (toFloat value__)
-
-                                        else if valueMissing then
-                                            Err (ValueMissing validationMessage)
-
-                                        else if rangeUnderflow then
-                                            Err (TooLow (Maybe.withDefault 0 attrs.min) validationMessage)
-
-                                        else if rangeOverflow then
-                                            Err (TooHigh (Maybe.withDefault 0 attrs.max) validationMessage)
-
-                                        else if tooShort then
-                                            Err (TooShort (Maybe.withDefault 0 attrs.minLength) validationMessage)
-
-                                        else if tooLong then
-                                            Err (TooLong (Maybe.withDefault 0 attrs.maxLength) validationMessage)
-
-                                        else if stepMismatch then
-                                            Err (StepMismatch (Maybe.withDefault 0 attrs.step) validationMessage)
+                                            Ok (toFloat value__)
 
                                         else
-                                            customError
-                                                |> Maybe.map (Err << Custom)
-                                                |> Maybe.withDefault (Ok (toFloat value__))
+                                            [ Just (ValueMissing "Please fill out this field.")
+                                                |> WH.keepIf valueMissing
+                                            , attrs.min
+                                                |> WH.keepIf rangeOverflow
+                                                |> Maybe.map
+                                                    (\min_ ->
+                                                        TooLow min_ ("Value must be greater than or equal to " ++ String.fromFloat min_)
+                                                    )
+                                            , attrs.max
+                                                |> WH.keepIf rangeUnderflow
+                                                |> Maybe.map
+                                                    (\max_ ->
+                                                        TooHigh max_ ("Value must be less than or equal to " ++ String.fromFloat max_)
+                                                    )
+                                            , Just attrs.step
+                                                |> WH.keepIf stepMismatch
+                                                |> Maybe.map
+                                                    (\step_ ->
+                                                        let
+                                                            ( f, c ) =
+                                                                WH.nearestFloats (toFloat value__) attrs.step
+                                                                    |> Tuple.mapBoth (WH.formatFloat attrs.step) (WH.formatFloat attrs.step)
+                                                        in
+                                                        StepMismatch step_
+                                                            ("Please enter a valid value. The two nearest valid values are " ++ f ++ " and " ++ c)
+                                                    )
+                                            , customError
+                                            ]
+                                                |> List.filterMap identity
+                                                |> Err
                                 in
                                 props.onInput result value__
                             )
@@ -471,11 +436,8 @@ viewWithValidation attrs_ props =
                             )
                             (D.at [ "target", "validity", "rangeOverflow" ] D.bool)
                             (D.at [ "target", "validity", "rangeUnderflow" ] D.bool)
-                            (D.at [ "target", "validity", "tooLong" ] D.bool)
-                            (D.at [ "target", "validity", "tooShort" ] D.bool)
                             (D.at [ "target", "validity", "stepMismatch" ] D.bool)
                             (D.at [ "target", "validity", "valueMissing" ] D.bool)
-                            (D.at [ "target", "validationMessage" ] D.string)
                         )
                    ]
             )

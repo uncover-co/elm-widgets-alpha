@@ -20,7 +20,6 @@ import Chapters.Form.InputSlider
 import Chapters.Form.InputText
 import Chapters.Form.InputTextArea
 import Chapters.Form.InputTime
-import Chapters.Overview
 import Chapters.Information.Badge
 import Chapters.Information.DataRow
 import Chapters.Information.Menu
@@ -32,6 +31,7 @@ import Chapters.Information.Table
 import Chapters.Information.Tag
 import Chapters.Information.Tooltip
 import Chapters.Layout.Modal
+import Chapters.Overview
 import ElmBook exposing (Book, book, withChapterGroups, withStatefulOptions, withThemeOptions)
 import ElmBook.Chapter
 import ElmBook.StatefulOptions

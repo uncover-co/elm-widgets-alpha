@@ -15,9 +15,9 @@ import W.Card
 import W.Container
 import W.Heading
 import W.InputField
+import W.InputInt
 import W.InputSelect
 import W.InputText
-import W.InputInt
 import W.InputTime
 import W.Internal.Helpers as WH
 import W.Layout
@@ -28,8 +28,8 @@ import W.Text
 
 
 type alias Model =
-    { inputMask : W.InputInt.Value
-    , inputMaskResult : Maybe (Result (W.InputInt.Error ()) Int)
+    { inputMask : String
+    , inputMaskResult : Maybe (Result (List W.InputText.Error) String)
     , select : Role
     , time : Maybe Time.Posix
     }
@@ -56,7 +56,7 @@ roleToString role =
 
 init : Model
 init =
-    { inputMask = W.InputInt.init Nothing
+    { inputMask = ""
     , inputMaskResult = Nothing
     , select = Viewer
     , time = Nothing
@@ -64,7 +64,7 @@ init =
 
 
 type Msg
-    = OnInputMask (Result (W.InputInt.Error ()) Int) W.InputInt.Value
+    = OnInputMask (Result (List W.InputText.Error) String) String
     | OnSelect Role
     | OnSelectTime (Maybe Time.Posix)
 
@@ -132,11 +132,11 @@ chapter_ =
                         { label =
                             [ H.text "Pattern Language" ]
                         , input =
-                            [ W.InputInt.viewWithValidation
-                                [ W.InputInt.mask (Mask.string "(##) ####-####")
-                                , W.InputInt.required True
-                                , W.InputInt.exactLength 10
-                                , W.InputInt.placeholder "(55) 9999-9999"
+                            [ W.InputText.viewWithValidation
+                                [ W.InputText.mask (Mask.string "(##) ####-####")
+                                , W.InputText.required True
+                                , W.InputText.exactLength 10
+                                , W.InputText.placeholder "(55) 9999-9999"
                                 ]
                                 { onInput = OnInputMask
                                 , value = state.overview.inputMask
@@ -150,16 +150,22 @@ chapter_ =
                                                 W.Message.view
                                                     [ W.Message.success ]
                                                     [ H.text "You got it! \""
-                                                    , H.text (String.fromInt value)
+                                                    , H.text value
                                                     , H.text "\" is a valid value!"
                                                     ]
 
-                                            Err error ->
-                                                W.Message.view
-                                                    [ W.Message.danger ]
-                                                    [ W.InputInt.errorToString error
-                                                        |> H.text
-                                                    ]
+                                            Err errors ->
+                                                errors
+                                                |> List.head
+                                                |> Maybe.map
+                                                    (\error ->
+                                                        W.Message.view
+                                                            [ W.Message.danger ]
+                                                            [ W.InputText.errorToString error
+                                                                |> H.text
+                                                            ]
+                                                    )
+                                                |> Maybe.withDefault (H.text "")
                                         ]
 
                                 Nothing ->
@@ -324,10 +330,11 @@ We're trying to push the boundaries of what is currently possible by the use of 
 <component with-label="input-mask" />
 
 ```elm
-W.InputInt.viewWithValidation
-    [ W.InputInt.mask (Mask.string "(##) ####-####")
-    , W.InputInt.required True
-    , W.InputInt.exactLength 10
+W.InputText.viewWithValidation
+    [ W.InputText.mask (Mask.string "(##) ####-####")
+    , W.InputText.required True
+    , W.InputText.exactLength 10
+    , W.InputText.placeholder "(55) 9999-9999"
     ]
     { onInput = GotInput
     , value = model.input

@@ -131,6 +131,7 @@ baseClass =
         ++ " ew-font-text ew-text-base ew-text-inherit ew-leading-none"
         ++ " ew-placeholder-base-aux/80"
         ++ " ew-bg-transparent"
+        ++ " focus:ew-outline-none focus:ew-shadow-none"
 
 
 areaClass : String

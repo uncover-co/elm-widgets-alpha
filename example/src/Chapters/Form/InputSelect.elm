@@ -55,12 +55,14 @@ chapter_ =
                     { value = Nothing
                     , placeholder = "Select a year..."
                     , toLabel = String.fromInt
-                    , onInput = \value ->
-                        case value of
-                            Just value_ ->
-                                logAction ("onInput: Just " ++ (String.fromInt value_))
-                            Nothing ->
-                                logAction "onInput: Nothing" 
+                    , onInput =
+                        \value ->
+                            case value of
+                                Just value_ ->
+                                    logAction ("onInput: Just " ++ String.fromInt value_)
+
+                                Nothing ->
+                                    logAction "onInput: Nothing"
                     , options = [ 1900, 2000 ]
                     , optionGroups =
                         [ ( "70's", [ 1978, 1979 ] )

@@ -173,6 +173,7 @@ danger =
 -- Main
 
 
+{-| -}
 view :
     List (Attribute msg)
     -> List (H.Html msg)

@@ -5,12 +5,15 @@ import ElmBook.Chapter exposing (Chapter, chapter, renderStatefulComponentList)
 import Html as H
 import Html.Attributes as HA
 import W.Button
+import W.Container
 import W.InputText
+import W.Text
 
 
 type alias Model =
     { value : String
     , validated : String
+    , validationMessage : String
     }
 
 
@@ -18,6 +21,7 @@ init : Model
 init =
     { value = "Some text"
     , validated = "Some text"
+    , validationMessage = ""
     }
 
 
@@ -114,23 +118,45 @@ chapter_ =
               )
             , ( "Validation"
               , \{ inputText } ->
-                    W.InputText.viewWithValidation
-                        [ W.InputText.url
-                        , W.InputText.minLength 2
-                        , W.InputText.mask (\s -> "Validated: " ++ s)
-                        , W.InputText.placeholder "https://app.site.com"
+                    H.div []
+                        [ W.InputText.viewWithValidation
+                            [ W.InputText.url
+                            , W.InputText.minLength 5
+                            , W.InputText.maxLength 15
+                            , W.InputText.pattern "http://[a-z]+"
+                            , W.InputText.placeholder "https://app.site.com"
+                            ]
+                            { value = inputText.validated
+                            , onInput =
+                                \result v ->
+                                    updateState
+                                        (\model ->
+                                            let
+                                                inputText_ =
+                                                    model.inputText
+                                            in
+                                            { model
+                                                | inputText =
+                                                    { inputText_
+                                                        | validated = v
+                                                        , validationMessage =
+                                                            case result of
+                                                                Ok v_ ->
+                                                                    "Ok " ++ v_
+
+                                                                Err error ->
+                                                                    error
+                                                                        |> List.map W.InputText.errorToString
+                                                                        |> String.join " "
+                                                                        |> (++) "Err "
+                                                    }
+                                            }
+                                        )
+                            }
+                        , W.Container.view
+                            [ W.Container.pad_2 ]
+                            [ W.Text.view [] [ H.text inputText.validationMessage ]
+                            ]
                         ]
-                        { value = inputText.validated
-                        , onInput =
-                            \_ v ->
-                                updateState
-                                    (\model ->
-                                        let
-                                            inputText_ =
-                                                model.inputText
-                                        in
-                                        { model | inputText = { inputText_ | validated = v } }
-                                    )
-                        }
               )
             ]

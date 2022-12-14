@@ -1,8 +1,12 @@
 module W.Internal.Helpers exposing
     ( attrIf
+    , formatFloat
+    , keepIf
     , limitString
     , maybeAttr
     , maybeHtml
+    , nearestFloats
+    , nearestInts
     , onEnter
     , stringIf
     , styles
@@ -83,6 +87,15 @@ onEnter msg =
 -- Basics
 
 
+keepIf : Bool -> Maybe a -> Maybe a
+keepIf a m =
+    if a then
+        m
+
+    else
+        Nothing
+
+
 stringIf : Bool -> String -> String -> String
 stringIf v a b =
     if v then
@@ -97,3 +110,54 @@ limitString limit str =
     limit
         |> Maybe.map (\l -> String.left l str)
         |> Maybe.withDefault str
+
+
+nearestFloats : Float -> Float -> ( Float, Float )
+nearestFloats v step =
+    let
+        lower : Float
+        lower =
+            toFloat (floor (v / step)) * step
+    in
+    ( lower, lower + step )
+
+
+nearestInts : Int -> Int -> ( Int, Int )
+nearestInts v step =
+    let
+        lower : Int
+        lower =
+            (v // step) * step
+    in
+    ( lower, lower + step )
+
+
+formatFloat : Float -> Float -> String
+formatFloat step value =
+    value
+        |> String.fromFloat
+        |> String.split "."
+        |> (\parts ->
+                case parts of
+                    [ h, t ] ->
+                        let
+                            decimals : Int
+                            decimals =
+                                step
+                                    |> String.fromFloat
+                                    |> String.split "."
+                                    |> List.drop 1
+                                    |> List.head
+                                    |> Maybe.map String.length
+                                    |> Maybe.withDefault 0
+                        in
+                        h
+                            ++ "."
+                            ++ String.left decimals t
+
+                    [ h ] ->
+                        h
+
+                    _ ->
+                        ""
+           )

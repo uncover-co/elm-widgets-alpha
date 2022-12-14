@@ -48,7 +48,7 @@ chapter_ =
                         [ W.Table.width 60, W.Table.largeScreenOnly ]
                         { label = "Image"
                         , content =
-                            (\{ picture } -> H.img [ HA.src picture, HA.height 60 ] [])
+                            \{ picture } -> H.img [ HA.src picture, HA.height 60 ] []
                         }
                     , W.Table.string []
                         { label = "Name"
@@ -79,7 +79,7 @@ chapter_ =
                         [ W.Table.width 60, W.Table.largeScreenOnly ]
                         { label = "Image"
                         , content =
-                            (\{ picture } -> H.img [ HA.src picture, HA.height 60 ] [])
+                            \{ picture } -> H.img [ HA.src picture, HA.height 60 ] []
                         }
                     , W.Table.string [ W.Table.groupLabel ]
                         { label = "Name"
