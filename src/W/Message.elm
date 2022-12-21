@@ -50,8 +50,8 @@ type Attribute msg
 
 type alias Attributes msg =
     { htmlAttributes : List (H.Attribute msg)
-    , icon : Maybe (H.Html msg)
-    , footer : Maybe (H.Html msg)
+    , icon : Maybe (List (H.Html msg))
+    , footer : Maybe (List (H.Html msg))
     , color : String
     , href : Maybe String
     , onClick : Maybe msg
@@ -103,13 +103,13 @@ href v =
 
 
 {-| -}
-icon : H.Html msg -> Attribute msg
+icon : List (H.Html msg) -> Attribute msg
 icon v =
     Attribute <| \attrs -> { attrs | icon = Just v }
 
 
 {-| -}
-footer : H.Html msg -> Attribute msg
+footer : List (H.Html msg) -> Attribute msg
 footer v =
     Attribute <| \attrs -> { attrs | footer = Just v }
 
@@ -192,10 +192,10 @@ view attrs_ children_ =
 
         children : List (H.Html msg)
         children =
-            [ WH.maybeHtml identity attrs.icon
+            [ WH.maybeHtml (\i -> H.div [] i) attrs.icon
             , H.div [ HA.class "ew-flex ew-flex-col" ]
                 [ H.div [] children_
-                , WH.maybeHtml (\h -> H.div [ HA.class "ew-text-sm ew-font-normal" ] [ h ]) attrs.footer
+                , WH.maybeHtml (H.div [ HA.class "ew-text-sm ew-font-normal" ]) attrs.footer
                 ]
             ]
     in

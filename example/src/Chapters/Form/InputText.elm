@@ -34,7 +34,7 @@ chapter_ =
                     W.InputText.view
                         [ W.InputText.placeholder "Type something…"
                         , W.InputText.mask (\s -> "R$ " ++ s)
-                        , W.InputText.prefix (H.text "$")
+                        , W.InputText.prefix [ H.text "$" ]
                         ]
                         { value = inputText.value
                         , onInput =
@@ -52,7 +52,7 @@ chapter_ =
               , \_ ->
                     W.InputText.view
                         [ W.InputText.placeholder "Type something…"
-                        , W.InputText.suffix (H.div [ HA.style "height" "60px" ] [ H.text "Email" ])
+                        , W.InputText.suffix [ H.div [ HA.style "height" "60px" ] [ H.text "Email" ] ]
                         , W.InputText.disabled True
                         ]
                         { value = ""
@@ -75,12 +75,12 @@ chapter_ =
                         [ W.InputText.password
                         , W.InputText.placeholder "Type your password…"
                         , W.InputText.suffix
-                            (W.Button.view
+                            [ W.Button.view
                                 [ W.Button.small, W.Button.invisible ]
                                 { label = [ H.text "Show" ]
                                 , onClick = logAction "onClick"
                                 }
-                            )
+                            ]
                         ]
                         { value = ""
                         , onInput = logActionWithString "onInput"

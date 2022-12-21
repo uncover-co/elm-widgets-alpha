@@ -28,8 +28,8 @@ chapter_ =
                             , W.Message.view (W.Message.href "/logAction/#" :: attrs) [ H.text label ]
                             , W.Message.view
                                 (attrs
-                                    ++ [ W.Message.icon (H.text "i")
-                                       , W.Message.footer (H.text "Footer")
+                                    ++ [ W.Message.icon [ H.text "i" ]
+                                       , W.Message.footer [ H.text "Footer" ]
                                        ]
                                 )
                                 [ H.text label ]

@@ -10,8 +10,8 @@ import Html.Attributes as HA
 
 
 view :
-    { prefix : Maybe (H.Html msg)
-    , suffix : Maybe (H.Html msg)
+    { prefix : Maybe (List (H.Html msg))
+    , suffix : Maybe (List (H.Html msg))
     , readOnly : Bool
     , disabled : Bool
     , mask : Maybe (String -> String)
@@ -37,7 +37,7 @@ view attrs input =
                     [ prefixSuffixClass
                     , HA.class "ew-border-r"
                     ]
-                    [ prefix ]
+                    prefix
 
             Nothing ->
                 H.text ""
@@ -86,7 +86,7 @@ view attrs input =
                     [ prefixSuffixClass
                     , HA.class "ew-border-l"
                     ]
-                    [ suffix ]
+                    suffix
 
             Nothing ->
                 H.text ""
@@ -94,8 +94,8 @@ view attrs input =
 
 
 viewWithIcon :
-    { prefix : Maybe (H.Html msg)
-    , suffix : Maybe (H.Html msg)
+    { prefix : Maybe (List (H.Html msg))
+    , suffix : Maybe (List (H.Html msg))
     , disabled : Bool
     , readOnly : Bool
     , mask : Maybe (String -> String)

@@ -38,8 +38,8 @@ type Attribute msg
 type alias Attributes msg =
     { disabled : Bool
     , selected : Bool
-    , left : Maybe (H.Html msg)
-    , right : Maybe (H.Html msg)
+    , left : Maybe (List (H.Html msg))
+    , right : Maybe (List (H.Html msg))
     , htmlAttributes : List (H.Attribute msg)
     }
 
@@ -67,13 +67,13 @@ selected v =
 
 
 {-| -}
-left : H.Html msg -> Attribute msg
+left : List (H.Html msg) -> Attribute msg
 left v =
     Attribute <| \attrs -> { attrs | left = Just v }
 
 
 {-| -}
-right : H.Html msg -> Attribute msg
+right : List (H.Html msg) -> Attribute msg
 right v =
     Attribute <| \attrs -> { attrs | right = Just v }
 
@@ -130,7 +130,7 @@ baseAttrs attrs =
 viewTitle :
     List (Attribute msg)
     ->
-        { label : H.Html msg
+        { label : List (H.Html msg)
         }
     -> H.Html msg
 viewTitle attrs_ props =
@@ -151,7 +151,7 @@ viewTitle attrs_ props =
 viewButton :
     List (Attribute msg)
     ->
-        { label : H.Html msg
+        { label : List (H.Html msg)
         , onClick : msg
         }
     -> H.Html msg
@@ -174,7 +174,7 @@ viewButton attrs_ props =
 viewLink :
     List (Attribute msg)
     ->
-        { label : H.Html msg
+        { label : List (H.Html msg)
         , href : String
         }
     -> H.Html msg
@@ -193,9 +193,9 @@ viewLink attrs_ props =
         (baseContent attrs props.label)
 
 
-baseContent : Attributes msg -> H.Html msg -> List (H.Html msg)
+baseContent : Attributes msg -> List (H.Html msg) -> List (H.Html msg)
 baseContent attrs label =
-    [ WH.maybeHtml (\a -> H.span [ HA.class "ew-shrink-0 ew-pr-3" ] [ a ]) attrs.left
-    , H.span [ HA.class "ew-grow" ] [ label ]
-    , WH.maybeHtml (\a -> H.span [ HA.class "ew-shrink-0 ew-pr-3" ] [ a ]) attrs.right
+    [ WH.maybeHtml (H.span [ HA.class "ew-shrink-0 ew-pr-3" ]) attrs.left
+    , H.span [ HA.class "ew-grow" ] label
+    , WH.maybeHtml (H.span [ HA.class "ew-shrink-0 ew-pr-3" ]) attrs.right
     ]

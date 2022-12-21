@@ -29,8 +29,8 @@ chapter_ =
                             , W.Notification.view (W.Notification.href "/logAction/#" :: attrs) [ H.text label ]
                             , W.Notification.view
                                 (attrs
-                                    ++ [ W.Notification.icon (H.text "i")
-                                       , W.Notification.footer (H.text "Footer")
+                                    ++ [ W.Notification.icon [ H.text "i" ]
+                                       , W.Notification.footer [ H.text "Footer" ]
                                        ]
                                 )
                                 [ H.text label ]

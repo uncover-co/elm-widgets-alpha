@@ -150,8 +150,8 @@ type alias Attributes msg =
     , step : Float
     , placeholder : Maybe String
     , mask : Maybe (String -> String)
-    , prefix : Maybe (H.Html msg)
-    , suffix : Maybe (H.Html msg)
+    , prefix : Maybe (List (H.Html msg))
+    , suffix : Maybe (List (H.Html msg))
     , onFocus : Maybe msg
     , onBlur : Maybe msg
     , onEnter : Maybe msg
@@ -243,13 +243,13 @@ step v =
 
 
 {-| -}
-prefix : H.Html msg -> Attribute msg
+prefix : List (H.Html msg) -> Attribute msg
 prefix v =
     Attribute <| \attrs -> { attrs | prefix = Just v }
 
 
 {-| -}
-suffix : H.Html msg -> Attribute msg
+suffix : List (H.Html msg) -> Attribute msg
 suffix v =
     Attribute <| \attrs -> { attrs | suffix = Just v }
 

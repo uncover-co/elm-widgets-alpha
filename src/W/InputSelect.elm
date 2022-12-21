@@ -47,8 +47,8 @@ type Attribute msg
 type alias Attributes msg =
     { disabled : Bool
     , readOnly : Bool
-    , prefix : Maybe (H.Html msg)
-    , suffix : Maybe (H.Html msg)
+    , prefix : Maybe (List (H.Html msg))
+    , suffix : Maybe (List (H.Html msg))
     }
 
 
@@ -83,13 +83,13 @@ readOnly v =
 
 
 {-| -}
-prefix : H.Html msg -> Attribute msg
+prefix : List (H.Html msg) -> Attribute msg
 prefix v =
     Attribute <| \attrs -> { attrs | prefix = Just v }
 
 
 {-| -}
-suffix : H.Html msg -> Attribute msg
+suffix : List (H.Html msg) -> Attribute msg
 suffix v =
     Attribute <| \attrs -> { attrs | suffix = Just v }
 

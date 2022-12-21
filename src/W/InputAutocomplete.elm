@@ -112,8 +112,8 @@ type alias Attributes msg =
     , required : Bool
     , readOnly : Bool
     , placeholder : Maybe String
-    , prefix : Maybe (H.Html msg)
-    , suffix : Maybe (H.Html msg)
+    , prefix : Maybe (List (H.Html msg))
+    , suffix : Maybe (List (H.Html msg))
     , onFocus : Maybe msg
     , onBlur : Maybe msg
     , onEnter : Maybe msg
@@ -170,13 +170,13 @@ required v =
 
 
 {-| -}
-prefix : H.Html msg -> Attribute msg
+prefix : List (H.Html msg) -> Attribute msg
 prefix v =
     Attribute <| \attrs -> { attrs | prefix = Just v }
 
 
 {-| -}
-suffix : H.Html msg -> Attribute msg
+suffix : List (H.Html msg) -> Attribute msg
 suffix v =
     Attribute <| \attrs -> { attrs | suffix = Just v }
 
