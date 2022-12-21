@@ -65,7 +65,7 @@ type Error
     | TooHigh Time.Posix String
     | StepMismatch Int String
     | ValueMissing String
-    | BadInput
+    | BadInput String
 
 
 {-| -}
@@ -84,8 +84,8 @@ errorToString error =
         ValueMissing message ->
             message
 
-        BadInput ->
-            "Value must be a valid time."
+        BadInput message ->
+            message
 
 
 
@@ -284,7 +284,7 @@ viewWithValidation :
     ->
         { timeZone : Time.Zone
         , value : Maybe Time.Posix
-        , onInput : Result Error Time.Posix -> Maybe Time.Posix -> msg
+        , onInput : Result (List Error) Time.Posix -> Maybe Time.Posix -> msg
         }
     -> H.Html msg
 viewWithValidation attrs_ props =
@@ -301,51 +301,63 @@ viewWithValidation attrs_ props =
     in
     H.input
         (HE.on "input"
-            (D.map7
-                (\value_ valid rangeOverflow rangeUnderflow stepMismatch valueMissing validationMessage ->
+            (D.map6
+                (\value_ valid rangeOverflow rangeUnderflow stepMismatch valueMissing ->
                     case timeFromValue props.timeZone props.value value_ of
                         Nothing ->
-                            props.onInput (Err BadInput) Nothing
+                            props.onInput
+                                (Err <| List.singleton <| BadInput "Please enter a valid value.")
+                                Nothing
 
                         Just time ->
                             if valid then
                                 props.onInput (Ok time) (Just time)
 
-                            else if valueMissing then
-                                props.onInput (Err (ValueMissing validationMessage)) (Just time)
-
-                            else if rangeUnderflow then
-                                props.onInput
-                                    (Err
-                                        (TooLow
-                                            (Maybe.withDefault (Time.millisToPosix 0) attrs.min)
-                                            validationMessage
-                                        )
-                                    )
-                                    (Just time)
-
-                            else if rangeOverflow then
-                                props.onInput
-                                    (Err
-                                        (TooHigh
-                                            (Maybe.withDefault (Time.millisToPosix 0) attrs.max)
-                                            validationMessage
-                                        )
-                                    )
-                                    (Just time)
-
-                            else if stepMismatch then
-                                props.onInput
-                                    (Err
-                                        (StepMismatch
-                                            (Maybe.withDefault 0 attrs.step)
-                                            validationMessage
-                                        )
-                                    )
-                                    (Just time)
-
                             else
-                                props.onInput (Ok time) (Just time)
+                                let
+                                    result : Result (List Error) Time.Posix
+                                    result =
+                                        [ Just (ValueMissing "Please fill out this field.")
+                                            |> WH.keepIf valueMissing
+                                        , attrs.min
+                                            |> WH.keepIf rangeUnderflow
+                                            |> Maybe.map
+                                                (\min_ ->
+                                                    let
+                                                        timeString : String
+                                                        timeString =
+                                                            valueFromTime props.timeZone min_
+                                                    in
+                                                    TooLow time ("Value must be " ++ timeString ++ " or later.")
+                                                )
+                                        , attrs.max
+                                            |> WH.keepIf rangeOverflow
+                                            |> Maybe.map
+                                                (\max_ ->
+                                                    let
+                                                        timeString : String
+                                                        timeString =
+                                                            valueFromTime props.timeZone max_
+                                                    in
+                                                    TooLow time ("Value must be " ++ timeString ++ " or later.")
+                                                )
+                                        , attrs.step
+                                            |> WH.keepIf stepMismatch
+                                            |> Maybe.map
+                                                (\step_ ->
+                                                    let
+                                                        ( f, c ) =
+                                                            nearestTimes props.timeZone time step_
+                                                    in
+                                                    StepMismatch
+                                                        step_
+                                                        ("Please enter a valid value. The two nearest valid values are " ++ f ++ " and " ++ c ++ ".")
+                                                )
+                                        ]
+                                            |> List.filterMap identity
+                                            |> Err
+                                in
+                                props.onInput result (Just time)
                 )
                 (D.at [ "target", "value" ] D.string)
                 (D.at [ "target", "validity", "valid" ] D.bool)
@@ -353,7 +365,6 @@ viewWithValidation attrs_ props =
                 (D.at [ "target", "validity", "rangeUnderflow" ] D.bool)
                 (D.at [ "target", "validity", "stepMismatch" ] D.bool)
                 (D.at [ "target", "validity", "valueMissing" ] D.bool)
-                (D.at [ "target", "validationMessage" ] D.string)
             )
             :: baseAttrs attrs props.timeZone value
         )
@@ -387,8 +398,14 @@ valueFromTime timeZone value =
             Time.toMinute timeZone value
                 |> String.fromInt
                 |> String.padLeft 2 '0'
+
+        seconds : String
+        seconds =
+            Time.toSecond timeZone value
+                |> String.fromInt
+                |> String.padLeft 2 '0'
     in
-    hour ++ ":" ++ minute
+    hour ++ ":" ++ minute ++ ":" ++ seconds
 
 
 timeFromValue : Time.Zone -> Maybe Time.Posix -> String -> Maybe Time.Posix
@@ -437,3 +454,58 @@ timeFromValue timeZone currentValue value =
 
         _ ->
             Nothing
+
+
+nearestTimes : Time.Zone -> Time.Posix -> Int -> ( String, String )
+nearestTimes timeZone time step_ =
+    let
+        hoursInSeconds : Int
+        hoursInSeconds =
+            Time.toHour timeZone time * 60 * 60
+
+        minutesInSeconds : Int
+        minutesInSeconds =
+            Time.toMinute timeZone time * 60
+
+        seconds : Int
+        seconds =
+            Time.toSecond timeZone time + minutesInSeconds + hoursInSeconds
+    in
+    WH.nearestInts seconds step_
+        |> Tuple.mapBoth valueFromSeconds valueFromSeconds
+
+
+valueFromSeconds : Int -> String
+valueFromSeconds seconds =
+    let
+        hours : Int
+        hours =
+            seconds // (60 * 60)
+
+        minutes : Int
+        minutes =
+            (seconds - (hours * 60 * 60)) // 60
+
+        seconds_ : Int
+        seconds_ =
+            seconds - (hours * 60 * 60) - (minutes * 60)
+
+        hourString : String
+        hourString =
+            hours
+                |> String.fromInt
+                |> String.padLeft 2 '0'
+
+        minuteString : String
+        minuteString =
+            minutes
+                |> String.fromInt
+                |> String.padLeft 2 '0'
+
+        secondString : String
+        secondString =
+            seconds_
+                |> String.fromInt
+                |> String.padLeft 2 '0'
+    in
+    hourString ++ ":" ++ minuteString ++ ":" ++ secondString

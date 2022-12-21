@@ -2,7 +2,7 @@ module W.InputDate exposing
     ( view
     , disabled, readOnly
     , prefix, suffix
-    , min, max, step, required
+    , min, max, required
     , viewWithValidation, errorToString, Error(..)
     , onEnter, onFocus, onBlur
     , htmlAttrs, noAttr, Attribute
@@ -25,7 +25,7 @@ module W.InputDate exposing
 
 # Validation Attributes
 
-@docs min, max, step, required
+@docs min, max, required
 
 
 # View & Validation
@@ -58,15 +58,17 @@ import W.Internal.Input
 
 
 -- Error
+-- Why is 'StepMismatch' missing? The actual browser behavior seems a bit odd.
+-- It behaves differently based on the `min` property
+-- and if `min` is not specified it steps from the the unix 0 timestamp?
 
 
 {-| -}
 type Error
     = TooLow Time.Posix String
     | TooHigh Time.Posix String
-    | StepMismatch Int String
     | ValueMissing String
-    | BadInput
+    | BadInput String
 
 
 {-| -}
@@ -79,14 +81,11 @@ errorToString error =
         TooHigh _ message ->
             message
 
-        StepMismatch _ message ->
-            message
-
         ValueMissing message ->
             message
 
-        BadInput ->
-            "Value must be a valid time."
+        BadInput message ->
+            message
 
 
 
@@ -105,7 +104,6 @@ type alias Attributes msg =
     , required : Bool
     , min : Maybe Time.Posix
     , max : Maybe Time.Posix
-    , step : Maybe Int
     , prefix : Maybe (H.Html msg)
     , suffix : Maybe (H.Html msg)
     , onFocus : Maybe msg
@@ -128,7 +126,6 @@ defaultAttrs =
     , required = False
     , min = Nothing
     , max = Nothing
-    , step = Nothing
     , prefix = Nothing
     , suffix = Nothing
     , onFocus = Nothing
@@ -170,12 +167,6 @@ min v =
 max : Time.Posix -> Attribute msg
 max v =
     Attribute <| \attrs -> { attrs | max = Just v }
-
-
-{-| -}
-step : Int -> Attribute msg
-step v =
-    Attribute <| \attrs -> { attrs | step = Just v }
 
 
 {-| -}
@@ -236,7 +227,6 @@ baseAttrs attrs timeZone value =
            , WH.attrIf attrs.disabled (HA.attribute "aria-disabled") "true"
            , WH.maybeAttr HA.min (Maybe.map (valueFromDate timeZone) attrs.min)
            , WH.maybeAttr HA.max (Maybe.map (valueFromDate timeZone) attrs.max)
-           , WH.maybeAttr HA.step (Maybe.map String.fromInt attrs.step)
            , WH.maybeAttr HE.onFocus attrs.onFocus
            , WH.maybeAttr HE.onBlur attrs.onBlur
            , WH.maybeAttr WH.onEnter attrs.onEnter
@@ -295,7 +285,7 @@ viewWithValidation :
     ->
         { timeZone : Time.Zone
         , value : Maybe Time.Posix
-        , onInput : Result Error Time.Posix -> Maybe Time.Posix -> msg
+        , onInput : Result (List Error) Time.Posix -> Maybe Time.Posix -> msg
         }
     -> H.Html msg
 viewWithValidation attrs_ props =
@@ -312,61 +302,57 @@ viewWithValidation attrs_ props =
     in
     H.input
         (HE.on "input"
-            (D.map7
-                (\value_ valid rangeOverflow rangeUnderflow stepMismatch valueMissing validationMessage ->
+            (D.map5
+                (\value_ valid rangeOverflow rangeUnderflow valueMissing ->
                     case dateFromValue props.timeZone props.value value_ of
                         Nothing ->
-                            props.onInput (Err BadInput) Nothing
+                            props.onInput
+                                (Err <| List.singleton <| BadInput "Please enter a valid value.")
+                                Nothing
 
                         Just time ->
-                            if valid then
-                                props.onInput (Ok time) (Just time)
+                            let
+                                result : Result (List Error) Time.Posix
+                                result =
+                                    if valid then
+                                        Ok time
 
-                            else if valueMissing then
-                                props.onInput
-                                    (Err (ValueMissing validationMessage))
-                                    (Just time)
-
-                            else if rangeUnderflow then
-                                props.onInput
-                                    (Err
-                                        (TooLow
-                                            (Maybe.withDefault (Time.millisToPosix 0) attrs.min)
-                                            validationMessage
-                                        )
-                                    )
-                                    (Just time)
-
-                            else if rangeOverflow then
-                                props.onInput
-                                    (Err
-                                        (TooHigh
-                                            (Maybe.withDefault (Time.millisToPosix 0) attrs.max)
-                                            validationMessage
-                                        )
-                                    )
-                                    (Just time)
-
-                            else if stepMismatch then
-                                props.onInput
-                                    (Err
-                                        (StepMismatch
-                                            (Maybe.withDefault 0 attrs.step)
-                                            validationMessage
-                                        )
-                                    )
-                                    (Just time)
-
-                            else
-                                props.onInput (Ok time) (Just time)
+                                    else
+                                        [ Just (ValueMissing "Please fill out this field.")
+                                            |> WH.keepIf valueMissing
+                                        , attrs.min
+                                            |> WH.keepIf rangeUnderflow
+                                            |> Maybe.map
+                                                (\min_ ->
+                                                    let
+                                                        timeString : String
+                                                        timeString =
+                                                            valueFromDate props.timeZone min_
+                                                    in
+                                                    TooLow min_ ("Value must be " ++ timeString ++ " or later.")
+                                                )
+                                        , attrs.max
+                                            |> WH.keepIf rangeOverflow
+                                            |> Maybe.map
+                                                (\max_ ->
+                                                    let
+                                                        timeString : String
+                                                        timeString =
+                                                            valueFromDate props.timeZone max_
+                                                    in
+                                                    TooHigh max_ ("Value must be " ++ timeString ++ " or earlier.")
+                                                )
+                                        ]
+                                            |> List.filterMap identity
+                                            |> Err
+                            in
+                            props.onInput result (Just time)
                 )
                 (D.at [ "target", "valueAsNumber" ] D.float)
                 (D.at [ "target", "validity", "valid" ] D.bool)
                 (D.at [ "target", "validity", "rangeOverflow" ] D.bool)
                 (D.at [ "target", "validity", "rangeUnderflow" ] D.bool)
-                (D.at [ "target", "validity", "stepMismatch" ] D.bool)
                 (D.at [ "target", "validity", "valueMissing" ] D.bool)
-                (D.at [ "target", "validationMessage" ] D.string)
             )
             :: baseAttrs attrs props.timeZone value
         )

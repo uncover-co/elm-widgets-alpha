@@ -43,6 +43,29 @@ chapter_ =
                                     logAction "Nothing"
                     }
               )
+            , ( "Validation"
+              , let
+                    timeZone : Time.Zone
+                    timeZone =
+                        Time.utc
+                in
+                W.InputTime.viewWithValidation
+                    [ W.InputTime.step 15
+                    , W.InputTime.min (Time.millisToPosix 1651693959717)
+                    , W.InputTime.max (Time.millisToPosix 1671484833575)
+                    ]
+                    { value = Just (Time.millisToPosix 1651693959717)
+                    , timeZone = timeZone
+                    , onInput =
+                        \_ v ->
+                            case v of
+                                Just v_ ->
+                                    logAction ("Just " ++ String.fromInt (Time.toHour timeZone v_) ++ ":" ++ String.fromInt (Time.toMinute timeZone v_))
+
+                                Nothing ->
+                                    logAction "Nothing"
+                    }
+              )
             ]
         |> renderWithComponentList """
 `InputTime` receives an `Time.Posix` and returns a `Time.Posix`. We can retrieve specifics like hour, minutes and hours using the `Time` package.

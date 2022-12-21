@@ -1,6 +1,6 @@
 module W.InputText exposing
     ( view
-    , email, password, search, telephone, url
+    , email, password, search, telephone, url, numeric, decimal
     , placeholder, mask, prefix, suffix, unstyled
     , disabled, readOnly
     , onEnter, onFocus, onBlur
@@ -16,7 +16,7 @@ module W.InputText exposing
 
 # Types
 
-@docs email, password, search, telephone, url
+@docs email, password, search, telephone, url, numeric, decimal
 
 
 # Styles
@@ -70,6 +70,8 @@ type InputType
     | Search
     | Email
     | Url
+    | Numeric
+    | Decimal
 
 
 inputInputTypeToString : InputType -> String
@@ -92,6 +94,12 @@ inputInputTypeToString t =
 
         Url ->
             "url"
+
+        Numeric ->
+            "text"
+
+        Decimal ->
+            "text"
 
 
 {-| -}
@@ -134,6 +142,7 @@ type Attribute msg
 
 type alias Attributes msg =
     { type_ : InputType
+    , inputMode : Maybe String
     , unstyled : Bool
     , disabled : Bool
     , readOnly : Bool
@@ -161,6 +170,7 @@ applyAttrs attrs =
 defaultAttrs : Attributes msg
 defaultAttrs =
     { type_ = Text
+    , inputMode = Nothing
     , unstyled = False
     , disabled = False
     , readOnly = False
@@ -212,6 +222,18 @@ email =
 telephone : Attribute msg
 telephone =
     Attribute <| \attrs -> { attrs | type_ = Telephone }
+
+
+{-| -}
+numeric : Attribute msg
+numeric =
+    Attribute <| \attrs -> { attrs | type_ = Numeric, inputMode = Just "numeric" }
+
+
+{-| -}
+decimal : Attribute msg
+decimal =
+    Attribute <| \attrs -> { attrs | type_ = Decimal, inputMode = Just "decimal" }
 
 
 {-| -}
@@ -330,6 +352,7 @@ baseAttrs : Attributes msg -> List (H.Attribute msg)
 baseAttrs attrs =
     attrs.htmlAttributes
         ++ [ HA.type_ (inputInputTypeToString attrs.type_)
+           , WH.maybeAttr (HA.attribute "inputmode") attrs.inputMode
            , HA.classList [ ( WI.baseClass, not attrs.unstyled ) ]
            , WH.attrIf attrs.readOnly HA.tabindex -1
            , HA.required attrs.required
@@ -453,6 +476,12 @@ viewWithValidation attrs_ props =
                                                     (\type_ ->
                                                         case type_ of
                                                             Text ->
+                                                                TypeMismatch "Input not recognized as text"
+
+                                                            Numeric ->
+                                                                TypeMismatch "Input not recognized as text"
+
+                                                            Decimal ->
                                                                 TypeMismatch "Input not recognized as text"
 
                                                             Telephone ->
