@@ -187,7 +187,7 @@ view attrs_ children_ =
                    , HA.style "color" attrs.color
                    , HA.class "before:ew-block before:ew-content-['']"
                    , HA.class "before:ew-absolute before:ew-inset-0 ew-z-0"
-                   , HA.class "before:ew-rounded-r before:ew-bg-current before:ew-opacity-10"
+                   , HA.class "before:ew-rounded-r before:ew-bg-current before:ew-opacity-[0.07]"
                    ]
 
         children : List (H.Html msg)
@@ -217,4 +217,4 @@ view attrs_ children_ =
 interactiveClass : H.Attribute msg
 interactiveClass =
     HA.class
-        "ew-appearance-none ew-bg-transparent ew-no-underline ew-focusable-outline hover:before:ew-opacity-[0.05]"
+        "ew-appearance-none ew-bg-transparent ew-no-underline ew-focusable-outline hover:before:ew-opacity-[0.05] active:before:ew-opacity-[0.03]"

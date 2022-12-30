@@ -180,11 +180,11 @@ view attrs_ children =
         baseAttrs =
             attrs.htmlAttributes
                 ++ [ HA.class "ew-m-0 ew-box-border ew-relative ew-inline-flex ew-items-center ew-leading-none ew-font-text ew-font-medium ew-tracking-wider"
-                   , HA.class "ew-rounded-full ew-border-solid ew-border ew-border-current"
+                   , HA.class "ew-rounded-full ew-border-solid ew-border-2 ew-border-current"
                    , HA.class "before:ew-content-[''] before:ew-absolute before:ew-inset-0 before:ew-rounded-full before:ew-bg-current before:ew-opacity-10"
                    , HA.style "color" attrs.color
                    , HA.classList
-                        [ ( "ew-h-9 ew-px-4 ew-text-base", not attrs.small )
+                        [ ( "ew-h-8 ew-px-3 ew-text-base", not attrs.small )
                         , ( "ew-h-7 ew-px-3 ew-text-sm", attrs.small )
                         ]
                    ]
@@ -207,9 +207,8 @@ view attrs_ children =
 interactiveClass : H.Attribute msg
 interactiveClass =
     HA.class
-        ("ew-appearance-none ew-bg-transparent ew-no-underline hover:before:ew-opacity-[0.05]"
+        ("ew-appearance-none ew-bg-transparent ew-no-underline hover:before:ew-opacity-[0.05] active:before:ew-opacity-[0.03]"
             ++ " ew-transition"
             ++ " ew-outline-0 ew-ring-offset-0 ew-ring-primary-fg/50"
-            ++ " focus:ew-bg-base-bg focus:ew-border-primary-fg"
-            ++ " focus:ew-ring"
+            ++ " focus-visible:ew-bg-base-bg focus-visible:ew-ring focus-visible:ew-border-primary-fg"
         )

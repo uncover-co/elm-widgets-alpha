@@ -2,7 +2,7 @@ module Chapters.Theme exposing (Model, chapter_, init)
 
 import Color
 import ElmBook.Actions
-import ElmBook.Chapter exposing (Chapter, chapter, renderStatefulComponent)
+import ElmBook.Chapter exposing (Chapter, chapter, withStatefulComponent, renderWithComponentList)
 import Html as H
 import Html.Attributes as HA
 import Html.Events as HE
@@ -16,7 +16,6 @@ import W.Divider
 import W.Heading
 import W.InputColor
 import W.Internal.Color exposing (fromHex, toHex, toSolidColor)
-import W.Layout
 import W.Text
 import W.Tooltip
 
@@ -24,7 +23,7 @@ import W.Tooltip
 chapter_ : Chapter { m | theme : Model }
 chapter_ =
     chapter "Themes"
-        |> renderStatefulComponent
+        |> withStatefulComponent
             (\state ->
                 view state.theme
                     |> H.map
@@ -35,6 +34,11 @@ chapter_ =
                             }
                         )
             )
+        |> renderWithComponentList """
+This package uses [elm-theme](https://package.elm-lang.org/packages/uncover-co/elm-theme/latest/) as it's theming library. It will use the currently active theme's colors wherever you use it.
+
+You can use the theme generator below to test out the colors of your theme and their accessibility ratings. (Note that this generator is still quite WIP as we have lots of ideas to improve it in the short term.)
+"""
 
 
 type alias Model =
@@ -193,7 +197,9 @@ view model =
                                             Update
                                             ( a, b, c )
                                             [ W.Container.view
-                                                [ W.Container.spaceY_2, W.Container.padTop_2 ]
+                                                [ W.Container.gap_2
+                                                , W.Container.padTop_2
+                                                ]
                                                 [ W.Container.view
                                                     [ W.Container.background c.background
                                                     , W.Container.padX_4
@@ -227,36 +233,35 @@ view model =
 input : SolidColor.SolidColor -> SolidColor.SolidColor -> (ThemeColorDetail -> Color.Color -> Msg) -> ThemeColorDetail -> H.Html Msg
 input color contrastColor msg themeColorDetail =
     W.Container.view []
-        [ W.Layout.view
-            [ W.Layout.padBottom_1, W.Layout.spaceBetween ]
-            [ W.Layout.view
-                [ W.Layout.gap_1 ]
-                [ W.Text.view
-                    [ W.Text.small, W.Text.semibold ]
-                    [ H.text (themeColorDetailLabel themeColorDetail) ]
-                , contrast color contrastColor
-                , a11yStatus color contrastColor
-                ]
+        [ W.Container.view
+            [ W.Container.padBottom_1
+            , W.Container.alignLeft
+            , W.Container.horizontal
+            , W.Container.gap_1
+            ]
+            [ W.Text.view
+                [ W.Text.small, W.Text.semibold ]
+                [ H.text (themeColorDetailLabel themeColorDetail) ]
+            , contrast color contrastColor
+            , a11yStatus color contrastColor
             ]
         , W.Container.view
             [ W.Container.background (Theme.baseForegroundWithAlpha 0.07)
-            , W.Container.padX_4
+            , W.Container.padX_3
             , W.Container.padY_2
+            , W.Container.gap_2
             , W.Container.rounded
+            , W.Container.alignRight
+            , W.Container.horizontal
             ]
-            [ W.Layout.view
-                [ W.Layout.gap_2
-                , W.Layout.alignRight
+            [ H.div []
+                [ W.Text.view [ W.Text.small, W.Text.alignRight ] [ H.text (SolidColor.toHex color) ]
+                , W.Text.view [ W.Text.small, W.Text.alignRight ] [ H.text (SolidColor.toRGBString color) ]
                 ]
-                [ H.div []
-                    [ W.Text.view [ W.Text.small, W.Text.alignRight ] [ H.text (SolidColor.toHex color) ]
-                    , W.Text.view [ W.Text.small, W.Text.alignRight ] [ H.text (SolidColor.toRGBString color) ]
-                    ]
-                , W.InputColor.view []
-                    { value = W.Internal.Color.fromSolidColor color
-                    , onInput = msg themeColorDetail
-                    }
-                ]
+            , W.InputColor.view []
+                { value = W.Internal.Color.fromSolidColor color
+                , onInput = msg themeColorDetail
+                }
             ]
         ]
 
@@ -317,35 +322,31 @@ colorSelector baseBg msg ( themeColor, color_, color ) children =
         aux =
             toSolidColor color_.aux
     in
-    W.Layout.view
-        [ W.Layout.node "section"
-        , W.Layout.vertical
-        , W.Layout.spaceBetween
-        , W.Layout.padX_4
-        , W.Layout.padY_8
-        , W.Layout.gap_4
+    W.Container.view
+        [ W.Container.node "section"
+        , W.Container.vertical
+        , W.Container.spaceBetween
+        , W.Container.padX_4
+        , W.Container.padY_8
+        , W.Container.gap_4
         ]
         [ W.Container.view
-            [ W.Container.htmlAttrs [ HA.style "flex-grow" "1" ]
-            ]
-            [ W.Container.view
-                []
-                [ W.Heading.view
-                    [ W.Heading.extraSmall, W.Heading.color (SolidColor.toHex fg) ]
-                    [ H.text (themeColorLabel themeColor) ]
-                ]
+            [ W.Container.fill ]
+            [ W.Heading.view
+                [ W.Heading.extraSmall, W.Heading.color (SolidColor.toHex fg) ]
+                [ H.text (themeColorLabel themeColor) ]
             , H.div [] children
             ]
         , W.Card.view
             []
             [ W.Container.view
-                [ W.Container.pad_2 ]
-                [ W.Layout.view
-                    [ W.Layout.gap_2, W.Layout.fillSpace ]
-                    [ input fg baseBg (msg themeColor) Foreground
-                    , input bg aux (msg themeColor) Background
-                    , input aux bg (msg themeColor) Aux
-                    ]
+                [ W.Container.pad_2
+                , W.Container.horizontal
+                , W.Container.gap_2
+                ]
+                [ input fg baseBg (msg themeColor) Foreground
+                , input bg aux (msg themeColor) Background
+                , input aux bg (msg themeColor) Aux
                 ]
             ]
         ]

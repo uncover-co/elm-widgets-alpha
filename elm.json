@@ -16,6 +16,7 @@
         "W.InputField",
         "W.InputAutocomplete",
         "W.InputCheckbox",
+        "W.InputColor",
         "W.InputDate",
         "W.InputInt",
         "W.InputFloat",
@@ -25,7 +26,6 @@
         "W.InputText",
         "W.InputTextArea",
         "W.InputTime",
-        "W.Layout",
         "W.Loading",
         "W.Modal",
         "W.Menu",
@@ -49,6 +49,7 @@
         "elm/time": "1.0.0 <= v < 2.0.0",
         "justinmimbs/date": "4.0.0 <= v < 5.0.0",
         "justinmimbs/time-extra": "1.1.0 <= v < 2.0.0",
+        "tesk9/palette": "3.0.1 <= v < 4.0.0",
         "uncover-co/elm-theme": "2.0.0 <= v < 3.0.0"
     },
     "test-dependencies": {

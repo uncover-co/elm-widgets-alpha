@@ -13,7 +13,9 @@ chapter_ =
               , W.Container.view
                     [ W.Container.padX_2
                     , W.Container.padY_8
-                    , W.Container.spaceX_2
+                    , W.Container.gap_2
+                    , W.Container.horizontal
+                    , W.Container.spaceBetween
                     , W.Container.largeScreen
                         [ W.Container.padY_2
                         ]

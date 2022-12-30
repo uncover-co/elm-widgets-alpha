@@ -20,7 +20,6 @@ import W.InputSelect
 import W.InputText
 import W.InputTime
 import W.Internal.Helpers as WH
-import W.Layout
 import W.Message
 import W.Modal
 import W.Tag
@@ -114,7 +113,7 @@ chapter_ =
                         , W.Modal.viewToggable []
                             { id = "my-modal-toggle"
                             , content =
-                                [ W.Container.view [ W.Container.pad_8, W.Container.spaceY_2 ]
+                                [ W.Container.view [ W.Container.pad_8, W.Container.gap_2 ]
                                     [ W.Heading.view [ W.Heading.alignCenter, W.Heading.primary ] [ H.text "Oh no... a modal package?" ]
                                     , W.Text.view [ W.Text.alignCenter ] [ H.text "Don't worry! No messages were harmed in the toggling of this modal!" ]
                                     ]
@@ -176,7 +175,7 @@ chapter_ =
               )
             , ( "select"
               , \state ->
-                    W.Layout.view [ W.Layout.gap_2, W.Layout.fillSpace ]
+                    W.Container.view [ W.Container.gap_2, W.Container.horizontal ]
                         [ W.InputSelect.view []
                             { value = state.overview.select
                             , options = [ Viewer, Editor, Admin ]
@@ -206,18 +205,19 @@ chapter_ =
                                 ]
                                 []
                     in
-                    W.Layout.view
-                        [ W.Layout.background (Theme.baseForegroundWithAlpha 0.07)
-                        , W.Layout.gap_4
-                        , W.Layout.pad_4
-                        , W.Layout.alignTop
-                        , W.Layout.alignRight
-                        , W.Layout.largeScreen
-                            [ W.Layout.vertical
-                            , W.Layout.alignCenterX
-                            , W.Layout.alignCenterY
+                    W.Container.view
+                        [ W.Container.background (Theme.baseForegroundWithAlpha 0.07)
+                        , W.Container.horizontal
+                        , W.Container.gap_4
+                        , W.Container.pad_4
+                        , W.Container.alignTop
+                        , W.Container.alignRight
+                        , W.Container.largeScreen
+                            [ W.Container.vertical
+                            , W.Container.alignCenterX
+                            , W.Container.alignCenterY
                             ]
-                        , W.Layout.htmlAttrs [ HA.style "height" "200px" ]
+                        , W.Container.htmlAttrs [ HA.style "height" "200px" ]
                         ]
                         [ square, square ]
               )
@@ -227,12 +227,12 @@ chapter_ =
                         card : H.Html msg
                         card =
                             W.Card.view []
-                                [ W.Layout.view [ W.Layout.spaceBetween, W.Layout.pad_4 ]
+                                [ W.Container.view [ W.Container.horizontal, W.Container.spaceBetween, W.Container.pad_4 ]
                                     [ W.Container.view []
                                         [ W.Heading.view [] [ H.text "Heading" ]
                                         , W.Text.view [] [ H.text "Some text" ]
                                         ]
-                                    , W.Layout.view [ W.Layout.gap_2 ]
+                                    , W.Container.view [ W.Container.horizontal, W.Container.gap_2 ]
                                         [ W.Tag.view [ W.Tag.primary ] [ H.text "Stateless" ]
                                         , W.Tag.view [ W.Tag.secondary ] [ H.text "Tasteful" ]
                                         ]
@@ -280,7 +280,7 @@ chapter_ =
                                 |> Theme.withSecondary (Theme.darkTheme |> Theme.toThemeData |> .base)
                                 |> Theme.toTheme
                     in
-                    W.Container.view [ W.Container.spaceY_4 ]
+                    W.Container.view [ W.Container.gap_4 ]
                         [ card
                         , Theme.providerWithDarkMode
                             { light = blueTheme
@@ -376,20 +376,21 @@ W.InputSelect.view
 
 Becoming the most powerful layout DSL is not the goal of elm-widgets. However, we want to give you a batteries included experience so you don't need to worry about extra dependencies, CSS integration, tailwind, etc.
 
-With our [W.Layout](todo) and [W.Container](todo) widgets you should be able to create most of what you want and we even give you a few responsive possibilities:
+With our [W.Container](https://package.elm-lang.org/packages/uncover-co/elm-widgets/latest/W-Container) widget you should be able to create most of what you want and we even give you a few responsive possibilities:
 
 <component with-label="layout" />
 
 ```elm
-W.Layout.view
-    [ W.Layout.gap_4
-    , W.Layout.pad_4
-    , W.Layout.alignTop
-    , W.Layout.alignRight
-    , W.Layout.largeScreen
-        [ W.Layout.vertical
-        , W.Layout.alignCenterX
-        , W.Layout.alignCenterY
+W.Container.view
+    [ W.Container.gap_4
+    , W.Container.pad_4
+    , W.Container.horizontal
+    , W.Container.alignTop
+    , W.Container.alignRight
+    , W.Container.largeScreen
+        [ W.Container.vertical
+        , W.Container.alignCenterX
+        , W.Container.alignCenterY
         ]
     ]
     [ square, square ]

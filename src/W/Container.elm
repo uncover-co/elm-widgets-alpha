@@ -1,7 +1,12 @@
 module W.Container exposing
     ( view
-    , inline, rounded, extraRounded, background, shadow, largeShadow
+    , vertical, horizontal, inline, fill
+    , background
+    , rounded, extraRounded
+    , shadow, largeShadow
     , largeScreen
+    , alignTop, alignBottom, alignLeft, alignRight, alignCenterX, alignCenterY
+    , spaceBetween, spaceAround, fillSpace
     , pad_0, pad_1, pad_2, pad_3, pad_4, pad_6, pad_8, pad_12, pad_16
     , padX_0, padX_1, padX_2, padX_3, padX_4, padX_6, padX_8, padX_12, padX_16
     , padY_0, padY_1, padY_2, padY_3, padY_4, padY_6, padY_8, padY_12, padY_16
@@ -9,8 +14,7 @@ module W.Container exposing
     , padRight_0, padRight_1, padRight_2, padRight_3, padRight_4, padRight_6, padRight_8, padRight_12, padRight_16
     , padTop_0, padTop_1, padTop_2, padTop_3, padTop_4, padTop_6, padTop_8, padTop_12, padTop_16
     , padBottom_0, padBottom_1, padBottom_2, padBottom_3, padBottom_4, padBottom_6, padBottom_8, padBottom_12, padBottom_16
-    , spaceX_0, spaceX_1, spaceX_2, spaceX_4, spaceX_6, spaceX_8, spaceX_12, spaceX_16
-    , spaceY_0, spaceY_1, spaceY_2, spaceY_4, spaceY_6, spaceY_8, spaceY_12, spaceY_16
+    , gap_0, gap_1, gap_2, gap_3, gap_4, gap_6, gap_8, gap_12, gap_16
     , node, noAttr, htmlAttrs, Attribute
     )
 
@@ -19,14 +23,19 @@ module W.Container exposing
 @docs view
 
 
-# Styles
+# St, fillyles
 
-@docs inline, rounded, extraRounded, background, shadow, largeShadow
+@docs vertical, horizontal, inline, fill
+@docs background
+@docs rounded, extraRounded
+@docs shadow, largeShadow
 
 
-# Responsive
+# Layouts
 
 @docs largeScreen
+@docs alignTop, alignBottom, alignLeft, alignRight, alignCenterX, alignCenterY
+@docs spaceBetween, spaceAround, fillSpace
 
 
 # Padding
@@ -40,10 +49,9 @@ module W.Container exposing
 @docs padBottom_0, padBottom_1, padBottom_2, padBottom_3, padBottom_4, padBottom_6, padBottom_8, padBottom_12, padBottom_16
 
 
-# Spacing
+# Gaps
 
-@docs spaceX_0, spaceX_1, spaceX_2, spaceX_4, spaceX_6, spaceX_8, spaceX_12, spaceX_16
-@docs spaceY_0, spaceY_1, spaceY_2, spaceY_4, spaceY_6, spaceY_8, spaceY_12, spaceY_16
+@docs gap_0, gap_1, gap_2, gap_3, gap_4, gap_6, gap_8, gap_12, gap_16
 
 
 # Html
@@ -69,13 +77,17 @@ view attrs_ children =
         attrs =
             applyAttrs attrs_
 
+        layoutClass_ : String
+        layoutClass_ =
+            layoutClass attrs
+
         displayClass : String
         displayClass =
             if attrs.inline then
-                "ew-inline-block"
+                "ew-inline-flex"
 
             else
-                "ew-block"
+                "ew-flex"
 
         backgroundAttr : H.Attribute msg
         backgroundAttr =
@@ -91,6 +103,8 @@ view attrs_ children =
         (attrs.htmlAttributes
             ++ [ HA.class attrs.class
                , HA.class displayClass
+               , HA.class layoutClass_
+               , HA.class "ew-box-border"
                , backgroundAttr
                ]
         )
@@ -109,8 +123,11 @@ type Attribute msg
 type alias Attributes msg =
     { node : String
     , class : String
-    , background : Maybe String
     , inline : Bool
+    , background : Maybe String
+    , orientation : Orientation
+    , verticalAlignment : VerticalAlignment
+    , horizontalAlignment : HorizontalAlignment
     , htmlAttributes : List (H.Attribute msg)
     }
 
@@ -119,10 +136,33 @@ defaultAttrs : Attributes msg
 defaultAttrs =
     { node = "div"
     , class = ""
-    , background = Nothing
     , inline = False
+    , background = Nothing
+    , orientation = Vertical
+    , horizontalAlignment = FillSpace
+    , verticalAlignment = VerticalCenter
     , htmlAttributes = []
     }
+
+
+type Orientation
+    = Vertical
+    | Horizontal
+
+
+type VerticalAlignment
+    = Top
+    | VerticalCenter
+    | Bottom
+
+
+type HorizontalAlignment
+    = Left
+    | Right
+    | HorizontalCenter
+    | SpaceBetween
+    | SpaceAround
+    | FillSpace
 
 
 
@@ -132,6 +172,11 @@ defaultAttrs =
 applyAttrs : List (Attribute msg) -> Attributes msg
 applyAttrs attrs =
     List.foldl (\(Attribute fn) a -> fn a) defaultAttrs attrs
+
+
+applyAttrsTo : List (Attribute msg) -> Attributes msg -> Attributes msg
+applyAttrsTo attrs default =
+    List.foldl (\(Attribute fn) a -> fn a) default attrs
 
 
 {-| -}
@@ -150,6 +195,36 @@ inline =
 background : String -> Attribute msg
 background v =
     Attribute (\attr -> { attr | background = Just v })
+
+
+{-| -}
+rounded : Attribute msg
+rounded =
+    addClass "ew-rounded"
+
+
+{-| -}
+extraRounded : Attribute msg
+extraRounded =
+    addClass "ew-rounded-lg"
+
+
+{-| -}
+shadow : Attribute msg
+shadow =
+    addClass "ew-shadow"
+
+
+{-| -}
+largeShadow : Attribute msg
+largeShadow =
+    addClass "ew-shadow-lg"
+
+
+{-| -}
+fill : Attribute msg
+fill =
+    addClass "ew-grow"
 
 
 {-| -}
@@ -180,26 +255,194 @@ largeScreen largeAttr_ =
 
                 padding : String
                 padding =
-                    largeAttr.class
+                    if String.isEmpty largeAttr.class then
+                        ""
+
+                    else
+                        largeAttr.class
+                            |> String.trim
+                            |> String.append "lg:"
+                            |> String.replace " " " lg:"
+
+                allAttr : Attributes msg
+                allAttr =
+                    applyAttrsTo largeAttr_ attr
+
+                layout : String
+                layout =
+                    layoutClass allAttr
+                        |> String.trim
+                        |> String.append "lg:"
                         |> String.replace " " " lg:"
             in
-            { attr | class = attr.class ++ " " ++ padding }
+            { attr | class = attr.class ++ " " ++ layout ++ " " ++ padding }
         )
 
 
 
-{- Space & Padding - Tailwind Dynamic Class Setup
+-- Layout
 
-   lg:ew-space-x-0 lg:ew-space-x-1 lg:ew-space-x-2 lg:ew-space-x-4 lg:ew-space-x-6 lg:ew-space-x-8 lg:ew-space-x-12 lg:ew-space-x-16
-   lg:ew-space-y-0 lg:ew-space-y-1 lg:ew-space-y-2 lg:ew-space-y-4 lg:ew-space-y-6 lg:ew-space-y-8 lg:ew-space-y-12 lg:ew-space-y-16
 
-   lg:ew-p-0   lg:ew-p-1   lg:ew-p-2  lg:ew-p-3   lg:ew-p-4   lg:ew-p-6  lg:ew-p-8   lg:ew-p-12   lg:ew-p-16
-   lg:ew-px-0  lg:ew-px-1  lg:ew-px-2 lg:ew-px-3  lg:ew-px-4  lg:ew-px-6 lg:ew-px-8  lg:ew-px-12  lg:ew-px-16
-   lg:ew-py-0  lg:ew-py-1  lg:ew-py-2 lg:ew-py-3  lg:ew-py-4  lg:ew-py-6 lg:ew-py-8  lg:ew-py-12  lg:ew-py-16
-   lg:ew-pt-0  lg:ew-pt-1  lg:ew-pt-2 lg:ew-pt-3  lg:ew-pt-4  lg:ew-pt-6 lg:ew-pt-8  lg:ew-pt-12  lg:ew-pt-16
-   lg:ew-pl-0  lg:ew-pl-1  lg:ew-pl-2 lg:ew-pl-3  lg:ew-pl-4  lg:ew-pl-6 lg:ew-pl-8  lg:ew-pl-12  lg:ew-pl-16
-   lg:ew-pr-0  lg:ew-pr-1  lg:ew-pr-2 lg:ew-pr-3  lg:ew-pr-4  lg:ew-pr-6 lg:ew-pr-8  lg:ew-pr-12  lg:ew-pr-16
-   lg:ew-pl-0  lg:ew-pl-1  lg:ew-pl-2 lg:ew-pl-3  lg:ew-pl-4  lg:ew-pl-6 lg:ew-pl-8  lg:ew-pl-12  lg:ew-pl-16
+layoutClass : Attributes msg -> String
+layoutClass attrs =
+    case attrs.orientation of
+        Vertical ->
+            let
+                yAxis : String
+                yAxis =
+                    case attrs.verticalAlignment of
+                        Top ->
+                            "ew-justify-start"
+
+                        VerticalCenter ->
+                            "ew-justify-center"
+
+                        Bottom ->
+                            "ew-justify-end"
+
+                xAxis : String
+                xAxis =
+                    case attrs.horizontalAlignment of
+                        Left ->
+                            "ew-items-start"
+
+                        HorizontalCenter ->
+                            "ew-items-center"
+
+                        Right ->
+                            "ew-items-end"
+
+                        SpaceBetween ->
+                            ""
+
+                        SpaceAround ->
+                            ""
+
+                        FillSpace ->
+                            ""
+            in
+            "ew-flex-col " ++ yAxis ++ " " ++ xAxis
+
+        Horizontal ->
+            let
+                yAxis : String
+                yAxis =
+                    case attrs.verticalAlignment of
+                        Top ->
+                            "ew-items-start"
+
+                        VerticalCenter ->
+                            "ew-items-center"
+
+                        Bottom ->
+                            "ew-items-end"
+
+                xAxis : String
+                xAxis =
+                    case attrs.horizontalAlignment of
+                        Left ->
+                            "ew-justify-start"
+
+                        HorizontalCenter ->
+                            "ew-justify-center"
+
+                        Right ->
+                            "ew-justify-end"
+
+                        SpaceBetween ->
+                            "ew-justify-between"
+
+                        SpaceAround ->
+                            "ew-justify-around"
+
+                        FillSpace ->
+                            "ew-justify-stretch"
+            in
+            "ew-flex-row " ++ yAxis ++ " " ++ xAxis
+
+
+{-| -}
+vertical : Attribute msg
+vertical =
+    Attribute (\attr -> { attr | orientation = Vertical })
+
+
+{-| -}
+horizontal : Attribute msg
+horizontal =
+    Attribute (\attr -> { attr | orientation = Horizontal })
+
+
+{-| -}
+alignTop : Attribute msg
+alignTop =
+    Attribute (\attr -> { attr | verticalAlignment = Top })
+
+
+{-| -}
+alignBottom : Attribute msg
+alignBottom =
+    Attribute (\attr -> { attr | verticalAlignment = Bottom })
+
+
+{-| -}
+alignCenterY : Attribute msg
+alignCenterY =
+    Attribute (\attr -> { attr | verticalAlignment = VerticalCenter })
+
+
+{-| -}
+alignLeft : Attribute msg
+alignLeft =
+    Attribute (\attr -> { attr | horizontalAlignment = Left })
+
+
+{-| -}
+alignRight : Attribute msg
+alignRight =
+    Attribute (\attr -> { attr | horizontalAlignment = Right })
+
+
+{-| -}
+alignCenterX : Attribute msg
+alignCenterX =
+    Attribute (\attr -> { attr | horizontalAlignment = HorizontalCenter })
+
+
+{-| -}
+spaceBetween : Attribute msg
+spaceBetween =
+    Attribute (\attr -> { attr | horizontalAlignment = SpaceBetween })
+
+
+{-| -}
+spaceAround : Attribute msg
+spaceAround =
+    Attribute (\attr -> { attr | horizontalAlignment = SpaceAround })
+
+
+{-| -}
+fillSpace : Attribute msg
+fillSpace =
+    Attribute (\attr -> { attr | horizontalAlignment = FillSpace })
+
+
+
+{- Gap & Padding - Tailwind Dynamic Class Setup
+
+   lg:ew-flex-col        lg:ew-flex-row
+   lg:ew-items-center    lg:ew-items-start    lg:ew-items-end
+   lg:ew-justify-center  lg:ew-justify-start  lg:ew-justify-end
+   lg:ew-justify-between lg:ew-justify-around
+
+   lg:ew-gap-0 lg:ew-gap-1 lg:ew-gap-2 lg:ew-gap-4 lg:ew-gap-6 lg:ew-gap-8 lg:ew-gap-12 lg:ew-gap-16
+   lg:ew-p-0   lg:ew-p-1   lg:ew-p-2   lg:ew-p-4   lg:ew-p-6   lg:ew-p-8   lg:ew-p-12   lg:ew-p-16
+   lg:ew-px-0  lg:ew-px-1  lg:ew-px-2  lg:ew-px-4  lg:ew-px-6  lg:ew-px-8  lg:ew-px-12  lg:ew-px-16
+   lg:ew-py-0  lg:ew-py-1  lg:ew-py-2  lg:ew-py-4  lg:ew-py-6  lg:ew-py-8  lg:ew-py-12  lg:ew-py-16
+   lg:ew-pt-0  lg:ew-pt-1  lg:ew-pt-2  lg:ew-pt-4  lg:ew-pt-6  lg:ew-pt-8  lg:ew-pt-12  lg:ew-pt-16
+   lg:ew-pl-0  lg:ew-pl-1  lg:ew-pl-2  lg:ew-pl-4  lg:ew-pl-6  lg:ew-pl-8  lg:ew-pl-12  lg:ew-pl-16
+   lg:ew-pr-0  lg:ew-pr-1  lg:ew-pr-2  lg:ew-pr-4  lg:ew-pr-6  lg:ew-pr-8  lg:ew-pr-12  lg:ew-pr-16
+   lg:ew-pl-0  lg:ew-pl-1  lg:ew-pl-2  lg:ew-pl-4  lg:ew-pl-6  lg:ew-pl-8  lg:ew-pl-12  lg:ew-pl-16
 
 -}
 
@@ -210,99 +453,57 @@ addClass class =
 
 
 {-| -}
-spaceX_0 : Attribute msg
-spaceX_0 =
-    addClass "ew-space-x-0"
+gap_0 : Attribute msg
+gap_0 =
+    addClass "ew-gap-0"
 
 
 {-| -}
-spaceX_1 : Attribute msg
-spaceX_1 =
-    addClass "ew-space-x-1"
+gap_1 : Attribute msg
+gap_1 =
+    addClass "ew-gap-1"
 
 
 {-| -}
-spaceX_2 : Attribute msg
-spaceX_2 =
-    addClass "ew-space-x-2"
+gap_2 : Attribute msg
+gap_2 =
+    addClass "ew-gap-2"
 
 
 {-| -}
-spaceX_4 : Attribute msg
-spaceX_4 =
-    addClass "ew-space-x-4"
+gap_3 : Attribute msg
+gap_3 =
+    addClass "ew-gap-3"
 
 
 {-| -}
-spaceX_6 : Attribute msg
-spaceX_6 =
-    addClass "ew-space-x-6"
+gap_4 : Attribute msg
+gap_4 =
+    addClass "ew-gap-4"
 
 
 {-| -}
-spaceX_8 : Attribute msg
-spaceX_8 =
-    addClass "ew-space-x-8"
+gap_6 : Attribute msg
+gap_6 =
+    addClass "ew-gap-6"
 
 
 {-| -}
-spaceX_12 : Attribute msg
-spaceX_12 =
-    addClass "ew-space-x-12"
+gap_8 : Attribute msg
+gap_8 =
+    addClass "ew-gap-8"
 
 
 {-| -}
-spaceX_16 : Attribute msg
-spaceX_16 =
-    addClass "ew-space-x-16"
+gap_12 : Attribute msg
+gap_12 =
+    addClass "ew-gap-12"
 
 
 {-| -}
-spaceY_0 : Attribute msg
-spaceY_0 =
-    addClass "ew-space-y-0"
-
-
-{-| -}
-spaceY_1 : Attribute msg
-spaceY_1 =
-    addClass "ew-space-y-1"
-
-
-{-| -}
-spaceY_2 : Attribute msg
-spaceY_2 =
-    addClass "ew-space-y-2"
-
-
-{-| -}
-spaceY_4 : Attribute msg
-spaceY_4 =
-    addClass "ew-space-y-4"
-
-
-{-| -}
-spaceY_6 : Attribute msg
-spaceY_6 =
-    addClass "ew-space-y-6"
-
-
-{-| -}
-spaceY_8 : Attribute msg
-spaceY_8 =
-    addClass "ew-space-y-8"
-
-
-{-| -}
-spaceY_12 : Attribute msg
-spaceY_12 =
-    addClass "ew-space-y-12"
-
-
-{-| -}
-spaceY_16 : Attribute msg
-spaceY_16 =
-    addClass "ew-space-y-16"
+gap_16 : Attribute msg
+gap_16 =
+    addClass "ew-gap-16"
 
 
 {-| -}
@@ -681,27 +882,3 @@ padBottom_12 =
 padBottom_16 : Attribute msg
 padBottom_16 =
     addClass "ew-pb-16"
-
-
-{-| -}
-rounded : Attribute msg
-rounded =
-    addClass "ew-rounded"
-
-
-{-| -}
-extraRounded : Attribute msg
-extraRounded =
-    addClass "ew-rounded-lg"
-
-
-{-| -}
-shadow : Attribute msg
-shadow =
-    addClass "ew-shadow"
-
-
-{-| -}
-largeShadow : Attribute msg
-largeShadow =
-    addClass "ew-shadow-lg"
