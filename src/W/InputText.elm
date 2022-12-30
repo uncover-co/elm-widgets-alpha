@@ -1,7 +1,7 @@
 module W.InputText exposing
     ( view
     , email, password, search, telephone, url, numeric, decimal
-    , placeholder, mask, prefix, suffix, unstyled
+    , placeholder, mask, prefix, suffix
     , disabled, readOnly
     , onEnter, onFocus, onBlur
     , required, minLength, maxLength, exactLength, pattern, validation
@@ -21,7 +21,7 @@ module W.InputText exposing
 
 # Styles
 
-@docs placeholder, mask, prefix, suffix, unstyled
+@docs placeholder, mask, prefix, suffix
 
 
 # States
@@ -55,7 +55,7 @@ import Html.Attributes as HA
 import Html.Events as HE
 import Json.Decode as D
 import W.Internal.Helpers as WH
-import W.Internal.Input as WI
+import W.Internal.Input
 
 
 
@@ -143,7 +143,6 @@ type Attribute msg
 type alias Attributes msg =
     { type_ : InputType
     , inputMode : Maybe String
-    , unstyled : Bool
     , disabled : Bool
     , readOnly : Bool
     , required : Bool
@@ -171,7 +170,6 @@ defaultAttrs : Attributes msg
 defaultAttrs =
     { type_ = Text
     , inputMode = Nothing
-    , unstyled = False
     , disabled = False
     , readOnly = False
     , required = False
@@ -234,12 +232,6 @@ numeric =
 decimal : Attribute msg
 decimal =
     Attribute <| \attrs -> { attrs | type_ = Decimal, inputMode = Just "decimal" }
-
-
-{-| -}
-unstyled : Attribute msg
-unstyled =
-    Attribute <| \attrs -> { attrs | unstyled = True }
 
 
 {-| -}
@@ -353,7 +345,7 @@ baseAttrs attrs =
     attrs.htmlAttributes
         ++ [ HA.type_ (inputInputTypeToString attrs.type_)
            , WH.maybeAttr (HA.attribute "inputmode") attrs.inputMode
-           , HA.classList [ ( WI.baseClass, not attrs.unstyled ) ]
+           , HA.class W.Internal.Input.baseClass
            , WH.attrIf attrs.readOnly HA.tabindex -1
            , HA.required attrs.required
            , HA.disabled attrs.disabled
@@ -388,7 +380,7 @@ view attrs_ props =
         value =
             WH.limitString attrs.maxLength props.value
     in
-    WI.view
+    W.Internal.Input.view
         { disabled = attrs.disabled
         , readOnly = attrs.readOnly
         , prefix = attrs.prefix
@@ -424,7 +416,7 @@ viewWithValidation attrs_ props =
         value =
             WH.limitString attrs.maxLength props.value
     in
-    WI.view
+    W.Internal.Input.view
         { disabled = attrs.disabled
         , readOnly = attrs.readOnly
         , prefix = attrs.prefix

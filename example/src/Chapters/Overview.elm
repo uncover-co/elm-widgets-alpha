@@ -156,16 +156,16 @@ chapter_ =
 
                                             Err errors ->
                                                 errors
-                                                |> List.head
-                                                |> Maybe.map
-                                                    (\error ->
-                                                        W.Message.view
-                                                            [ W.Message.danger ]
-                                                            [ W.InputText.errorToString error
-                                                                |> H.text
-                                                            ]
-                                                    )
-                                                |> Maybe.withDefault (H.text "")
+                                                    |> List.head
+                                                    |> Maybe.map
+                                                        (\error ->
+                                                            W.Message.view
+                                                                [ W.Message.danger ]
+                                                                [ W.InputText.errorToString error
+                                                                    |> H.text
+                                                                ]
+                                                        )
+                                                    |> Maybe.withDefault (H.text "")
                                         ]
 
                                 Nothing ->

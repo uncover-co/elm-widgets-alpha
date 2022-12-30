@@ -29,7 +29,7 @@
     @apply before:ew-transition before:ew-ease-out before:ew-duration-150;
     @apply hover:ew-opacity-90 active:ew-opacity-75;
     @apply checked:ew-bg-base-bg;
-    @apply focus:ew-bg-base-bg focus:ew-ring focus:ew-border-primary-fg;
+    @apply focus:ew-bg-base-bg focus-visible:ew-ring focus-visible:ew-border-primary-fg;
     @apply checked:before:ew-scale-100;
     @apply disabled:ew-bg-base-aux/[0.25];
   }
@@ -39,17 +39,17 @@
   .ew-focusable {
     @apply ew-transition;
     @apply ew-outline-0 ew-ring-offset-0 ew-ring-primary-fg/50;
-    @apply focus:ew-ring focus:ew-border-primary-fg;
+    @apply focus-visible:ew-ring focus-visible:ew-border-primary-fg;
   }
   .ew-focusable-inset {
     @apply ew-transition;
     @apply ew-outline-0 ew-ring-inset ew-ring-primary-fg/50;
-    @apply focus:ew-ring focus:ew-border-primary-fg;
+    @apply focus-visible:ew-ring focus-visible:ew-border-primary-fg;
   }
   .ew-focusable-outline {
     @apply ew-transition;
     @apply ew-outline-0 ew-ring-offset-0 ew-ring-primary-fg/50;
-    @apply focus:ew-ring;
+    @apply focus-visible:ew-ring;
   }
 }
 
@@ -79,6 +79,13 @@
  * Input Reset and Icons
  * ======================================================
  */
+
+/* Color */
+
+input[type="color"].ew-input-color::-webkit-color-swatch-wrapper,
+input[type="color"].ew-input-color::-webkit-color-swatch {
+  display: none;
+}
 
 /* Select, Time, Date, Autocomplete */
 

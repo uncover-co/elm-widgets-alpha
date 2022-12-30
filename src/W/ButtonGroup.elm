@@ -154,7 +154,7 @@ view attrs_ props =
                     H.button
                         [ HA.class "ew-grow ew-shrink-0 ew-box-border"
                         , HA.class "ew-focusable ew-inline-flex ew-items-center ew-justify-center"
-                        , HA.class "ew-py-0 ew-px-4 ew-border-solid"
+                        , HA.class "ew-m-0 ew-py-0 ew-px-4 ew-border-solid"
                         , HA.class "ew-font-text ew-text-base ew-font-medium ew-leading-0"
                         , HA.class "ew-relative focus:ew-z-10"
                         , HA.class "disabled:ew-pointer-events-none disabled:ew-opacity-60"

@@ -1,6 +1,6 @@
 module W.Tooltip exposing
     ( view
-    , slow, alwaysVisible
+    , fast, slow, alwaysVisible
     , htmlAttrs, noAttr, Attribute
     )
 
@@ -11,7 +11,7 @@ module W.Tooltip exposing
 
 # Styles
 
-@docs slow, alwaysVisible
+@docs fast, slow, alwaysVisible
 
 
 # Html
@@ -35,9 +35,15 @@ type Attribute msg
 
 type alias Attributes msg =
     { htmlAttributes : List (H.Attribute msg)
-    , slow : Bool
+    , speed : Speed
     , alwaysVisible : Bool
     }
+
+
+type Speed
+    = Slow
+    | Default
+    | Fast
 
 
 applyAttrs : List (Attribute msg) -> Attributes msg
@@ -48,7 +54,7 @@ applyAttrs attrs =
 defaultAttrs : Attributes msg
 defaultAttrs =
     { htmlAttributes = []
-    , slow = False
+    , speed = Default
     , alwaysVisible = False
     }
 
@@ -70,15 +76,21 @@ noAttr =
 
 
 {-| -}
-slow : Bool -> Attribute msg
-slow v =
-    Attribute <| \attrs -> { attrs | slow = v }
+slow : Attribute msg
+slow =
+    Attribute <| \attrs -> { attrs | speed = Slow }
 
 
 {-| -}
-alwaysVisible : Bool -> Attribute msg
-alwaysVisible v =
-    Attribute <| \attrs -> { attrs | alwaysVisible = v }
+fast : Attribute msg
+fast =
+    Attribute <| \attrs -> { attrs | speed = Fast }
+
+
+{-| -}
+alwaysVisible : Attribute msg
+alwaysVisible =
+    Attribute <| \attrs -> { attrs | alwaysVisible = True }
 
 
 
@@ -103,18 +115,23 @@ view attrs_ props =
         tooltip =
             H.span
                 (attrs.htmlAttributes
-                    ++ [ HA.class "ew-tooltip ew-absolute ew-pointer-events-none ew-bottom-full"
-                       , HA.class "ew-mb-1"
-                       , HA.class "ew-px-2 ew-py-1 ew-rounded"
+                    ++ [ HA.class "ew-tooltip ew-pointer-events-none"
+                       , HA.class "ew-absolute ew-bottom-full ew-mb-1 ew-px-2 ew-py-1"
+                       , HA.class "ew-w-max ew-rounded"
                        , HA.class "ew-font-text ew-text-sm"
                        , HA.class "ew-bg-neutral-bg ew-text-neutral-aux"
                        , HA.class "ew-transition"
                        , HA.class "group-hover:ew-translate-y-0 group-hover:ew-opacity-100"
-                       , HA.classList
-                            [ ( "group-hover:ew-delay-500", not attrs.slow )
-                            , ( "group-hover:ew-delay-1000", attrs.slow )
-                            , ( "ew-translate-y-0.5 ew-opacity-0", not attrs.alwaysVisible )
-                            ]
+                       , HA.classList [ ( "ew-translate-y-0.5 ew-opacity-0", not attrs.alwaysVisible ) ]
+                       , case attrs.speed of
+                            Fast ->
+                                HA.class "group-hover:ew-delay-100"
+
+                            Default ->
+                                HA.class "group-hover:ew-delay-500"
+
+                            Slow ->
+                                HA.class "group-hover:ew-delay-1000"
                        ]
                 )
                 props.tooltip

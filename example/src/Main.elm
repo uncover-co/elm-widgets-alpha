@@ -11,6 +11,7 @@ import Chapters.Core.Loading
 import Chapters.Form.Field
 import Chapters.Form.InputAutocomplete
 import Chapters.Form.InputCheckbox
+import Chapters.Form.InputColor
 import Chapters.Form.InputDate
 import Chapters.Form.InputFloat
 import Chapters.Form.InputInt
@@ -32,6 +33,7 @@ import Chapters.Information.Tag
 import Chapters.Information.Tooltip
 import Chapters.Layout.Modal
 import Chapters.Overview
+import Chapters.Theme
 import ElmBook exposing (Book, book, withChapterGroups, withStatefulOptions, withThemeOptions)
 import ElmBook.Chapter
 import ElmBook.StatefulOptions
@@ -43,6 +45,7 @@ import W.Styles
 
 type alias SharedState =
     { overview : Chapters.Overview.Model
+    , theme : Chapters.Theme.Model
     , autocomplete : Chapters.Form.InputAutocomplete.Model
     , range :
         { default : Float
@@ -61,6 +64,7 @@ main =
         |> withStatefulOptions
             [ ElmBook.StatefulOptions.initialState
                 { overview = Chapters.Overview.init
+                , theme = Chapters.Theme.init
                 , autocomplete = Chapters.Form.InputAutocomplete.init
                 , range = Chapters.Form.InputSlider.init
                 , inputText = Chapters.Form.InputText.init
@@ -71,6 +75,7 @@ main =
             ]
         |> withThemeOptions
             [ ElmBook.ThemeOptions.subtitle "Stateless & Tasteful"
+            , ElmBook.ThemeOptions.backgroundGradient "#0087cf" Theme.primaryBackground
             , ElmBook.ThemeOptions.globals
                 [ Theme.globalProviderWithDarkMode
                     { light = Theme.lightTheme
@@ -84,52 +89,53 @@ main =
         |> withChapterGroups
             [ ( ""
               , [ Chapters.Overview.chapter_
+                , Chapters.Theme.chapter_
                 , ElmBook.Chapter.chapterLink
                     { title = "Package Docs"
                     , url = "https://"
                     }
                 ]
               )
-            , ( "Core"
+            , ( "Basics"
               , [ Chapters.Core.Buttons.chapter_
                 , Chapters.Core.ButtonGroup.chapter_
-                , Chapters.Core.Heading.chapter_
-                , Chapters.Core.Card.chapter_
                 , Chapters.Core.Container.chapter_
-                , Chapters.Core.Layout.chapter_
-                , Chapters.Core.Divider.chapter_
+                , Chapters.Core.Heading.chapter_
+                ]
+              )
+            , ( "Data Display"
+              , [ Chapters.Information.Badge.chapter_
+                , Chapters.Information.DataRow.chapter_
                 , Chapters.Core.Loading.chapter_
-                ]
-              )
-            , ( "Layout"
-              , [ Chapters.Layout.Modal.chapter_
-                ]
-              )
-            , ( "Information"
-              , [ Chapters.Information.DataRow.chapter_
-                , Chapters.Information.Popover.chapter_
-                , Chapters.Information.Tooltip.chapter_
-                , Chapters.Information.Menu.chapter_
-                , Chapters.Information.Tag.chapter_
-                , Chapters.Information.Badge.chapter_
-                , Chapters.Information.Table.chapter_
                 , Chapters.Information.Message.chapter_
                 , Chapters.Information.Notification.chapter_
-                , Chapters.Information.Pagination.chapter_
+                , Chapters.Information.Popover.chapter_
+                , Chapters.Information.Tag.chapter_
+                , Chapters.Information.Tooltip.chapter_
                 ]
               )
-            , ( "Form"
+            , ( "Layout & Navigation"
+              , [ Chapters.Core.Card.chapter_
+                , Chapters.Core.Divider.chapter_                
+                , Chapters.Information.Menu.chapter_
+                , Chapters.Layout.Modal.chapter_
+                , Chapters.Information.Pagination.chapter_
+                , Chapters.Information.Table.chapter_
+                ]
+              )
+            , ( "Inputs"
               , [ Chapters.Form.Field.chapter_
                 , Chapters.Form.InputText.chapter_
                 , Chapters.Form.InputTextArea.chapter_
+                , Chapters.Form.InputAutocomplete.chapter_
+                , Chapters.Form.InputSelect.chapter_
                 , Chapters.Form.InputInt.chapter_
                 , Chapters.Form.InputFloat.chapter_
-                , Chapters.Form.InputTime.chapter_
+                , Chapters.Form.InputColor.chapter_
                 , Chapters.Form.InputDate.chapter_
-                , Chapters.Form.InputAutocomplete.chapter_
+                , Chapters.Form.InputTime.chapter_
                 , Chapters.Form.InputCheckbox.chapter_
                 , Chapters.Form.InputRadio.chapter_
-                , Chapters.Form.InputSelect.chapter_
                 , Chapters.Form.InputSlider.chapter_
                 ]
               )

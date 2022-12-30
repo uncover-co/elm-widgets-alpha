@@ -1,7 +1,7 @@
 module W.Heading exposing
     ( view
     , primary, secondary, neutral, color
-    , small, large, extraLarge
+    , extraSmall, small, large, extraLarge
     , h2, h3, h4, h5, h6
     , alignLeft, alignRight, alignCenter
     , noAttr, Attribute
@@ -19,7 +19,7 @@ module W.Heading exposing
 
 # Sizes
 
-@docs small, large, extraLarge
+@docs extraSmall, small, large, extraLarge
 
 
 # Semantic
@@ -109,6 +109,12 @@ h5 =
 h6 : Attribute msg
 h6 =
     Attribute (\attrs -> { attrs | element = "h6" })
+
+
+{-| -}
+extraSmall : Attribute msg
+extraSmall =
+    Attribute (\attrs -> { attrs | fontSize = "ew-text-lg" })
 
 
 {-| -}

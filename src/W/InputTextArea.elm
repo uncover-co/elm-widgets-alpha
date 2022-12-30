@@ -42,7 +42,6 @@ import Html as H
 import Html.Attributes as HA
 import Html.Events as HE
 import W.Internal.Helpers as WH
-import W.Internal.Input
 
 
 {-| -}
@@ -51,8 +50,7 @@ type Attribute msg
 
 
 type alias Attributes msg =
-    { unstyled : Bool
-    , disabled : Bool
+    { disabled : Bool
     , readOnly : Bool
     , required : Bool
     , resizable : Bool
@@ -73,8 +71,7 @@ applyAttrs attrs =
 
 defaultAttrs : Attributes msg
 defaultAttrs =
-    { unstyled = False
-    , disabled = False
+    { disabled = False
     , readOnly = False
     , required = False
     , placeholder = Nothing
@@ -198,7 +195,7 @@ view attrs_ props =
         inputAttrs : List (H.Attribute msg)
         inputAttrs =
             attrs.htmlAttributes
-                ++ [ HA.classList [ ( W.Internal.Input.areaClass, not attrs.unstyled ) ]
+                ++ [ HA.class baseClass
                    , HA.class "ew-pt-[10px]"
                    , HA.required attrs.required
                    , HA.disabled attrs.disabled
@@ -224,7 +221,7 @@ view attrs_ props =
                 , HA.style "grid-area" "1 / 1 / 2 / 2"
                 , HA.class "ew-overflow-hidden ew-whitespace-pre-wrap ew-text-transparent"
                 , HA.class "ew-pt-[10px]"
-                , HA.classList [ ( W.Internal.Input.areaClass, not attrs.unstyled ) ]
+                , HA.class baseClass
                 , HA.style "background" "transparent"
                 ]
                 [ H.text (props.value ++ " ") ]
@@ -236,3 +233,18 @@ view attrs_ props =
                 )
                 []
             ]
+
+baseClass : String
+baseClass =
+    "ew-input ew-appearance-none ew-box-border"
+        ++ " ew-relative"
+        ++ " ew-w-full ew-min-h-[48px] ew-m-0 ew-py-2 ew-px-3"
+        ++ " ew-bg-base-aux/[0.07] ew-border ew-border-solid ew-border-base-aux/30 ew-rounded ew-shadow-none"
+        ++ " ew-font-text ew-text-base ew-text-base-fg ew-placeholder-base-aux"
+        ++ " ew-transition"
+        ++ " ew-outline-0 ew-ring-offset-0 ew-ring-primary-fg/50"
+        ++ " disabled:ew-bg-base-aux/[0.25] disabled:ew-border-base-aux/[0.25]"
+        ++ " focus:ew-bg-base-bg"
+        ++ " focus-visible:ew-border-primary-fg focus-visible-visible:ew-ring"
+        ++ " read-only:focus:ew-bg-base-aux/10"
+

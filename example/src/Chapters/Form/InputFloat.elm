@@ -41,8 +41,10 @@ chapter_ =
                                                 inputFloat_ =
                                                     model.inputFloat
                                             in
-                                            { model | inputFloat = 
-                                                { inputFloat_ | value = v } }
+                                            { model
+                                                | inputFloat =
+                                                    { inputFloat_ | value = Debug.log "v" v }
+                                            }
                                         )
                             }
                         ]
@@ -63,22 +65,27 @@ chapter_ =
                                                 inputFloat_ =
                                                     model.inputFloat
                                             in
-                                            { model | inputFloat = 
-                                                { inputFloat_ | value2 = v, validation = Just result } }
+                                            { model
+                                                | inputFloat =
+                                                    { inputFloat_ | value2 = v, validation = Just result }
+                                            }
                                         )
                             }
                         , inputFloat.validation
-                            |> Maybe.map (\validation -> 
-                                case validation of
-                                    Ok f -> H.text (String.fromFloat f)
-                                    Err errors ->
-                                        H.div
-                                            []
-                                            (errors
-                                                |> List.map
-                                                    (\error -> H.p [] [ H.text (W.InputFloat.errorToString error) ] )
-                                            )
-                            )
+                            |> Maybe.map
+                                (\validation ->
+                                    case validation of
+                                        Ok f ->
+                                            H.text (String.fromFloat f)
+
+                                        Err errors ->
+                                            H.div
+                                                []
+                                                (errors
+                                                    |> List.map
+                                                        (\error -> H.p [] [ H.text (W.InputFloat.errorToString error) ])
+                                                )
+                                )
                             |> Maybe.withDefault (H.text "")
                         ]
               )

@@ -193,7 +193,7 @@ view attrs_ children_ =
                    , HA.class "ew-pb-2 ew-pt-3.5 ew-px-6"
                    , HA.class "ew-min-h-[60px]"
                    , HA.class "ew-bg-base-bg ew-rounded-md ew-shadow-lg"
-                   , HA.class "ew-border-solid ew-border-base-aux/10 ew-border-px"
+                   , HA.class "ew-border-solid ew-border-base-aux/10 ew-border"
                    , HA.class "before:ew-content-[''] before:ew-block before:ew-rounded"
                    , HA.class "before:ew-absolute before:ew-inset-0 before:ew-bg-current before:ew-opacity-0"
                    , HA.class "after:ew-content-[''] after:ew-block"

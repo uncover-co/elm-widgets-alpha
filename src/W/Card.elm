@@ -116,7 +116,7 @@ view attrs_ children =
     in
     H.div
         (attrs.htmlAttributes
-            ++ [ HA.class "ew-border ew-border-solid ew-border-white/[0.03]"
+            ++ [ HA.class "ew-border ew-border-solid ew-border-base-fg/[0.03]"
                , HA.class attrs.shadowClass
                , HA.class attrs.borderRadiusClass
                , HA.attribute "style" ("background:" ++ attrs.background)

@@ -186,7 +186,7 @@ view attrs_ props =
             , HA.class "ew-slider ew-appearance-none"
             , HA.class "ew-bg-transparent"
             , HA.class "ew-m-0 ew-w-full"
-            , HA.class "focus:ew-outline-0"
+            , HA.class "focus-visible:ew-outline-0"
             , HA.type_ "range"
             , colorAttr
 

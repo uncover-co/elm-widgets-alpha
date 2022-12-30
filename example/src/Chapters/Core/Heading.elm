@@ -10,7 +10,7 @@ import W.Text
 
 chapter_ : Chapter x
 chapter_ =
-    chapter "Heading"
+    chapter "Typography"
         |> renderComponentList
             [ ( "Font Sizes"
               , H.div []
@@ -18,7 +18,7 @@ chapter_ =
                         [ W.Heading.extraLarge ]
                         [ H.text "I'm a really large title" ]
                     , W.Text.view
-                        [ W.Text.extraLarge, W.Text.light ]
+                        [ W.Text.extraLarge, W.Text.aux ]
                         [ H.text "I'm a really large text" ]
                     , W.Heading.view
                         [ W.Heading.h2
@@ -26,32 +26,32 @@ chapter_ =
                         ]
                         [ H.text "I'm a large title" ]
                     , W.Text.view
-                        [ W.Text.large, W.Text.light ]
+                        [ W.Text.large, W.Text.aux ]
                         [ H.text "I'm a large text" ]
                     , W.Heading.view []
                         [ H.text "I'm the base title" ]
-                    , W.Text.view [ W.Text.light ]
+                    , W.Text.view [ W.Text.aux ]
                         [ H.text "I'm the base text" ]
                     , W.Heading.view
                         [ W.Heading.small ]
                         [ H.text "I'm a small title" ]
                     , W.Text.view
-                        [ W.Text.small, W.Text.light ]
+                        [ W.Text.small, W.Text.aux ]
                         [ H.text "I'm a small text" ]
                     ]
               )
             , ( "Font Sizes"
               , H.div []
                     [ W.Text.view
-                        [ W.Text.extraLarge, W.Text.light ]
+                        [ W.Text.extraLarge, W.Text.aux ]
                         [ H.text "I'm a large text" ]
                     , W.Text.view
-                        [ W.Text.large, W.Text.light ]
+                        [ W.Text.large, W.Text.aux ]
                         [ H.text "I'm a large text" ]
-                    , W.Text.view [ W.Text.light ]
+                    , W.Text.view [ W.Text.aux ]
                         [ H.text "I'm the base text" ]
                     , W.Text.view
-                        [ W.Text.small, W.Text.light ]
+                        [ W.Text.small, W.Text.aux ]
                         [ H.text "I'm a small text" ]
                     ]
               )

@@ -1,6 +1,5 @@
 module W.Internal.Input exposing
-    ( areaClass
-    , baseClass
+    ( baseClass
     , view
     , viewWithIcon
     )
@@ -28,7 +27,7 @@ view attrs input =
         , HA.class "ew-transition"
         , HA.class "ew-ring-offset-0 ew-ring-primary-fg/50"
         , HA.classList
-            [ ( "focus-within:ew-ring focus-within:ew-border-primary-fg", not attrs.readOnly )
+            [ ( "focus-within:focus-visible:ew-ring focus-within:focus-visible:ew-border-primary-fg", not attrs.readOnly )
             ]
         ]
         [ case attrs.prefix of
@@ -45,6 +44,7 @@ view attrs input =
             [ HA.class "ew-grow ew-relative"
             , HA.class "ew-flex ew-items-stretch ew-group"
             , HA.class "ew-min-h-[48px]"
+            , HA.class "ew-rounded"
             , HA.classList
                 [ ( "ew-text-transparent focus-within:ew-text-base-fg", attrs.mask /= Nothing )
                 , ( "ew-text-base-fg", attrs.mask == Nothing )
@@ -132,20 +132,6 @@ baseClass =
         ++ " ew-placeholder-base-aux/80"
         ++ " ew-bg-transparent"
         ++ " focus:ew-outline-none focus:ew-shadow-none"
-
-
-areaClass : String
-areaClass =
-    "ew-input ew-appearance-none ew-box-border"
-        ++ " ew-relative"
-        ++ " ew-w-full ew-min-h-[48px] ew-py-2 ew-px-3"
-        ++ " ew-bg-base-aux/[0.07] ew-border ew-border-solid ew-border-base-aux/30 ew-rounded ew-shadow-none"
-        ++ " ew-font-text ew-text-base ew-text-base-fg ew-placeholder-base-aux"
-        ++ " ew-transition"
-        ++ " ew-outline-0 ew-ring-offset-0 ew-ring-primary-fg/50"
-        ++ " disabled:ew-bg-base-aux/[0.25] disabled:ew-border-base-aux/[0.25]"
-        ++ " focus:ew-bg-base-bg focus:ew-ring focus:ew-border-primary-fg"
-        ++ " read-only:focus:ew-bg-base-aux/10"
 
 
 iconWrapper : String -> H.Html msg -> H.Html msg

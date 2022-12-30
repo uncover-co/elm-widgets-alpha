@@ -210,5 +210,6 @@ interactiveClass =
         ("ew-appearance-none ew-bg-transparent ew-no-underline hover:before:ew-opacity-[0.05]"
             ++ " ew-transition"
             ++ " ew-outline-0 ew-ring-offset-0 ew-ring-primary-fg/50"
-            ++ " focus:ew-bg-base-bg focus:ew-ring focus:ew-border-primary-fg"
+            ++ " focus:ew-bg-base-bg focus:ew-border-primary-fg"
+            ++ " focus:ew-ring"
         )

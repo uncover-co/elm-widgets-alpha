@@ -1,6 +1,7 @@
 module W.Badge exposing
     ( view, viewInline
     , neutral, primary, secondary, success, warning, color, background
+    , small
     , htmlAttrs, noAttr, Attribute
     )
 
@@ -14,6 +15,11 @@ module W.Badge exposing
 By default, badges appear in a **danger** color.
 
 @docs neutral, primary, secondary, success, warning, color, background
+
+
+# Styles
+
+@docs small
 
 
 # Html
@@ -38,6 +44,7 @@ type Attribute msg
 
 type alias Attributes msg =
     { htmlAttributes : List (H.Attribute msg)
+    , small : Bool
     , color : String
     , background : String
     }
@@ -51,6 +58,7 @@ applyAttrs attrs =
 defaultAttrs : Attributes msg
 defaultAttrs =
     { htmlAttributes = []
+    , small = False
     , color = Theme.dangerAux
     , background = Theme.dangerBackground
     }
@@ -70,6 +78,12 @@ htmlAttrs v =
 noAttr : Attribute msg
 noAttr =
     Attribute identity
+
+
+{-| -}
+small : Attribute msg
+small =
+    Attribute <| \attrs -> { attrs | small = True }
 
 
 {-| -}
@@ -213,9 +227,13 @@ viewInline attrs_ value =
 baseAttrs : Attributes msg -> List (H.Attribute msg)
 baseAttrs attrs =
     attrs.htmlAttributes
-        ++ [ HA.class "ew-px-2.5 ew-py-1 ew-rounded-full"
-           , HA.class "ew-leading-none ew-font-semibold ew-font-text ew-text-sm"
+        ++ [ HA.class "ew-rounded-full"
+           , HA.class "ew-leading-none ew-font-semibold ew-font-text"
            , HA.class "ew-border ew-border-solid ew-border-base-bg"
            , HA.style "color" attrs.color
            , HA.style "background" attrs.background
+           , HA.classList
+                [ ( "ew-px-2.5 ew-py-1 ew-text-sm", not attrs.small )
+                , ( "ew-px-1.5 ew-py-0.5 ew-text-xs", attrs.small )
+                ]
            ]

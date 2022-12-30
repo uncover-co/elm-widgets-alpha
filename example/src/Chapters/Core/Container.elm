@@ -7,7 +7,7 @@ import W.Container
 
 chapter_ : Chapter x
 chapter_ =
-    chapter "Container"
+    chapter "Containers"
         |> renderComponentList
             [ ( "Default"
               , W.Container.view

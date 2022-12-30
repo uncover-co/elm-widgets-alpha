@@ -50,7 +50,7 @@ chapter_ =
                 ]
             }
     in
-    chapter "Field"
+    chapter "Input Field"
         |> renderComponentList
             [ ( "Single"
               , W.InputField.view [] props
