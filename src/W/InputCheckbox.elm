@@ -2,7 +2,7 @@ module W.InputCheckbox exposing
     ( view, viewReadOnly
     , color
     , disabled, readOnly
-    , noAttr, Attribute
+    , htmlAttrs, noAttr, Attribute
     )
 
 {-|
@@ -22,7 +22,7 @@ module W.InputCheckbox exposing
 
 # Html
 
-@docs noAttr, Attribute
+@docs htmlAttrs, noAttr, Attribute
 
 -}
 
@@ -38,26 +38,28 @@ import Theme
 
 {-| -}
 type Attribute msg
-    = Attribute (Attributes -> Attributes)
+    = Attribute (Attributes msg -> Attributes msg)
 
 
-type alias Attributes =
+type alias Attributes msg =
     { color : String
     , disabled : Bool
     , readOnly : Bool
+    , htmlAttributes : List (H.Attribute msg)
     }
 
 
-applyAttrs : List (Attribute msg) -> Attributes
+applyAttrs : List (Attribute msg) -> Attributes msg
 applyAttrs attrs =
     List.foldl (\(Attribute fn) a -> fn a) defaultAttrs attrs
 
 
-defaultAttrs : Attributes
+defaultAttrs : Attributes msg
 defaultAttrs =
     { color = Theme.primaryBackground
     , disabled = False
     , readOnly = False
+    , htmlAttributes = []
     }
 
 
@@ -84,6 +86,12 @@ readOnly v =
 
 
 {-| -}
+htmlAttrs : List (H.Attribute msg) -> Attribute msg
+htmlAttrs v =
+    Attribute <| \attrs -> { attrs | htmlAttributes = v }
+
+
+{-| -}
 noAttr : Attribute msg
 noAttr =
     Attribute identity
@@ -96,20 +104,21 @@ noAttr =
 baseAttrs : List (Attribute msg) -> Bool -> List (H.Attribute msg)
 baseAttrs attrs_ value =
     let
-        attrs : Attributes
+        attrs : Attributes msg
         attrs =
             applyAttrs attrs_
     in
-    [ HA.class "ew-check-radio ew-rounded before:ew-rounded-sm"
-    , HA.style "color" attrs.color
-    , HA.type_ "checkbox"
-    , HA.checked value
+    attrs.htmlAttributes
+        ++ [ HA.class "ew-check-radio ew-rounded before:ew-rounded-sm"
+           , HA.style "color" attrs.color
+           , HA.type_ "checkbox"
+           , HA.checked value
 
-    -- We also disable the checkbox plugin when it is readonly
-    -- Since this property is not currently respected for checkboxes
-    , HA.disabled (attrs.disabled || attrs.readOnly)
-    , HA.readonly attrs.readOnly
-    ]
+           -- We also disable the checkbox plugin when it is readonly
+           -- Since this property is not currently respected for checkboxes
+           , HA.disabled (attrs.disabled || attrs.readOnly)
+           , HA.readonly attrs.readOnly
+           ]
 
 
 {-| -}

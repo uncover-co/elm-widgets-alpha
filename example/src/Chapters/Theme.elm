@@ -2,7 +2,7 @@ module Chapters.Theme exposing (Model, chapter_, init)
 
 import Color
 import ElmBook.Actions
-import ElmBook.Chapter exposing (Chapter, chapter, withStatefulComponent, renderWithComponentList)
+import ElmBook.Chapter exposing (Chapter, chapter, renderWithComponentList, withStatefulComponent)
 import Html as H
 import Html.Attributes as HA
 import Html.Events as HE
@@ -10,7 +10,6 @@ import SolidColor
 import SolidColor.Accessibility
 import Theme
 import W.Badge
-import W.Card
 import W.Container
 import W.Divider
 import W.Heading
@@ -36,6 +35,8 @@ chapter_ =
             )
         |> renderWithComponentList """
 This package uses [elm-theme](https://package.elm-lang.org/packages/uncover-co/elm-theme/latest/) as it's theming library. It will use the currently active theme's colors wherever you use it.
+
+---
 
 You can use the theme generator below to test out the colors of your theme and their accessibility ratings. (Note that this generator is still quite WIP as we have lots of ideas to improve it in the short term.)
 """
@@ -337,16 +338,14 @@ colorSelector baseBg msg ( themeColor, color_, color ) children =
                 [ H.text (themeColorLabel themeColor) ]
             , H.div [] children
             ]
-        , W.Card.view
-            []
-            [ W.Container.view
-                [ W.Container.pad_2
-                , W.Container.horizontal
-                , W.Container.gap_2
-                ]
-                [ input fg baseBg (msg themeColor) Foreground
-                , input bg aux (msg themeColor) Background
-                , input aux bg (msg themeColor) Aux
-                ]
+        , W.Container.view
+            [ W.Container.horizontal
+            , W.Container.gap_2
+            , W.Container.pad_2
+            , W.Container.card
+            ]
+            [ input fg baseBg (msg themeColor) Foreground
+            , input bg aux (msg themeColor) Background
+            , input aux bg (msg themeColor) Aux
             ]
         ]

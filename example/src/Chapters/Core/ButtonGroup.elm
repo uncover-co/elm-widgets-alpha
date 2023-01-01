@@ -9,7 +9,7 @@ import W.ButtonGroup
 
 chapter_ : Chapter x
 chapter_ =
-    chapter "ButtonGroup"
+    chapter "Button Groups"
         |> withComponentList
             [ ( "Default"
               , UI.vSpacer
@@ -38,7 +38,7 @@ chapter_ =
                             , toLabel = \i -> [ H.text (String.fromInt i) ]
                             , onClick = logActionWith String.fromInt "onClick"
                             }
-                        , W.ButtonGroup.view [ W.ButtonGroup.outlined ]
+                        , W.ButtonGroup.view [ W.ButtonGroup.outlined, W.ButtonGroup.highlighted ((==) 1) ]
                             { items = [ 0, 1 ]
                             , toLabel = \i -> [ H.text (String.fromInt i) ]
                             , onClick = logActionWith String.fromInt "onClick"
@@ -147,4 +147,5 @@ chapter_ =
                     }
               )
             ]
-        |> renderWithComponentList ""
+        |> renderWithComponentList """
+"""

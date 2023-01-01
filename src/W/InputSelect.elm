@@ -2,7 +2,7 @@ module W.InputSelect exposing
     ( view, viewGroups, viewOptional, viewGroupsOptional
     , disabled, readOnly
     , prefix, suffix
-    , noAttr, Attribute
+    , htmlAttrs, noAttr, Attribute
     )
 
 {-|
@@ -22,7 +22,7 @@ module W.InputSelect exposing
 
 # Html
 
-@docs noAttr, Attribute
+@docs htmlAttrs, noAttr, Attribute
 
 -}
 
@@ -49,6 +49,7 @@ type alias Attributes msg =
     , readOnly : Bool
     , prefix : Maybe (List (H.Html msg))
     , suffix : Maybe (List (H.Html msg))
+    , htmlAttributes : List (H.Attribute msg)
     }
 
 
@@ -63,6 +64,7 @@ defaultAttrs =
     , readOnly = False
     , prefix = Nothing
     , suffix = Nothing
+    , htmlAttributes = []
     }
 
 
@@ -92,6 +94,13 @@ prefix v =
 suffix : List (H.Html msg) -> Attribute msg
 suffix v =
     Attribute <| \attrs -> { attrs | suffix = Just v }
+
+
+{-| Attributes applied to the `select` element.
+-}
+htmlAttrs : List (H.Attribute msg) -> Attribute msg
+htmlAttrs v =
+    Attribute <| \attrs -> { attrs | htmlAttributes = v }
 
 
 {-| -}
@@ -139,19 +148,21 @@ viewGroups attrs_ props =
         }
         W.Internal.Icons.chevronDown
         (H.select
-            [ HA.class W.Internal.Input.baseClass
-            , HA.disabled attrs.disabled
-            , HA.readonly attrs.readOnly
-            , WH.attrIf attrs.readOnly (HA.attribute "aria-readonly") "true"
-            , WH.attrIf attrs.disabled (HA.attribute "aria-disabled") "true"
-            , HA.placeholder "Select"
-            , HE.onInput
-                (\s ->
-                    Dict.get s values
-                        |> Maybe.withDefault props.value
-                        |> props.onInput
-                )
-            ]
+            (attrs.htmlAttributes
+                ++ [ HA.class W.Internal.Input.baseClass
+                   , HA.disabled attrs.disabled
+                   , HA.readonly attrs.readOnly
+                   , WH.attrIf attrs.readOnly (HA.attribute "aria-readonly") "true"
+                   , WH.attrIf attrs.disabled (HA.attribute "aria-disabled") "true"
+                   , HA.placeholder "Select"
+                   , HE.onInput
+                        (\s ->
+                            Dict.get s values
+                                |> Maybe.withDefault props.value
+                                |> props.onInput
+                        )
+                   ]
+            )
             (List.concat
                 [ props.options
                     |> List.map

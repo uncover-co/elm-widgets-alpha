@@ -1,7 +1,7 @@
 module W.InputColor exposing
     ( view, viewReadOnly
     , disabled, readOnly
-    , noAttr, Attribute
+    , htmlAttrs, noAttr, Attribute
     )
 
 {-|
@@ -16,7 +16,7 @@ module W.InputColor exposing
 
 # Html
 
-@docs noAttr, Attribute
+@docs htmlAttrs, noAttr, Attribute
 
 -}
 
@@ -24,7 +24,6 @@ import Color
 import Html as H
 import Html.Attributes as HA
 import Html.Events as HE
-import Theme
 import W.Internal.Color
 
 
@@ -34,24 +33,26 @@ import W.Internal.Color
 
 {-| -}
 type Attribute msg
-    = Attribute (Attributes -> Attributes)
+    = Attribute (Attributes msg -> Attributes msg)
 
 
-type alias Attributes =
+type alias Attributes msg =
     { disabled : Bool
     , readOnly : Bool
+    , htmlAttributes : List (H.Attribute msg)
     }
 
 
-applyAttrs : List (Attribute msg) -> Attributes
+applyAttrs : List (Attribute msg) -> Attributes msg
 applyAttrs attrs =
     List.foldl (\(Attribute fn) a -> fn a) defaultAttrs attrs
 
 
-defaultAttrs : Attributes
+defaultAttrs : Attributes msg
 defaultAttrs =
     { disabled = False
     , readOnly = False
+    , htmlAttributes = []
     }
 
 
@@ -72,6 +73,12 @@ readOnly v =
 
 
 {-| -}
+htmlAttrs : List (H.Attribute msg) -> Attribute msg
+htmlAttrs v =
+    Attribute <| \attrs -> { attrs | htmlAttributes = v }
+
+
+{-| -}
 noAttr : Attribute msg
 noAttr =
     Attribute identity
@@ -84,7 +91,7 @@ noAttr =
 baseAttrs : List (Attribute msg) -> Color.Color -> List (H.Attribute msg)
 baseAttrs attrs_ value =
     let
-        attrs : Attributes
+        attrs : Attributes msg
         attrs =
             applyAttrs attrs_
 
@@ -92,16 +99,19 @@ baseAttrs attrs_ value =
         hexColor =
             W.Internal.Color.toHex value
     in
-    [ HA.class "ew-input-color ew-appearance-none"
-    , HA.class "ew-shadow"
-    , HA.class "ew-rounded-full ew-h-8 ew-w-8 ew-bg-white ew-border-0"
-    , HA.class "before:ew-content-[''] before:ew-block"
-    , HA.class "before:ew-bg-current before:ew-rounded-full"
-    , HA.class "ew-relative before:ew-absolute before:ew-inset-1"
-    , HA.style "color" hexColor
-    , HA.type_ "color"
-    , HA.value hexColor
-    ]
+    attrs.htmlAttributes
+        ++ [ HA.class "ew-input-color ew-appearance-none"
+           , HA.class "ew-shadow"
+           , HA.class "ew-rounded-full ew-h-8 ew-w-8 ew-bg-white ew-border-0"
+           , HA.class "before:ew-content-[''] before:ew-block"
+           , HA.class "before:ew-bg-current before:ew-rounded-full"
+           , HA.class "ew-relative before:ew-absolute before:ew-inset-1"
+           , HA.style "color" hexColor
+           , HA.type_ "color"
+           , HA.value hexColor
+           , HA.disabled (attrs.disabled || attrs.readOnly)
+           , HA.readonly attrs.readOnly
+           ]
 
 
 {-| -}

@@ -2,7 +2,7 @@ module W.Container exposing
     ( view
     , vertical, horizontal, inline, fill
     , background
-    , rounded, extraRounded
+    , card, rounded, extraRounded
     , shadow, largeShadow
     , largeScreen
     , alignTop, alignBottom, alignLeft, alignRight, alignCenterX, alignCenterY
@@ -15,7 +15,7 @@ module W.Container exposing
     , padTop_0, padTop_1, padTop_2, padTop_3, padTop_4, padTop_6, padTop_8, padTop_12, padTop_16
     , padBottom_0, padBottom_1, padBottom_2, padBottom_3, padBottom_4, padBottom_6, padBottom_8, padBottom_12, padBottom_16
     , gap_0, gap_1, gap_2, gap_3, gap_4, gap_6, gap_8, gap_12, gap_16
-    , node, noAttr, htmlAttrs, Attribute
+    , node, styleAttrs, htmlAttrs, noAttr, Attribute
     )
 
 {-|
@@ -23,11 +23,11 @@ module W.Container exposing
 @docs view
 
 
-# St, fillyles
+# Styles
 
 @docs vertical, horizontal, inline, fill
 @docs background
-@docs rounded, extraRounded
+@docs card, rounded, extraRounded
 @docs shadow, largeShadow
 
 
@@ -56,7 +56,7 @@ module W.Container exposing
 
 # Html
 
-@docs node, noAttr, htmlAttrs, Attribute
+@docs node, styleAttrs, htmlAttrs, noAttr, Attribute
 
 -}
 
@@ -89,14 +89,14 @@ view attrs_ children =
             else
                 "ew-flex"
 
-        backgroundAttr : H.Attribute msg
-        backgroundAttr =
+        styleAttrs_ : H.Attribute msg
+        styleAttrs_ =
             case attrs.background of
                 Just background_ ->
-                    Theme.styles [ ( "background", background_ ) ]
+                    Theme.styles (( "background", background_ ) :: attrs.styles)
 
                 Nothing ->
-                    HA.class ""
+                    Theme.styles attrs.styles
     in
     H.node
         attrs.node
@@ -105,7 +105,7 @@ view attrs_ children =
                , HA.class displayClass
                , HA.class layoutClass_
                , HA.class "ew-box-border"
-               , backgroundAttr
+               , styleAttrs_
                ]
         )
         children
@@ -123,6 +123,7 @@ type Attribute msg
 type alias Attributes msg =
     { node : String
     , class : String
+    , styles : List ( String, String )
     , inline : Bool
     , background : Maybe String
     , orientation : Orientation
@@ -136,6 +137,7 @@ defaultAttrs : Attributes msg
 defaultAttrs =
     { node = "div"
     , class = ""
+    , styles = []
     , inline = False
     , background = Nothing
     , orientation = Vertical
@@ -228,15 +230,38 @@ fill =
 
 
 {-| -}
-noAttr : Attribute msg
-noAttr =
-    Attribute identity
+card : Attribute msg
+card =
+    Attribute (\attr -> { attr | background = Just Theme.baseBackground, class = attr.class ++ " ew-shadow ew-rounded" })
 
 
-{-| -}
+{-| Note that for `style` attributes you should use the [styleAttrs](https://package.elm-lang.org/packages/uncover-co/elm-widgets/latest/W-Container#styleAttrs) attribute instead.
+-}
 htmlAttrs : List (H.Attribute msg) -> Attribute msg
 htmlAttrs v =
     Attribute (\attr -> { attr | htmlAttributes = v })
+
+
+{-| Used to pass in extra styles to your container.
+
+    W.Container.view
+        [ W.Container.styles
+            [ ( "height", "200px" )
+            , ( "position", "relative" )
+            ]
+        ]
+        []
+
+-}
+styleAttrs : List ( String, String ) -> Attribute msg
+styleAttrs v =
+    Attribute (\attr -> { attr | styles = v })
+
+
+{-| -}
+noAttr : Attribute msg
+noAttr =
+    Attribute identity
 
 
 

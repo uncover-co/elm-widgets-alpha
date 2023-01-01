@@ -2,7 +2,7 @@ module W.InputSlider exposing
     ( view
     , disabled, readOnly
     , color
-    , noAttr, Attribute
+    , htmlAttrs, noAttr, Attribute
     )
 
 {-|
@@ -22,7 +22,7 @@ module W.InputSlider exposing
 
 # Html
 
-@docs noAttr, Attribute
+@docs htmlAttrs, noAttr, Attribute
 
 -}
 
@@ -39,28 +39,30 @@ import Theme
 
 {-| -}
 type Attribute msg
-    = Attribute (Attributes -> Attributes)
+    = Attribute (Attributes msg -> Attributes msg)
 
 
-type alias Attributes =
+type alias Attributes msg =
     { disabled : Bool
     , readOnly : Bool
     , color : String
     , format : Float -> String
+    , htmlAttributes : List (H.Attribute msg)
     }
 
 
-applyAttrs : List (Attribute msg) -> Attributes
+applyAttrs : List (Attribute msg) -> Attributes msg
 applyAttrs attrs =
     List.foldl (\(Attribute fn) a -> fn a) defaultAttrs attrs
 
 
-defaultAttrs : Attributes
+defaultAttrs : Attributes msg
 defaultAttrs =
     { disabled = False
     , readOnly = False
     , color = Theme.primaryBackground
     , format = String.fromFloat
+    , htmlAttributes = []
     }
 
 
@@ -86,6 +88,13 @@ readOnly v =
     Attribute <| \attrs -> { attrs | readOnly = v }
 
 
+{-| Attributes applied to the `input[type="range"]` element.
+-}
+htmlAttrs : List (H.Attribute msg) -> Attribute msg
+htmlAttrs v =
+    Attribute <| \attrs -> { attrs | htmlAttributes = v }
+
+
 {-| -}
 noAttr : Attribute msg
 noAttr =
@@ -109,7 +118,7 @@ view :
     -> H.Html msg
 view attrs_ props =
     let
-        attrs : Attributes
+        attrs : Attributes msg
         attrs =
             applyAttrs attrs_
 
@@ -182,36 +191,38 @@ view attrs_ props =
             ]
         , -- Thumb
           H.input
-            [ HA.class "ew-relative"
-            , HA.class "ew-slider ew-appearance-none"
-            , HA.class "ew-bg-transparent"
-            , HA.class "ew-m-0 ew-w-full"
-            , HA.class "focus-visible:ew-outline-0"
-            , HA.type_ "range"
-            , colorAttr
+            (attrs.htmlAttributes
+                ++ [ HA.class "ew-relative"
+                   , HA.class "ew-slider ew-appearance-none"
+                   , HA.class "ew-bg-transparent"
+                   , HA.class "ew-m-0 ew-w-full"
+                   , HA.class "focus-visible:ew-outline-0"
+                   , HA.type_ "range"
+                   , colorAttr
 
-            -- This is a fallback since range elements will not respect read only attributes
-            , HA.disabled (attrs.disabled || attrs.readOnly)
-            , HA.readonly attrs.readOnly
+                   -- This is a fallback since range elements will not respect read only attributes
+                   , HA.disabled (attrs.disabled || attrs.readOnly)
+                   , HA.readonly attrs.readOnly
 
-            --
-            , HA.value <| String.fromFloat props.value
-            , HA.min <| String.fromFloat props.min
-            , HA.max <| String.fromFloat props.max
-            , HA.step <| String.fromFloat props.step
-            , HE.on "input"
-                (D.at [ "target", "value" ] D.string
-                    |> D.andThen
-                        (\v ->
-                            case String.toFloat v of
-                                Just v_ ->
-                                    D.succeed v_
+                   --
+                   , HA.value <| String.fromFloat props.value
+                   , HA.min <| String.fromFloat props.min
+                   , HA.max <| String.fromFloat props.max
+                   , HA.step <| String.fromFloat props.step
+                   , HE.on "input"
+                        (D.at [ "target", "value" ] D.string
+                            |> D.andThen
+                                (\v ->
+                                    case String.toFloat v of
+                                        Just v_ ->
+                                            D.succeed v_
 
-                                Nothing ->
-                                    D.fail "Invalid value."
+                                        Nothing ->
+                                            D.fail "Invalid value."
+                                )
+                            |> D.map props.onInput
                         )
-                    |> D.map props.onInput
-                )
-            ]
+                   ]
+            )
             []
         ]

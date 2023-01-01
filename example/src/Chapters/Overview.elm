@@ -11,7 +11,6 @@ import Mask
 import Theme
 import Time
 import W.Button
-import W.Card
 import W.Container
 import W.Heading
 import W.InputField
@@ -226,16 +225,19 @@ chapter_ =
                     let
                         card : H.Html msg
                         card =
-                            W.Card.view []
-                                [ W.Container.view [ W.Container.horizontal, W.Container.spaceBetween, W.Container.pad_4 ]
-                                    [ W.Container.view []
-                                        [ W.Heading.view [] [ H.text "Heading" ]
-                                        , W.Text.view [] [ H.text "Some text" ]
-                                        ]
-                                    , W.Container.view [ W.Container.horizontal, W.Container.gap_2 ]
-                                        [ W.Tag.view [ W.Tag.primary ] [ H.text "Stateless" ]
-                                        , W.Tag.view [ W.Tag.secondary ] [ H.text "Tasteful" ]
-                                        ]
+                            W.Container.view
+                                [ W.Container.horizontal
+                                , W.Container.card
+                                , W.Container.spaceBetween
+                                , W.Container.pad_4
+                                ]
+                                [ W.Container.view []
+                                    [ W.Heading.view [] [ H.text "Heading" ]
+                                    , W.Text.view [] [ H.text "Some text" ]
+                                    ]
+                                , W.Container.view [ W.Container.horizontal, W.Container.gap_2 ]
+                                    [ W.Tag.view [ W.Tag.primary ] [ H.text "Stateless" ]
+                                    , W.Tag.view [ W.Tag.secondary ] [ H.text "Tasteful" ]
                                     ]
                                 ]
 

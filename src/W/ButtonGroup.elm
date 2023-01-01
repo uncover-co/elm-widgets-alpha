@@ -108,7 +108,8 @@ full =
     Attribute <| \attrs -> { attrs | full = True }
 
 
-{-| -}
+{-| Attributes applied to the wrapper element.
+-}
 htmlAttrs : List (H.Attribute msg) -> Attribute msg a
 htmlAttrs v =
     Attribute <| \attrs -> { attrs | htmlAttributes = v }
@@ -142,10 +143,7 @@ view attrs_ props =
     H.div
         (attrs.htmlAttributes
             ++ [ HA.class "ew-inline-flex ew-items-center"
-               , HA.classList
-                    [ ( "ew-m-outlined", attrs.outlined )
-                    , ( "ew-w-full", attrs.full )
-                    ]
+               , HA.classList [ ( "ew-w-full", attrs.full ) ]
                ]
         )
         (props.items
@@ -169,8 +167,8 @@ view attrs_ props =
                             , ( "first:ew-rounded-l-[20px] last:ew-rounded-r-[20px]", attrs.rounded && not attrs.small )
                             , ( "ew-border-0 ew-bg-primary-bg ew-text-primary-aux before:ew-bg-primary-aux", attrs.highlighted item && not attrs.outlined )
                             , ( "ew-border-0 ew-bg-neutral-bg ew-text-neutral-aux before:ew-bg-neutral-aux", not (attrs.highlighted item) && not attrs.outlined )
-                            , ( "ew-border-primary-fg ew-text-primary-fg before:ew-bg-primary-fg", attrs.highlighted item && attrs.outlined )
-                            , ( "ew-border-neutral-fg ew-text-neutral-fg before:ew-bg-neutral-fg", not (attrs.highlighted item) && attrs.outlined )
+                            , ( "ew-border-primary-fg ew-text-primary-fg ew-bg-primary-fg/[0.1] before:ew-bg-primary-fg", attrs.highlighted item && attrs.outlined )
+                            , ( "ew-border-neutral-fg ew-text-neutral-fg ew-bg-neutral-fg/[0.07] before:ew-bg-neutral-fg", not (attrs.highlighted item) && attrs.outlined )
                             , ( "-ew-mx-px first:ew-ml-0 last:ew-mr-0", attrs.outlined )
                             ]
                         , HA.disabled (attrs.disabled item)

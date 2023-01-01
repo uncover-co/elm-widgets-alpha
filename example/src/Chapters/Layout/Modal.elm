@@ -7,16 +7,21 @@ import Html.Attributes as HA
 import Theme
 import W.Button
 import W.Modal
+import W.Container
 
 
 chapter_ : Chapter x
 chapter_ =
     let
         wrapper =
-            H.div
-                [ HA.style "position" "relative"
-                , HA.style "height" "400px"
-                , HA.style "background" Theme.baseBackground
+            W.Container.view
+                [ W.Container.background (Theme.baseAuxWithAlpha 0.07)
+                , W.Container.alignCenterY
+                , W.Container.alignCenterX
+                , W.Container.styleAttrs
+                    [ ( "position", "relative" )
+                    , ( "height", "400px" )
+                    ]
                 ]
 
         content =
@@ -30,7 +35,7 @@ chapter_ =
         |> renderComponentList
             [ ( "Modal"
               , wrapper
-                    [ W.Modal.view [ W.Modal.absolute ]
+                    [ W.Modal.view [ W.Modal.absolute, W.Modal.noBlur ]
                         { isOpen = True
                         , onClose = Nothing
                         , content = [ content ]
@@ -39,7 +44,7 @@ chapter_ =
               )
             , ( "Modal with onClose"
               , wrapper
-                    [ W.Modal.view [ W.Modal.absolute ]
+                    [ W.Modal.view [ W.Modal.absolute, W.Modal.noBlur ]
                         { isOpen = True
                         , onClose = Just (logAction "onClose")
                         , content = [ content ]
@@ -48,7 +53,7 @@ chapter_ =
               )
             , ( "Modal with toggle"
               , wrapper
-                    [ W.Modal.viewToggable [ W.Modal.absolute ]
+                    [ W.Modal.viewToggable [ W.Modal.absolute, W.Modal.noBlur ]
                         { id = "my-modal"
                         , content = [ content ]
                         }

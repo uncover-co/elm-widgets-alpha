@@ -16,7 +16,7 @@ data :
         , name : String
         }
 data =
-    [ { name = "Georges Alphonse Prado Boris"
+    [ { name = "Georges Boris"
       , age = 33
       , score = 85
       , ready = False

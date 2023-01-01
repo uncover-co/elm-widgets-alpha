@@ -1,7 +1,7 @@
 module W.Pagination exposing
     ( view, viewLinks
     , separator
-    , noAttr, Attribute
+    , htmlAttrs, noAttr, Attribute
     )
 
 {-|
@@ -16,7 +16,7 @@ module W.Pagination exposing
 
 # Html
 
-@docs noAttr, Attribute
+@docs htmlAttrs, noAttr, Attribute
 
 -}
 
@@ -37,6 +37,7 @@ type Attribute msg
 
 type alias Attributes msg =
     { separator : List (H.Html msg)
+    , htmlAttributes : List (H.Attribute msg)
     }
 
 
@@ -48,6 +49,7 @@ applyAttrs attrs =
 defaultAttrs : Attributes msg
 defaultAttrs =
     { separator = [ H.span [ HA.class "ew-relative -ew-top-px" ] [ H.text "—" ] ]
+    , htmlAttributes = []
     }
 
 
@@ -61,6 +63,13 @@ separator v =
     Attribute (\attrs -> { attrs | separator = v })
 
 
+{-| Attributes applied to the wrapper element.
+-}
+htmlAttrs : List (H.Attribute msg) -> Attribute msg
+htmlAttrs v =
+    Attribute <| \attrs -> { attrs | htmlAttributes = v }
+
+
 {-| -}
 noAttr : Attribute msg
 noAttr =
@@ -69,6 +78,11 @@ noAttr =
 
 
 -- Main
+
+
+viewWrapper : List (H.Attribute msg) -> List (H.Html msg) -> H.Html msg
+viewWrapper attrs =
+    H.div (HA.class "ew-flex ew-items-center ew-font-primary ew-space-x-2 ew-text-base-aux" :: attrs)
 
 
 {-| -}
@@ -88,8 +102,7 @@ viewLinks attrs_ props =
                 attrs =
                     applyAttrs attrs_
             in
-            H.div
-                [ HA.class "ew-flex ew-items-center ew-font-primary ew-space-x-2 ew-text-base-aux" ]
+            viewWrapper attrs.htmlAttributes
                 (pages
                     |> List.map
                         (\page ->
@@ -136,8 +149,7 @@ view attrs_ props =
                 attrs =
                     applyAttrs attrs_
             in
-            H.div
-                [ HA.class "ew-flex ew-items-center ew-font-primary ew-space-x-2 ew-text-base-aux" ]
+            viewWrapper attrs.htmlAttributes
                 (pages
                     |> List.map
                         (\page ->

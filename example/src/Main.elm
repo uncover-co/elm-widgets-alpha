@@ -2,7 +2,6 @@ module Main exposing (main)
 
 import Chapters.Core.ButtonGroup
 import Chapters.Core.Buttons
-import Chapters.Core.Card
 import Chapters.Core.Container
 import Chapters.Core.Divider
 import Chapters.Core.Heading
@@ -88,7 +87,6 @@ main =
         |> withChapterGroups
             [ ( ""
               , [ Chapters.Overview.chapter_
-                , Chapters.Theme.chapter_
                 , ElmBook.Chapter.chapterLink
                     { title = "Package Docs"
                     , url = "https://"
@@ -96,13 +94,25 @@ main =
                 ]
               )
             , ( "Basics"
-              , [ Chapters.Core.Buttons.chapter_
-                , Chapters.Core.ButtonGroup.chapter_
-                , Chapters.Core.Container.chapter_
+              , [ Chapters.Theme.chapter_
                 , Chapters.Core.Heading.chapter_
                 ]
               )
-            , ( "Data Display"
+            , ( "Buttons"
+              , [ Chapters.Core.Buttons.chapter_
+                , Chapters.Core.ButtonGroup.chapter_
+                ]
+              )
+            , ( "Layout & Navigation"
+              , [ Chapters.Core.Container.chapter_
+                , Chapters.Core.Divider.chapter_
+                , Chapters.Information.Menu.chapter_
+                , Chapters.Layout.Modal.chapter_
+                , Chapters.Information.Pagination.chapter_
+                , Chapters.Information.Table.chapter_
+                ]
+              )
+            , ( "Information"
               , [ Chapters.Information.Badge.chapter_
                 , Chapters.Information.DataRow.chapter_
                 , Chapters.Core.Loading.chapter_
@@ -111,15 +121,6 @@ main =
                 , Chapters.Information.Popover.chapter_
                 , Chapters.Information.Tag.chapter_
                 , Chapters.Information.Tooltip.chapter_
-                ]
-              )
-            , ( "Layout & Navigation"
-              , [ Chapters.Core.Card.chapter_
-                , Chapters.Core.Divider.chapter_                
-                , Chapters.Information.Menu.chapter_
-                , Chapters.Layout.Modal.chapter_
-                , Chapters.Information.Pagination.chapter_
-                , Chapters.Information.Table.chapter_
                 ]
               )
             , ( "Inputs"

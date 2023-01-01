@@ -1,8 +1,8 @@
 module W.Modal exposing
     ( view
     , viewToggable, viewToggle
-    , absolute, zIndex
-    , noAttr, Attribute
+    , absolute, noBlur, zIndex
+    , htmlAttrs, noAttr, Attribute
     )
 
 {-|
@@ -29,12 +29,12 @@ If you don't want to manage your modal open state at all, use the toggable versi
 
 # Styles
 
-@docs absolute, zIndex
+@docs absolute, noBlur, zIndex
 
 
 # Html
 
-@docs noAttr, Attribute
+@docs htmlAttrs, noAttr, Attribute
 
 -}
 
@@ -49,24 +49,28 @@ import Html.Events as HE
 
 {-| -}
 type Attribute msg
-    = Attribute (Attributes -> Attributes)
+    = Attribute (Attributes msg -> Attributes msg)
 
 
-type alias Attributes =
+type alias Attributes msg =
     { absolute : Bool
     , zIndex : Int
+    , blur : Bool
+    , htmlAttributes : List (H.Attribute msg)
     }
 
 
-applyAttrs : List (Attribute msg) -> Attributes
+applyAttrs : List (Attribute msg) -> Attributes msg
 applyAttrs attrs =
     List.foldl (\(Attribute fn) a -> fn a) defaultAttrs attrs
 
 
-defaultAttrs : Attributes
+defaultAttrs : Attributes msg
 defaultAttrs =
     { absolute = False
     , zIndex = 1000
+    , blur = False
+    , htmlAttributes = []
     }
 
 
@@ -77,9 +81,22 @@ absolute =
 
 
 {-| -}
+noBlur : Attribute msg
+noBlur =
+    Attribute <| \attrs -> { attrs | blur = False }
+
+
+{-| -}
 zIndex : Int -> Attribute msg
 zIndex v =
     Attribute <| \attrs -> { attrs | zIndex = v }
+
+
+{-| Attributes applied to the modal's content wrapper.
+-}
+htmlAttrs : List (H.Attribute msg) -> Attribute msg
+htmlAttrs v =
+    Attribute <| \attrs -> { attrs | htmlAttributes = v }
 
 
 {-| -}
@@ -132,15 +149,16 @@ view attrs props =
 view_ : List (Attribute msg) -> Modal msg -> H.Html msg
 view_ attrs_ props =
     let
-        attrs : Attributes
+        attrs : Attributes msg
         attrs =
             applyAttrs attrs_
 
         backgroundAttrs : List (H.Attribute msg)
         backgroundAttrs =
-            [ HA.class "ew-modal-background ew-block ew-absolute ew-inset-0 ew-backdrop-blur-sm"
+            [ HA.class "ew-modal-background ew-block ew-absolute ew-inset-0"
             , HA.class "ew-transition ew-duration-300"
             , HA.class "ew-opacity-0 ew-bg-black/30 ew-pointer-events-none"
+            , HA.classList [ ( "ew-backdrop-blur-sm", attrs.blur ) ]
             ]
     in
     H.div []
@@ -199,12 +217,14 @@ view_ attrs_ props =
                         Nothing ->
                             H.div backgroundAttrs []
             , H.div
-                [ HA.class "ew-modal-content ew-relative"
-                , HA.class "ew-bg-base-bg ew-shadow-lg ew-rounded-lg"
-                , HA.class "ew-w-full ew-max-w-md ew-max-h-[80%] ew-overflow-auto"
-                , HA.class "ew-opacity-0 ew-pointer-events-none"
-                , HA.class "ew-transition ew-duration-400"
-                ]
+                (attrs.htmlAttributes
+                    ++ [ HA.class "ew-modal-content ew-relative"
+                       , HA.class "ew-bg-base-bg ew-shadow-lg ew-rounded-lg"
+                       , HA.class "ew-w-full ew-max-w-md ew-max-h-[80%] ew-overflow-auto"
+                       , HA.class "ew-opacity-0 ew-pointer-events-none"
+                       , HA.class "ew-transition ew-duration-400"
+                       ]
+                )
                 (case props of
                     Stateless { content } ->
                         content

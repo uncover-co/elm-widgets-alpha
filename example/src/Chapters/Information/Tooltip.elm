@@ -12,26 +12,26 @@ chapter_ =
         |> renderComponentList
             [ ( "Default"
               , W.Tooltip.view []
-                  { tooltip = [ H.text "This is a tooltip!" ]
-                  , children = [ H.text "Hello!" ]
-                  }
+                    { tooltip = [ H.text "This is a tooltip!" ]
+                    , children = [ H.text "Hello!" ]
+                    }
               )
-            , ( "Always Visible" 
+            , ( "Always Visible"
               , W.Tooltip.view [ W.Tooltip.alwaysVisible ]
-                  { tooltip = [ H.text "Helloo!" ]
-                  , children = [ H.text "Hello!" ]
-                  }
+                    { tooltip = [ H.text "Helloo!" ]
+                    , children = [ H.text "Hello!" ]
+                    }
               )
-            , ( "Fast" 
+            , ( "Fast"
               , W.Tooltip.view [ W.Tooltip.fast ]
-                  { tooltip = [ H.text "This is a blazingly fast tooltip!" ]
-                  , children = [ H.text "Hello!" ]
-                  }
+                    { tooltip = [ H.text "This is a blazingly fast tooltip!" ]
+                    , children = [ H.text "Hello!" ]
+                    }
               )
-            , ( "Slow" 
+            , ( "Slow"
               , W.Tooltip.view [ W.Tooltip.slow ]
-                  { tooltip = [ H.text "This is a sloow tooltip!" ]
-                  , children = [ H.text "Hello!" ]
-                  }
+                    { tooltip = [ H.text "This is a sloow tooltip!" ]
+                    , children = [ H.text "Hello!" ]
+                    }
               )
             ]

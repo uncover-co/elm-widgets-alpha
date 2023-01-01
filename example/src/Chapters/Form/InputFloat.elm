@@ -43,7 +43,7 @@ chapter_ =
                                             in
                                             { model
                                                 | inputFloat =
-                                                    { inputFloat_ | value = Debug.log "v" v }
+                                                    { inputFloat_ | value = v }
                                             }
                                         )
                             }

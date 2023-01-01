@@ -4,7 +4,7 @@ module W.Heading exposing
     , extraSmall, small, large, extraLarge
     , h2, h3, h4, h5, h6
     , alignLeft, alignRight, alignCenter
-    , noAttr, Attribute
+    , htmlAttrs, noAttr, Attribute
     )
 
 {-|
@@ -34,7 +34,7 @@ module W.Heading exposing
 
 # Html
 
-@docs noAttr, Attribute
+@docs htmlAttrs, noAttr, Attribute
 
 -}
 
@@ -50,30 +50,32 @@ import W.Internal.Helpers as WH
 
 {-| -}
 type Attribute msg
-    = Attribute (Attributes -> Attributes)
+    = Attribute (Attributes msg -> Attributes msg)
 
 
-type alias Attributes =
+type alias Attributes msg =
     { element : String
     , fontSize : String
     , fontFamily : String
     , textAlign : String
     , color : String
+    , htmlAttributes : List (H.Attribute msg)
     }
 
 
-applyAttrs : List (Attribute msg) -> Attributes
+applyAttrs : List (Attribute msg) -> Attributes msg
 applyAttrs attrs =
     List.foldl (\(Attribute fn) a -> fn a) defaultAttrs attrs
 
 
-defaultAttrs : Attributes
+defaultAttrs : Attributes msg
 defaultAttrs =
     { element = "h1"
     , fontSize = "ew-text-2xl"
     , fontFamily = "ew-font-heading"
     , textAlign = "ew-text-left"
     , color = Theme.baseForeground
+    , htmlAttributes = []
     }
 
 
@@ -178,6 +180,12 @@ neutral =
 
 
 {-| -}
+htmlAttrs : List (H.Attribute msg) -> Attribute msg
+htmlAttrs v =
+    Attribute (\attr -> { attr | htmlAttributes = v })
+
+
+{-| -}
 noAttr : Attribute msg
 noAttr =
     Attribute identity
@@ -191,17 +199,19 @@ noAttr =
 view : List (Attribute msg) -> List (H.Html msg) -> H.Html msg
 view attrs_ children =
     let
-        attrs : Attributes
+        attrs : Attributes msg
         attrs =
             applyAttrs attrs_
     in
     H.node attrs.element
-        [ HA.class "ew-m-0"
-        , HA.class attrs.fontSize
-        , HA.class attrs.fontFamily
-        , HA.class attrs.textAlign
-        , WH.styles
-            [ ( "color", attrs.color )
-            ]
-        ]
+        (attrs.htmlAttributes
+            ++ [ HA.class "ew-m-0"
+               , HA.class attrs.fontSize
+               , HA.class attrs.fontFamily
+               , HA.class attrs.textAlign
+               , WH.styles
+                    [ ( "color", attrs.color )
+                    ]
+               ]
+        )
         children

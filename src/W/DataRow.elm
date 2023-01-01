@@ -103,7 +103,8 @@ href v =
     Attribute <| \attrs -> { attrs | href = Just v }
 
 
-{-| -}
+{-| Attributes applied to the parent element.
+-}
 htmlAttrs : List (H.Attribute msg) -> Attribute msg
 htmlAttrs v =
     Attribute <| \attrs -> { attrs | htmlAttributes = v }

@@ -1,8 +1,6 @@
 module W.Internal.Color exposing
     ( fromHex
-    , fromSolidColor
     , toHex
-    , toSolidColor
     )
 
 import Color
