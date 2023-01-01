@@ -56,6 +56,7 @@ config =
     , NoUnused.CustomTypeConstructorArgs.rule
     , NoUnused.Dependencies.rule
     , NoUnused.Exports.rule
+        |> Rule.ignoreErrorsForFiles [ "src/W/Internal/Color.elm" ]
         |> Rule.ignoreErrorsForDirectories [ "src/Template/" ]
     , NoUnused.Parameters.rule
     , NoUnused.Patterns.rule
